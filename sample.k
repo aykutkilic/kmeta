@@ -1,27 +1,59 @@
-concept expr {}
+package org.kilic.kmeta
 
-concept ID {
-	string name
-	text --> ALPHA ALNUM*
+concept execution_unit {
+	class * classes
 }
 
-text => ID {
-	syntax ALPHA ALNUM* -> name
+concept class {
+	string 			name
+	class ref 		extends
+	interface ref * implements
+	
+	field *    fields
+	property * properties
+	method *   methods
+	
+	syntax <<<
+	class ID ('extends' FQN)? ('implements' FQN (',' FQN)*)? '{'
+		(field|property|method)*
+	'}'
+	>>>
 }
 
+void fn();
 
-concept binary_expr : expr {
-	expr left, right
+void main() {
+	fn();
 }
 
-text => model binary_expr {
-	EBNF<<<expr op expr>>> -> left skip right
+concept method {
+	string  name
+	field * parameters
 }
 
-concept sum_expr : binary_expr {
-	op = ('+'|'-')
+concept expr {
 }
 
-concept mul_expr : binary_expr {
-	op = ('*'|'/')
+concept add_expr : expr {
+	syntax <<< expr ('+'|'-') expr >>>
+}
+
+concept mul_expr : expr {
+	syntax <<< expr ('*'|'/') expr >>>
+}
+
+concept unary_expr : expr {
+	syntax <<< ('+'|'-') expr >>>
+}
+
+concept id_expr : expr {
+	syntax <<< ID >>>
+}
+
+concept num_expr : expr {
+	syntax <<< NUM >>>
+}
+
+concept real_expr : expr {
+	syntax <<< REAL >>>
 }

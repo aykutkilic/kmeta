@@ -1,15 +1,15 @@
 grammar KMeta;
 
 executionUnit:	packageStatement
-        importStatement*
-        (conceptStatement|compositionStatement|transformationStatement)*;
+                importStatement*
+                (conceptStatement|compositionStatement|transformationStatement)*;
 
 packageStatement : KW_PACKAGE fullyQualifiedName;
 importStatement  : KW_IMPORT fullyQualifiedPath;
 conceptStatement :
-    KW_CONCEPT ID (':' ( ListOfIds ))? '{'
+    KW_CONCEPT ID (':' listOfIds)? '{'
         (definition|definitionWithInitExpr)*
-        'syntax' metaExpression
+        ('syntax' '<<<' ~('>>>')* '>>>')?
     '}';
 
 compositionStatement :
