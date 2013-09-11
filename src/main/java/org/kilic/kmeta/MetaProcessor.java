@@ -1,22 +1,21 @@
 package org.kilic.kmeta;
 
 import com.google.inject.Inject;
-import com.sun.istack.internal.NotNull;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.tree.ParseTree;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class MetaProcessor extends KMetaBaseVisitor {
+public class MetaProcessor {
+    private ExecutionUnit executionUnit;
     private Map<String, Concept> concepts;
-    private Linker               conceptsLinker;
+    private Linker<Concept> conceptsLinker;
 
     @Inject
     public MetaProcessor() {
         concepts = new HashMap<>();
-        conceptsLinker = new Linker();
+        conceptsLinker = new Linker<>();
     }
 
     public void process(ANTLRFileStream fileStream) {
@@ -25,23 +24,37 @@ public class MetaProcessor extends KMetaBaseVisitor {
         KMetaParser parser = new KMetaParser(tokenStream);
 
         parser.setBuildParseTree(true);
-        ParseTree tree = parser.executionUnit();
-
-        visit(tree);
+        conceptsLinker.reset();
+        processExecutionUnit(parser.executionUnit());
+        conceptsLinker.startLinking();
     }
 
-    @Override
-    public Object visitExecutionUnit(@NotNull org.kilic.kmeta.KMetaParser.ExecutionUnitContext ctx) {
-        return super.visitExecutionUnit(ctx);    //To change body of overridden methods use File | Settings | File Templates.
+    private void processExecutionUnit(KMetaParser.ExecutionUnitContext ctx) {
+        ExecutionUnit newExecutionUnit = new ExecutionUnit();
+        ctx.conceptStatement().forEach( c -> processConcept(newExecutionUnit, c));
+
+        this.executionUnit = newExecutionUnit;
     }
 
-    @Override
-    public Object visitConceptStatement(@NotNull org.kilic.kmeta.KMetaParser.ConceptStatementContext ctx) {
+    public void processConcept(ExecutionUnit unit, KMetaParser.ConceptStatementContext ctx) {
         Concept newConcept = new Concept();
-        String fqn = ctx.children.get(1).getText();
-        this.concepts.put(fqn, newConcept);
+        String fqn = ctx.ID().getText();
 
+        newConcept.setExecutionUnit(unit);
         newConcept.setFqn(fqn);
-        return super.visitConceptStatement(ctx);    //To change body of overridden methods use File | Settings | File Templates.
+
+        ctx.definition().forEach(c -> processDefinition(newConcept, c));
+        //ctx.definitionWithInitExpr().forEach();
+        if(ctx.listOfIds()!=null)
+            ctx.listOfIds().ID().forEach(id -> {
+                conceptsLinker.registerListener(id.getText(), item -> newConcept.getParents().add(item));
+            });
+
+        ctx.metaExpression().stream().findFirst().ifPresent(e -> newConcept.setSyntax(e.getText()));
+
+        concepts.put(fqn, newConcept);
+    }
+
+    private void processDefinition(Concept newConcept, KMetaParser.DefinitionContext c) {
     }
 }

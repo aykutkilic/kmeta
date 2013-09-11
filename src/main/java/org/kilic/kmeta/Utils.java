@@ -13,13 +13,13 @@ import java.util.function.Supplier;
 public final class Utils {
     public static <T> Supplier<T> wrap(Callable<T> callable) throws RuntimeException {
         return () -> {
-          try {
-              return callable.call();
-          } catch (RuntimeException e) {
-              throw e;
-          } catch ( Exception e ) {
-              throw new RuntimeException(e);
-          }
+            try {
+                return callable.call();
+            } catch (RuntimeException e) {
+                throw e;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
         };
     }
 }

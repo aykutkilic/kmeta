@@ -8,8 +8,7 @@ packageStatement : KW_PACKAGE fullyQualifiedName;
 importStatement  : KW_IMPORT fullyQualifiedPath;
 conceptStatement :
     KW_CONCEPT ID (':' listOfIds)? '{'
-        (definition|definitionWithInitExpr)*
-        ('syntax' '<<<' ~('>>>')* '>>>')?
+        (definition|definitionWithInitExpr|metaExpression)*
     '}';
 
 compositionStatement :
@@ -52,7 +51,7 @@ expression:	expression ('*'|'/') expression
     |   MatrixExpression
     |	'(' expression ')'
     |   expression ':' expression
-    |   MetaExpression
+    |   metaExpression
     ;
 
 fnCallExpression :  ID '(' listOfExpressions? ')';

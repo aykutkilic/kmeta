@@ -1,16 +1,15 @@
 package org.kilic.kmeta;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 public class Concept {
-    private String        fqn;
-    private boolean       isAbstract;
+    private ExecutionUnit executionUnit;
+    private String fqn;
+    private boolean isAbstract;
     private Set<Concept> parents;
     private Set<Concept> children;
-    private String        syntax;
+    private String syntax;
 
     void Concept() {
         parents = new HashSet<>();
@@ -47,5 +46,13 @@ public class Concept {
 
     public void setSyntax(String syntax) {
         this.syntax = syntax;
+    }
+
+    public ExecutionUnit getExecutionUnit() {
+        return executionUnit;
+    }
+
+    public void setExecutionUnit(ExecutionUnit executionUnit) {
+        this.executionUnit = executionUnit;
     }
 }
