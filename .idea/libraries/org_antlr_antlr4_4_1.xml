@@ -1,0 +1,29 @@
+<component name="libraryTable">
+  <library name="org.antlr:antlr4:4.1" type="repository">
+    <properties maven-id="org.antlr:antlr4:4.1" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/antlr4-4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr4-runtime-4.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.abego.treelayout.core-1.0.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr-runtime-3.5.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/stringtemplate-3.2.1.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr-2.7.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ST4-4.0.7.jar!/" />
+    </CLASSES>
+    <JAVADOC>
+      <root url="jar://$PROJECT_DIR$/lib/antlr4-4.1-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr4-runtime-4.1-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.abego.treelayout.core-1.0.1-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr-runtime-3.5-javadoc.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ST4-4.0.7-javadoc.jar!/" />
+    </JAVADOC>
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/lib/antlr4-4.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr4-runtime-4.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/org.abego.treelayout.core-1.0.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/antlr-runtime-3.5-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/stringtemplate-3.2.1-sources.jar!/" />
+      <root url="jar://$PROJECT_DIR$/lib/ST4-4.0.7-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

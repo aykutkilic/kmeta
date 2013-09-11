@@ -1,13 +1,21 @@
 package org.kilic.kmeta;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class Concept {
     private String        fqn;
     private boolean       isAbstract;
-    private List<Concept> parents;
-    private List<Concept> children;
+    private Set<Concept> parents;
+    private Set<Concept> children;
     private String        syntax;
+
+    void Concept() {
+        parents = new HashSet<>();
+        children = new HashSet<>();
+    }
 
     public String getFQN() {
         return fqn;
@@ -17,15 +25,27 @@ public class Concept {
         return syntax;
     }
 
-    public List<Concept> getChildren() {
+    public Set<Concept> getChildren() {
         return children;
     }
 
-    public List<Concept> getParents() {
+    public Set<Concept> getParents() {
         return parents;
     }
 
     public boolean isAbstract() {
         return isAbstract;
+    }
+
+    public void setFqn(String fqn) {
+        this.fqn = fqn;
+    }
+
+    public void setIsAbstract(boolean isAbstract) {
+        this.isAbstract = isAbstract;
+    }
+
+    public void setSyntax(String syntax) {
+        this.syntax = syntax;
     }
 }

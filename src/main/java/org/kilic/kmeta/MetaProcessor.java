@@ -12,13 +12,11 @@ import java.util.Map;
 public class MetaProcessor extends KMetaBaseVisitor {
     private Map<String, Concept> concepts;
     private Linker               conceptsLinker;
-    private final ConceptFactory conceptFactory;
 
     @Inject
-    public MetaProcessor(ConceptFactory conceptFactory) {
-        this.conceptFactory = conceptFactory;
-
+    public MetaProcessor() {
         concepts = new HashMap<>();
+        conceptsLinker = new Linker();
     }
 
     public void process(ANTLRFileStream fileStream) {
@@ -39,6 +37,11 @@ public class MetaProcessor extends KMetaBaseVisitor {
 
     @Override
     public Object visitConceptStatement(@NotNull org.kilic.kmeta.KMetaParser.ConceptStatementContext ctx) {
+        Concept newConcept = new Concept();
+        String fqn = ctx.children.get(1).getText();
+        this.concepts.put(fqn, newConcept);
+
+        newConcept.setFqn(fqn);
         return super.visitConceptStatement(ctx);    //To change body of overridden methods use File | Settings | File Templates.
     }
 }
