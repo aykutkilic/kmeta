@@ -16,6 +16,7 @@
     <orderEntry type="library" name="org.eclipse.emf:org.eclipse.emf.common:2.8.0-v20120911-0500" level="project" />
     <orderEntry type="library" name="org.eclipse.emf:org.eclipse.emf.ecore.xmi:2.8.0-v20120911-0500" level="project" />
     <orderEntry type="library" name="org.antlr:antlr4:4.1" level="project" />
+    <orderEntry type="library" name="com.google.guava:guava:14.0.1" level="project" />
   </component>
 </module>
 

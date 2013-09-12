@@ -1,13 +1,15 @@
 package org.kilic.kmeta;
 
-import java.util.HashSet;
-import java.util.Set;
+import com.google.common.base.Joiner;
+
+import java.util.*;
 
 public class Concept extends BaseScope {
     private ExecutionUnit executionUnit;
     private boolean isAbstract;
     private Set<Concept> parents;
-    private Set<Concept> children;
+    private Map<String, Concept> children;
+    private Map<String, Object>  properties;
     private String syntax;
 
     public Concept(String name, ExecutionUnit container) {
@@ -15,15 +17,20 @@ public class Concept extends BaseScope {
 
         executionUnit = container;
         parents = new HashSet<>();
-        children = new HashSet<>();
+        children = new HashMap<>();
+        properties = new HashMap<>();
     }
 
     public String getSyntax() {
         return syntax;
     }
 
-    public Set<Concept> getChildren() {
+    public Map<String, Concept> getChildren() {
         return children;
+    }
+
+    public Map<String, Object> getProperties() {
+        return properties;
     }
 
     public Set<Concept> getParents() {
@@ -44,5 +51,18 @@ public class Concept extends BaseScope {
 
     public ExecutionUnit getExecutionUnit() {
         return executionUnit;
+    }
+
+    public String getCurrentGrammar() {
+        StringBuilder result = new StringBuilder();
+
+        result.append(getShortName()+":\n");
+        result.append("  " + Joiner.on(" | ").join(children.values().stream().map( Concept::getShortName).iterator()) + "\n");
+        if( syntax != null && !getSyntax().isEmpty())
+            result.append("  " + getSyntax() + "\n");
+
+        result.append(";\n\n");
+
+        return result.toString();
     }
 }
