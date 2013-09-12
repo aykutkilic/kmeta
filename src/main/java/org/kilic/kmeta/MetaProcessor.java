@@ -26,22 +26,21 @@ public class MetaProcessor {
         parser.setBuildParseTree(true);
         conceptsLinker.reset();
         processExecutionUnit(parser.executionUnit());
-        conceptsLinker.startLinking();
+        conceptsLinker.resolve();
     }
 
     private void processExecutionUnit(KMetaParser.ExecutionUnitContext ctx) {
-        ExecutionUnit newExecutionUnit = new ExecutionUnit();
+        String fqn = ctx.packageStatement().fullyQualifiedName().getText();
+
+        ExecutionUnit newExecutionUnit = new ExecutionUnit(fqn);
         ctx.conceptStatement().forEach( c -> processConcept(newExecutionUnit, c));
 
         this.executionUnit = newExecutionUnit;
     }
 
     public void processConcept(ExecutionUnit unit, KMetaParser.ConceptStatementContext ctx) {
-        Concept newConcept = new Concept();
-        String fqn = ctx.ID().getText();
-
-        newConcept.setExecutionUnit(unit);
-        newConcept.setFqn(fqn);
+        String shortName = ctx.ID().getText();
+        Concept newConcept = new Concept(shortName, unit);
 
         ctx.definition().forEach(c -> processDefinition(newConcept, c));
         //ctx.definitionWithInitExpr().forEach();
@@ -52,7 +51,7 @@ public class MetaProcessor {
 
         ctx.metaExpression().stream().findFirst().ifPresent(e -> newConcept.setSyntax(e.getText()));
 
-        concepts.put(fqn, newConcept);
+        concepts.put(newConcept.getFQN(), newConcept);
     }
 
     private void processDefinition(Concept newConcept, KMetaParser.DefinitionContext c) {

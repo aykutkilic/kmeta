@@ -39,7 +39,7 @@ public class Linker<T> {
         listenersRegistry.get(fqn).add(listener);
     }
 
-    public Set<String> startLinking() throws RuntimeException {
+    public Set<String> resolve() throws RuntimeException {
         Set<String> unresolvedItems = new HashSet<>();
 
         listenersRegistry.forEach((fqn, actions) -> {

@@ -3,21 +3,19 @@ package org.kilic.kmeta;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Concept {
+public class Concept extends BaseScope {
     private ExecutionUnit executionUnit;
-    private String fqn;
     private boolean isAbstract;
     private Set<Concept> parents;
     private Set<Concept> children;
     private String syntax;
 
-    void Concept() {
+    public Concept(String name, ExecutionUnit container) {
+        super(name,container);
+
+        executionUnit = container;
         parents = new HashSet<>();
         children = new HashSet<>();
-    }
-
-    public String getFQN() {
-        return fqn;
     }
 
     public String getSyntax() {
@@ -36,10 +34,6 @@ public class Concept {
         return isAbstract;
     }
 
-    public void setFqn(String fqn) {
-        this.fqn = fqn;
-    }
-
     public void setIsAbstract(boolean isAbstract) {
         this.isAbstract = isAbstract;
     }
@@ -50,9 +44,5 @@ public class Concept {
 
     public ExecutionUnit getExecutionUnit() {
         return executionUnit;
-    }
-
-    public void setExecutionUnit(ExecutionUnit executionUnit) {
-        this.executionUnit = executionUnit;
     }
 }
