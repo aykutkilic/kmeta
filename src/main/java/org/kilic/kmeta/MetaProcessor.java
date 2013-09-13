@@ -84,6 +84,12 @@ public class MetaProcessor {
     }
 
     private void processDefinition(Concept newConcept, KMetaParser.DefinitionContext c) {
+        Multiplicity mul = new Multiplicity();
+        mul.createFromMultiplicityContext(c.multiplicity());
+        Definition newDefinition = new Definition();
+        newDefinition.setMultiplicity( mul );
+        newDefinition.setName(c.ID(1).toString());
+        conceptsLinker.registerListener(c.ID(0).toString(), item -> newDefinition.setType(item));
     }
 
     private String getSyntax(KMetaParser.MetaExpressionContext ctx) {
