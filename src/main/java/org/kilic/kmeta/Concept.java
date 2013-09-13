@@ -7,34 +7,41 @@ import java.util.*;
 public class Concept extends BaseScope {
     private ExecutionUnit executionUnit;
     private boolean isAbstract;
-    private Set<Concept> parents;
-    private Map<String, Concept> children;
-    private Map<String, Object>  properties;
-    private String syntax;
+    private Set<Concept> parentConcepts;
+    private Set<Concept> subConcepts;
+    private Concept container;
+    private Map<String, Definition> containedConcepts;
+    private Map<String, Object> properties;
+    private SyntaxDefinition syntax;
 
     public Concept(String name, ExecutionUnit container) {
-        super(name,container);
+        super(name, container);
 
         executionUnit = container;
-        parents = new HashSet<>();
-        children = new HashMap<>();
+        parentConcepts = new HashSet<>();
+        subConcepts = new HashSet<>();
+        containedConcepts = new HashMap<>();
         properties = new HashMap<>();
     }
 
-    public String getSyntax() {
+    public SyntaxDefinition getSyntax() {
         return syntax;
     }
 
-    public Map<String, Concept> getChildren() {
-        return children;
+    public void setSyntax(SyntaxDefinition syntax) {
+        this.syntax = syntax;
+    }
+
+    public Map<String, Definition> getContainedConcepts() {
+        return containedConcepts;
     }
 
     public Map<String, Object> getProperties() {
         return properties;
     }
 
-    public Set<Concept> getParents() {
-        return parents;
+    public Set<Concept> getParentConcepts() {
+        return parentConcepts;
     }
 
     public boolean isAbstract() {
@@ -45,24 +52,47 @@ public class Concept extends BaseScope {
         this.isAbstract = isAbstract;
     }
 
-    public void setSyntax(String syntax) {
-        this.syntax = syntax;
-    }
-
     public ExecutionUnit getExecutionUnit() {
         return executionUnit;
     }
 
     public String getCurrentGrammar() {
         StringBuilder result = new StringBuilder();
+        if( syntax == null )
+            return null;
 
-        result.append(getShortName()+":\n");
-        result.append("  " + Joiner.on(" | ").join(children.values().stream().map( Concept::getShortName).iterator()) + "\n");
-        if( syntax != null && !getSyntax().isEmpty())
-            result.append("  " + getSyntax() + "\n");
+        if (syntax.isIfLeftRecursive())
+            return null;
+
+        result.append(getShortName() + "Rule" + ":\n");
+        if (subConcepts.size() > 0) {
+            List<String> items = new ArrayList<>();
+            for(Concept subConcept : subConcepts ) {
+                if( subConcept.getSyntax().isIfLeftRecursive() )
+                    items.add(subConcept.getSyntax().getEBNF() + " #" + subConcept.getShortName());
+                else
+                    items.add(subConcept.getShortName()+"Rule");
+            }
+
+            result.append(Joiner.on("\n  | ").join(items));
+        }
+        if (syntax.getEBNF() != null && !syntax.getEBNF().isEmpty())
+            result.append("  " + syntax.getEBNF() + "\n");
 
         result.append(";\n\n");
 
         return result.toString();
+    }
+
+    public Set<Concept> getSubConcepts() {
+        return subConcepts;
+    }
+
+    public Concept getContainer() {
+        return container;
+    }
+
+    public void setContainer(Concept container) {
+        this.container = container;
     }
 }

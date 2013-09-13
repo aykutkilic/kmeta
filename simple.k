@@ -8,25 +8,25 @@ concept expr {
 }
 
 concept add_expr : expr {
-	syntax <<< expr ('+'|'-') expr >>>
+	syntax lr `expr ('+'|'-') expr`
 }
 
 concept mul_expr : expr {
-	syntax <<< expr ('*'|'/') expr >>>
+	syntax lr `expr ('*'|'/') expr`
 }
 
 concept unary_expr : expr {
-	syntax <<< ('+'|'-') expr >>>
+	syntax `('+'|'-') expr`
 }
 
 concept id_expr : expr {
-	syntax <<< ID >>>
+	syntax `ID`
 }
 
 concept num_expr : expr {
-	syntax <<< NUM >>>
+	syntax `NUM`
 }
 
 concept real_expr : expr {
-	syntax <<< REAL >>>
+	syntax `REAL`
 }

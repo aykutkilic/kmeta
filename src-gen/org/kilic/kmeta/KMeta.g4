@@ -8,7 +8,7 @@ packageStatement : KW_PACKAGE fullyQualifiedName;
 importStatement  : KW_IMPORT fullyQualifiedPath;
 conceptStatement :
     KW_CONCEPT ID (':' listOfIds)? '{'
-        (definition|definitionWithInitExpr|metaExpression)*
+        (definition|definitionWithInitExpr|syntaxDefinition)*
     '}';
 
 compositionStatement :
@@ -38,25 +38,26 @@ definitionWithInitExpr:
 multiplicity:
     '?'|'+'|'*'|('['NUM']');
 
-metaExpression: fullyQualifiedName '<<<' ~('>>>')* '>>>';
+syntaxDefinition: 'syntax' 'lr'? META;
 
-expression:	expression ('*'|'/') expression
-    |	expression ('+'|'-') expression
-    |   ('+'|'-') expression
-    |	INT
-    |   REAL
-    |   STRING
-    |   ID
-    |   FnCallExpression
-    |   MatrixExpression
-    |	'(' expression ')'
-    |   expression ':' expression
-    |   metaExpression
+expression:
+    expression ('*'|'/') expression # mulExpression
+    |	expression ('+'|'-') expression # addExpression
+    |   ('+'|'-') expression  # unaryExpression
+    |	INT # intNumber
+    |   REAL # realNumber
+    |   STRING # string
+    |   ID # reference
+    |   FnCallExpressionRule # fnCallExpression
+    |   MatrixExpressionRule # matricExpression
+    |   LambdaExpressionRule # lambdaExpression
+    |	'(' expression ')' # parenthesisExpression
+    |   expression ':' expression # rangeExpression
     ;
 
-fnCallExpression :  ID '(' listOfExpressions? ')';
-matrixExpression  :  '[' listOfExpressions (';' listOfExpressions)* ']';
-lambdaExpression  :  '(' listOfIds ')' '->' expression;
+fnCallExpressionRule :  ID '(' listOfExpressions? ')';
+matrixExpressionRule  :  '[' listOfExpressions (';' listOfExpressions)* ']';
+lambdaExpressionRule  :  '(' listOfIds ')' '->' expression;
 
 listOfIds :
     ID (',' ID)*;
@@ -75,6 +76,7 @@ KW_PACKAGE : 'package';
 INT        : NUM+;
 REAL       : NUM* '.' NUM*;
 ID         : ALPHA (ALNUM | '_')*;
+META       : '`' ~('`')* '`';
 STRING     : '"'  (  ~('"'|'\\'|'\n'|'\r') )*  '"'
              {
                   setText( org.antlr.v4.misc.CharSupport.getStringFromGrammarStringLiteral( getText() ) );

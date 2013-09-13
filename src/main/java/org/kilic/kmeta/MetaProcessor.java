@@ -1,6 +1,5 @@
 package org.kilic.kmeta;
 
-import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -8,7 +7,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 public class MetaProcessor {
     private ExecutionUnit executionUnit;
@@ -74,10 +72,14 @@ public class MetaProcessor {
         //ctx.definitionWithInitExpr().forEach();
         if(ctx.listOfIds()!=null)
             ctx.listOfIds().ID().forEach(id -> {
-                conceptsLinker.registerListener(id.getText(), item -> newConcept.getParents().add(item));
+                conceptsLinker.registerListener(id.getText(),
+                        item -> {
+                            newConcept.getParentConcepts().add(item);
+                            item.getSubConcepts().add(newConcept);
+                        });
             });
 
-        ctx.metaExpression().stream().findFirst().ifPresent(e -> newConcept.setSyntax(getSyntax(e)));
+        ctx.syntaxDefinition().stream().findFirst().ifPresent(e -> newConcept.setSyntax(getSyntax(newConcept, e)));
 
         concepts.put(newConcept.getFQN(), newConcept);
         conceptsLinker.linkFQNToObject(newConcept.getShortName(), newConcept);
@@ -86,13 +88,22 @@ public class MetaProcessor {
     private void processDefinition(Concept newConcept, KMetaParser.DefinitionContext c) {
         Multiplicity mul = new Multiplicity();
         mul.createFromMultiplicityContext(c.multiplicity());
-        Definition newDefinition = new Definition();
+        String name = c.ID(1).toString();
+        Definition newDefinition = new Definition(newConcept);
         newDefinition.setMultiplicity( mul );
-        newDefinition.setName(c.ID(1).toString());
+        newDefinition.setName(name);
+        newConcept.getContainedConcepts().put(name, newDefinition);
         conceptsLinker.registerListener(c.ID(0).toString(), item -> newDefinition.setType(item));
     }
 
-    private String getSyntax(KMetaParser.MetaExpressionContext ctx) {
-        return Joiner.on("").join(ctx.children.subList(2,ctx.children.size()-1));
+    private SyntaxDefinition getSyntax(Concept newConcept, KMetaParser.SyntaxDefinitionContext ctx) {
+        SyntaxDefinition result = new SyntaxDefinition(newConcept);
+
+        if(ctx.getChild(1).getText().equals("lr"))
+            result.setIfLeftRecursive(true);
+
+        String syntaxSection = ctx.META().getText();
+        result.setEBNF(syntaxSection.substring(1, syntaxSection.length() - 1));
+        return result;
     }
 }

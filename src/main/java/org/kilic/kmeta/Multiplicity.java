@@ -9,7 +9,10 @@ public class Multiplicity {
     private int count;
 
     public void createFromMultiplicityContext(KMetaParser.MultiplicityContext ctx) {
-        createFromString(ctx.getText());
+        if( ctx!= null )
+            createFromString(ctx.getText());
+        else
+            type = MultiplicityEnum.SINGLE;
     }
 
     public void createFromString(String input) {
