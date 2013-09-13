@@ -58,27 +58,27 @@ public class Concept extends BaseScope {
 
     public String getCurrentGrammar() {
         StringBuilder result = new StringBuilder();
-        if( syntax == null )
-            return null;
-
-        if (syntax.isIfLeftRecursive())
-            return null;
 
         result.append(getShortName() + "Rule" + ":\n");
         if (subConcepts.size() > 0) {
             List<String> items = new ArrayList<>();
             for(Concept subConcept : subConcepts ) {
                 if( subConcept.getSyntax().isIfLeftRecursive() )
-                    items.add(subConcept.getSyntax().getEBNF() + " #" + subConcept.getShortName());
+                    items.add(subConcept.getSyntax().getEBNF() + " #" + subConcept.getShortName() );
                 else
-                    items.add(subConcept.getShortName()+"Rule");
+                    items.add(subConcept.getShortName()+"Rule" + " #" + subConcept.getShortName() );
             }
 
             result.append(Joiner.on("\n  | ").join(items));
         }
-        if (syntax.getEBNF() != null && !syntax.getEBNF().isEmpty())
-            result.append("  " + syntax.getEBNF() + "\n");
 
+        if( syntax != null ) {
+            if (syntax.isIfLeftRecursive())
+                return null;
+
+            if (syntax.getEBNF() != null && !syntax.getEBNF().isEmpty())
+                result.append("  " + syntax.getEBNF() + "\n");
+        }
         result.append(";\n\n");
 
         return result.toString();

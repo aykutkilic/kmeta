@@ -4,6 +4,12 @@ import com.google.inject.Inject;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,7 +25,7 @@ public class MetaProcessor {
         conceptsLinker = new Linker<>();
     }
 
-    public void process(ANTLRFileStream fileStream) {
+    public void process(ANTLRFileStream fileStream) throws IOException {
         KMetaLexer lexer = new KMetaLexer(fileStream);
         CommonTokenStream tokenStream = new CommonTokenStream(lexer);
         KMetaParser parser = new KMetaParser(tokenStream);
@@ -30,12 +36,20 @@ public class MetaProcessor {
         Collection<String> unresolvedItems = conceptsLinker.resolve();
 
         String currentGrammar = computeCurrentGrammar();
+
+        try (BufferedWriter writer = Files.newBufferedWriter(Paths.get("simple.g4"), Charset.defaultCharset())) {
+            writer.write(currentGrammar, 0, currentGrammar.length());
+        }
     }
 
     public String computeCurrentGrammar() {
         StringBuilder result = new StringBuilder();
 
-        concepts.values().forEach(c-> result.append(c.getCurrentGrammar()));
+        concepts.values().forEach(c -> {
+            String grammar = c.getCurrentGrammar();
+            if( grammar != null )
+                result.append(c.getCurrentGrammar());
+        });
 
         // dumping the footer.
         result.append("INT        : NUM+;\n");
@@ -59,7 +73,7 @@ public class MetaProcessor {
         String fqn = ctx.packageStatement().fullyQualifiedName().getText();
 
         ExecutionUnit newExecutionUnit = new ExecutionUnit(fqn);
-        ctx.conceptStatement().forEach( c -> processConcept(newExecutionUnit, c));
+        ctx.conceptStatement().forEach(c -> processConcept(newExecutionUnit, c));
 
         this.executionUnit = newExecutionUnit;
     }
@@ -70,7 +84,7 @@ public class MetaProcessor {
 
         ctx.definition().forEach(c -> processDefinition(newConcept, c));
         //ctx.definitionWithInitExpr().forEach();
-        if(ctx.listOfIds()!=null)
+        if (ctx.listOfIds() != null)
             ctx.listOfIds().ID().forEach(id -> {
                 conceptsLinker.registerListener(id.getText(),
                         item -> {
@@ -90,7 +104,7 @@ public class MetaProcessor {
         mul.createFromMultiplicityContext(c.multiplicity());
         String name = c.ID(1).toString();
         Definition newDefinition = new Definition(newConcept);
-        newDefinition.setMultiplicity( mul );
+        newDefinition.setMultiplicity(mul);
         newDefinition.setName(name);
         newConcept.getContainedConcepts().put(name, newDefinition);
         conceptsLinker.registerListener(c.ID(0).toString(), item -> newDefinition.setType(item));
@@ -99,7 +113,7 @@ public class MetaProcessor {
     private SyntaxDefinition getSyntax(Concept newConcept, KMetaParser.SyntaxDefinitionContext ctx) {
         SyntaxDefinition result = new SyntaxDefinition(newConcept);
 
-        if(ctx.getChild(1).getText().equals("lr"))
+        if (ctx.getChild(1).getText().equals("lr"))
             result.setIfLeftRecursive(true);
 
         String syntaxSection = ctx.META().getText();

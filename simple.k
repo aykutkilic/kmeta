@@ -1,32 +1,32 @@
 package org.kilic.kmeta
 
-concept execution_unit {
-	expr * expressions
+concept executionUnit {
+	expression * expressions
 }
 
-concept expr {
+concept expression {
 }
 
-concept add_expr : expr {
-	syntax lr `expr ('+'|'-') expr`
+concept addExpression : expression {
+	syntax lr `expression ('+'|'-') expression`
 }
 
-concept mul_expr : expr {
-	syntax lr `expr ('*'|'/') expr`
+concept mulExpression : expression {
+	syntax lr `expression ('*'|'/') expression`
 }
 
-concept unary_expr : expr {
-	syntax `('+'|'-') expr`
+concept unaryExpression : expression {
+	syntax `('+'|'-') expression`
 }
 
-concept id_expr : expr {
+concept idExpression : expression {
 	syntax `ID`
 }
 
-concept num_expr : expr {
+concept numExpression : expression {
 	syntax `NUM`
 }
 
-concept real_expr : expr {
+concept realExpression : expression {
 	syntax `REAL`
 }
