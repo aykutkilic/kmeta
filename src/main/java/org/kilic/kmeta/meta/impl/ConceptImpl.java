@@ -1,24 +1,26 @@
-package org.kilic.kmeta;
+package org.kilic.kmeta.meta.impl;
 
 import com.google.common.base.Joiner;
+import org.kilic.kmeta.meta.factory.ContainmentImpl;
+import org.kilic.kmeta.ExecutionUnit;
+import org.kilic.kmeta.SyntaxDefinition;
 
 import java.util.*;
 
-public class Concept extends BaseScope {
+public class ConceptImpl implements Concept {
+    private final Generalization generalization = new Generalization();
     private ExecutionUnit executionUnit;
     private boolean isAbstract;
-    private Set<Concept> parentConcepts;
-    private Set<Concept> subConcepts;
-    private Concept container;
-    private Map<String, Definition> containedConcepts;
+    private ConceptImpl container;
+    private Map<String, ContainmentImpl> containedConcepts;
     private Map<String, Object> properties;
     private SyntaxDefinition syntax;
 
-    public Concept(String name, ExecutionUnit container) {
+    public ConceptImpl(String name, ExecutionUnit container) {
         super(name, container);
 
         executionUnit = container;
-        parentConcepts = new HashSet<>();
+        generalization.parentConcepts = new HashSet<>();
         subConcepts = new HashSet<>();
         containedConcepts = new HashMap<>();
         properties = new HashMap<>();
@@ -32,7 +34,7 @@ public class Concept extends BaseScope {
         this.syntax = syntax;
     }
 
-    public Map<String, Definition> getContainedConcepts() {
+    public Map<String, ContainmentImpl> getContainedConcepts() {
         return containedConcepts;
     }
 
@@ -40,8 +42,8 @@ public class Concept extends BaseScope {
         return properties;
     }
 
-    public Set<Concept> getParentConcepts() {
-        return parentConcepts;
+    public Set<ConceptImpl> getParentConcepts() {
+        return generalization.parentConcepts;
     }
 
     public boolean isAbstract() {
@@ -62,7 +64,7 @@ public class Concept extends BaseScope {
         result.append(getShortName() + "Rule" + ":\n");
         if (subConcepts.size() > 0) {
             List<String> items = new ArrayList<>();
-            for(Concept subConcept : subConcepts ) {
+            for(ConceptImpl subConcept : subConcepts ) {
                 if( subConcept.getSyntax().isIfLeftRecursive() )
                     items.add(subConcept.getSyntax().getEBNF() + " #" + subConcept.getShortName() );
                 else
@@ -84,15 +86,15 @@ public class Concept extends BaseScope {
         return result.toString();
     }
 
-    public Set<Concept> getSubConcepts() {
+    public Set<ConceptImpl> getSubConcepts() {
         return subConcepts;
     }
 
-    public Concept getContainer() {
+    public ConceptImpl getContainer() {
         return container;
     }
 
-    public void setContainer(Concept container) {
+    public void setContainer(ConceptImpl container) {
         this.container = container;
     }
 }

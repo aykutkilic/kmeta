@@ -1,4 +1,4 @@
-package org.kilic.kmeta;
+package org.kilic.kmeta.meta.impl;
 
 import java.util.HashSet;
 import java.util.Set;

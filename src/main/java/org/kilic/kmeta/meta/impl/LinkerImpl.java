@@ -1,19 +1,16 @@
-package org.kilic.kmeta;
+package org.kilic.kmeta.meta.impl;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Linker<T> {
-    interface LinkerListener<T> {
-        void itemLinked(T linkedItem) throws RuntimeException;
-    }
+public class LinkerImpl<T> implements Linker {
 
     Map<String, T> itemRegistry;
     Map<String, Set<LinkerListener>> listenersRegistry;
 
-    public Linker() {
+    public LinkerImpl() {
         itemRegistry = new HashMap<>();
         listenersRegistry = new HashMap<>();
     }

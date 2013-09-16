@@ -1,10 +1,9 @@
-package org.kilic.kmeta;
+package org.kilic.kmeta.meta.impl;
 
-import jdk.nashorn.internal.runtime.regexp.joni.Regex;
+import org.kilic.kmeta.KMetaParser;
+import org.kilic.kmeta.meta.MultiplicityEnum;
 
-import java.util.regex.Pattern;
-
-public class Multiplicity {
+public class MultiplicityImpl {
     private MultiplicityEnum type;
     private int count;
 

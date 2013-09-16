@@ -1,11 +1,13 @@
 package org.kilic.kmeta;
 
+import org.kilic.kmeta.meta.impl.ConceptImpl;
+
 public class SyntaxDefinition {
     private boolean ifLeftRecursive;
     private String  EBNFSyntax;
-    private Concept container;
+    private ConceptImpl container;
 
-    public SyntaxDefinition(Concept container) {
+    public SyntaxDefinition(ConceptImpl container) {
         this.container = container;
     }
 
@@ -25,7 +27,7 @@ public class SyntaxDefinition {
         this.EBNFSyntax = EBNFSyntax;
     }
 
-    public Concept getContainer() {
+    public ConceptImpl getContainer() {
         return container;
     }
 }

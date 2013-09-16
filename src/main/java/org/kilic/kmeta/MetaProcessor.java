@@ -3,12 +3,15 @@ package org.kilic.kmeta;
 import com.google.inject.Inject;
 import org.antlr.v4.runtime.ANTLRFileStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.kilic.kmeta.meta.factory.ContainmentImpl;
+import org.kilic.kmeta.meta.impl.ConceptImpl;
+import org.kilic.kmeta.meta.impl.LinkerImpl;
+import org.kilic.kmeta.meta.impl.MultiplicityImpl;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,13 +19,13 @@ import java.util.Map;
 
 public class MetaProcessor {
     private ExecutionUnit executionUnit;
-    private Map<String, Concept> concepts;
-    private Linker<Concept> conceptsLinker;
+    private Map<String, ConceptImpl> concepts;
+    private LinkerImpl<ConceptImpl> conceptsLinker;
 
     @Inject
     public MetaProcessor() {
         concepts = new HashMap<>();
-        conceptsLinker = new Linker<>();
+        conceptsLinker = new LinkerImpl<>();
     }
 
     public void process(ANTLRFileStream fileStream) throws IOException {
@@ -80,7 +83,7 @@ public class MetaProcessor {
 
     public void processConcept(ExecutionUnit unit, KMetaParser.ConceptStatementContext ctx) {
         String shortName = ctx.ID().getText();
-        Concept newConcept = new Concept(shortName, unit);
+        ConceptImpl newConcept = new ConceptImpl(shortName, unit);
 
         ctx.definition().forEach(c -> processDefinition(newConcept, c));
         //ctx.definitionWithInitExpr().forEach();
@@ -99,18 +102,18 @@ public class MetaProcessor {
         conceptsLinker.linkFQNToObject(newConcept.getShortName(), newConcept);
     }
 
-    private void processDefinition(Concept newConcept, KMetaParser.DefinitionContext c) {
-        Multiplicity mul = new Multiplicity();
+    private void processDefinition(ConceptImpl newConcept, KMetaParser.DefinitionContext c) {
+        MultiplicityImpl mul = new MultiplicityImpl();
         mul.createFromMultiplicityContext(c.multiplicity());
         String name = c.ID(1).toString();
-        Definition newDefinition = new Definition(newConcept);
+        ContainmentImpl newDefinition = new ContainmentImpl(newConcept);
         newDefinition.setMultiplicity(mul);
         newDefinition.setName(name);
         newConcept.getContainedConcepts().put(name, newDefinition);
         conceptsLinker.registerListener(c.ID(0).toString(), item -> newDefinition.setType(item));
     }
 
-    private SyntaxDefinition getSyntax(Concept newConcept, KMetaParser.SyntaxDefinitionContext ctx) {
+    private SyntaxDefinition getSyntax(ConceptImpl newConcept, KMetaParser.SyntaxDefinitionContext ctx) {
         SyntaxDefinition result = new SyntaxDefinition(newConcept);
 
         if (ctx.getChild(1).getText().equals("lr"))

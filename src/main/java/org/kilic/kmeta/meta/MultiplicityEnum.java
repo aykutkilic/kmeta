@@ -1,4 +1,4 @@
-package org.kilic.kmeta;
+package org.kilic.kmeta.meta;
 
 public enum MultiplicityEnum {
     SINGLE,
