@@ -1,15 +1,25 @@
 package kmeta.core;
 
+import static org.petitparser.Chars.letter;
+
 import org.petitparser.parser.CompositeParser;
 import org.petitparser.parser.Parser;
 
 import static org.petitparser.Chars.character;
 import static org.petitparser.Chars.digit;
 import static org.petitparser.Chars.pattern;
+import static org.petitparser.Chars.whitespace;
 import static org.petitparser.Chars.word;
 import static org.petitparser.Parsers.string;
 
 public class BaseGrammar extends CompositeParser {
+	private static Parser IDENTIFIER = letter().seq(word().star()).flatten();
+	//private static Parser NUMBER = character('-').optional()
+	//		.seq(digit().plus())
+	//		.seq(character('.').seq(digit().plus()).optional()).flatten();
+	private static Parser STRING = character('"')
+			.seq(character('"').negate().star()).seq(character('"')).flatten();
+
 	protected Parser token(Object input) {
 		Parser parser;
 		if (input instanceof Parser) {
@@ -22,6 +32,14 @@ public class BaseGrammar extends CompositeParser {
 			throw new IllegalStateException("Object not parsable: " + input);
 		}
 		return parser.token().trim(ref("whitespace"));
+	}
+	
+	private void other() {
+		def("whitespace", whitespace()
+	        .or(ref("comment")));
+	    def("comment", string("/*")
+	        .seq(string("*/").negate().star())
+	        .seq(string("*/")));
 	}
 
 	private void number() {
@@ -59,12 +77,16 @@ public class BaseGrammar extends CompositeParser {
 		def("falseToken", token("false").seq(word().not()));
 		def("trueLiteral", ref("trueToken"));
 		def("trueToken", token("true").seq(word().not()));
-		def("identifier", pattern("a-zA-Z_").seq(pattern("a-zA-Z0-9_").star()));
+		def("identifier", IDENTIFIER);
 		def("identifierToken", token(ref("identifier")));
+		
+		def("stringLiteral", STRING);
+		def("stringToken", token(ref("stringLiteral")));
 	}
 
 	@Override
 	protected void initialize() {
+		other();
 		number();
 		basic();
 	}

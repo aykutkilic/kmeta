@@ -8,7 +8,7 @@ public class KMetaParser extends BaseGrammar {
 	@Override
 	protected void initialize() {
 		super.initialize();
-		def("script", ref("package").end());
+		def("start", ref("package").end());
 		def("package",
 				string("package").seq(token(ref("identifier"))).seq(
 						character(';')));
