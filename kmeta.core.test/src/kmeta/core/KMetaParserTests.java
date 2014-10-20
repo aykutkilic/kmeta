@@ -6,6 +6,5 @@ public class KMetaParserTests {
 
 	@Test
 	public void testKMetaParser() {
-		KMetaParser parser = new KMetaParser();
 	}
 }
