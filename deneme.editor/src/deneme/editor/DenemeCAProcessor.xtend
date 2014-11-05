@@ -27,10 +27,7 @@ class DenemeCAProcessor implements IContentAssistProcessor {
 		parser.addParseListener(new ParseTreeListener() {
 			
 			override enterEveryRule(ParserRuleContext ctx) { 
-				if( ctx.sourceInterval.a<=offset && ctx.sourceInterval.b>=offset ) {
-					expectedTokens = parser.expectedTokensWithinCurrentRule
-				}
-			}
+							}
 			
 			override exitEveryRule(ParserRuleContext arg0) {}
 			
@@ -62,6 +59,23 @@ class DenemeCAProcessor implements IContentAssistProcessor {
 	override getErrorMessage() { null }
 }
 
-class DenemeCAParseTreeListener extends ParseTreeListener {
+class DenemeCAParseTreeListener implements ParseTreeListener {
+	int offset
+	DenemeParser parser
+	IntervalSet expectedTokens
+
+	override enterEveryRule(ParserRuleContext ctx) {
+		if( ctx.sourceInterval.a<=offset && ctx.sourceInterval.b>=offset ) {
+			expectedTokens = parser.expectedTokensWithinCurrentRule
+		}
+	}
 	
+	override exitEveryRule(ParserRuleContext arg0) {
+	}
+	
+	override visitErrorNode(ErrorNode arg0) {
+	}
+	
+	override visitTerminal(TerminalNode arg0) {
+	}
 }
