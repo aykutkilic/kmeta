@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="deneme.editor.DenemeEditor"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            default="false"
+            extensions="deneme"
+            id="deneme.editor"
+            name="Deneme Editor">
+      </editor>
+   </extension>
+   <extension
+         id="deneme.markers.syntaxerror"
+         name="Deneme Syntax Error"
+         point="org.eclipse.core.resources.markers">
+      <super
+            type="org.eclipse.core.resources.problemmarker">
+      </super>
+   </extension>
+
+</plugin>

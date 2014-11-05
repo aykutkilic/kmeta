@@ -9,8 +9,9 @@ public class KMetaParser extends BaseGrammar {
 	protected void initialize() {
 		super.initialize();
 		def("start", ref("package").end());
+		def("class", string("class").seq(token(ref("identifier"))));
 		def("package",
 				string("package").seq(token(ref("identifier"))).seq(
-						character(';')));
+						character('{'), ref("class").star(), character('}')));
 	}
 }
