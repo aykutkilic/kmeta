@@ -17,6 +17,7 @@ import org.eclipse.ui.editors.text.TextEditor
 import org.eclipse.ui.ide.ResourceUtil
 import org.eclipse.ui.texteditor.MarkerUtilities
 import org.eclipse.core.resources.IMarker
+import org.antlr.v4.runtime.CommonToken
 
 class DenemeEditor extends TextEditor {
 	static val DENEME_SYNTAX_ERROR_MARKER_ID = "deneme.markers.syntaxerror"
@@ -63,19 +64,21 @@ class DenemeEditor extends TextEditor {
 
 				override syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line,
 					int charPositionInLine, String msg, RecognitionException e) {
-					addMarker(line, charPositionInLine, msg)
+					addMarker(line, offendingSymbol as CommonToken, msg)
 				}
 			})
 
 		parser.program();
 	}
 
-	def addMarker(int lineNumber, int charStart, String msg) {
+	def addMarker(int lineNumber, CommonToken token, String msg) {
 		var map = newHashMap()
-		MarkerUtilities::setLineNumber(map, lineNumber)
+		
 		MarkerUtilities::setMessage(map, msg)
-		map.put(IMarker.MESSAGE, msg);
-		map.put(IMarker.CHAR_START, charStart);
+		MarkerUtilities::setLineNumber(map, lineNumber)
+		MarkerUtilities::setCharStart(map, token.startIndex)
+		MarkerUtilities::setCharEnd(map,  token.stopIndex+1 )
+		
 		map.put(IMarker.SEVERITY, new Integer(IMarker.SEVERITY_ERROR));
 
 		MarkerUtilities::createMarker(resource, map, DENEME_SYNTAX_ERROR_MARKER_ID);

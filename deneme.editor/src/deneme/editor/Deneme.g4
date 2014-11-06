@@ -7,7 +7,7 @@ package deneme.editor;
 
 // PARSER
 program : 
-	(functiondef|structdef)*;
+	(functiondef|classdef)*;
 
 statement: 
 	assignment|switchStatement|ifStatement|loopStatement|loopFlowStatement|returnStatement|vardef|expr;
@@ -38,16 +38,35 @@ returnStatement:
 body: 
 	'{' statement* '}' | statement;
 
-structdef: 		
-	'struct' ID '{' (vardef ';')* '}';
-	
+classdef: 		
+	'class' ID ('extends' ID (',' ID)*)? '{' 
+		(vardef ';')*
+		syntaxdef 
+	'}';
+
 vardef:
 	( ID multiplicity? | 'var' | 'val' ) ID ('=' expr)?;
+
+syntaxdef:
+	"syntax" ':' ';';
+	
+sExpr:
+	'(' sExpr ')'	 		# paren
+	sExpr* 		 			# sequence
+	ID "=" ID			 	# assignment
+	sExpr ('?'|'+'|'*') 	# multiplicity
+	sExpr '|' sExpr			# alternative
+	'[' ID ']'				# reference
+	sExpr '<' sExpr			# prefixedList
+	sExpr '>' sExpr			# suffixedList
+	sExpr '/' sExpr			# separatedList
+	;
+
 	
 multiplicity:
 	'?' | '*' | '+' | '[' INT ']';
 
-functiondef: 'fn' ID  ID '(' (vardef (',' vardef)*)? ')' body; 
+functiondef: 'fn' ID  ID '(' (vardef (',' vardef)*)? ')' '{' statement* '}'; 
  
 expr
     : '(' expr ')'                		 		# paren
