@@ -1,0 +1,46 @@
+class Type {
+	syntax: '';
+}
+
+class BasicType extends Type {
+	syntax:;	
+}
+
+class Class extends Type {
+	string  	name;
+	MemberVar * memberVars;
+	Syntax		^syntax;
+	
+	syntax: 
+		'class' name=ID '{'
+			memberVars>';'
+			^syntax
+		'}'
+	;
+}
+
+class MemberVar {
+	Type 		 type;
+	Expression   defaultValue;
+	
+	syntax: 
+		type ID ('=' defaultValue=expr)?;
+}
+
+class ExplicitType extends Type {
+	Type		 type;
+	Multiplicity multiplicity;
+	
+	syntax: type=[ID] multiplicity?;
+}
+
+class InferredType extends Type {
+	syntax:
+		'var';
+}
+
+class Syntax {
+	syntax:
+		'syntax' ':' ';'
+	;
+}
