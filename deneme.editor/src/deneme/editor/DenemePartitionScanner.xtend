@@ -11,7 +11,7 @@ class DenemePartitionScanner extends RuleBasedPartitionScanner {
 		var string = new Token(DNM_STRING)
 		
 		predicateRules = #[
-			new MultiLineRule("\"", "\"", string)
+			new MultiLineRule("'", "'", string)
 		]
 	}
 }

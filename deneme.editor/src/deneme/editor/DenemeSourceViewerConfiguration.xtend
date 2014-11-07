@@ -44,7 +44,7 @@ class DenemeSourceViewerConfiguration extends SourceViewerConfiguration {
 		
 		var scanner = new RuleBasedScanner
 		scanner.rules = #[
-			new SingleLineRule('"','"', stringToken, '\\'),
+			new SingleLineRule("'","'", stringToken, '\\'),
 			new WhitespaceRule(whiteSpaceDetector)
 		]
 		scanner.defaultReturnToken = defaultToken		
@@ -59,7 +59,8 @@ class DenemeSourceViewerConfiguration extends SourceViewerConfiguration {
 		})
 		
 		#[ 
-		  'fn', 'struct',
+		  'fn', 'class',
+		  'extend', 'syntax',
 		  'var', 'val', 'it',
 		  'switch', 'default',
 		  'if', 'else', 'else if',  

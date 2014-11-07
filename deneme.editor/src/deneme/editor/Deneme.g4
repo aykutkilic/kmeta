@@ -48,18 +48,20 @@ vardef:
 	( ID multiplicity? | 'var' | 'val' ) ID ('=' expr)?;
 
 syntaxdef:
-	"syntax" ':' ';';
+	'syntax' ':' sExpr ';';
 	
-sExpr:
-	'(' sExpr ')'	 		# paren
-	sExpr* 		 			# sequence
-	ID "=" ID			 	# assignment
-	sExpr ('?'|'+'|'*') 	# multiplicity
-	sExpr '|' sExpr			# alternative
-	'[' ID ']'				# reference
-	sExpr '<' sExpr			# prefixedList
-	sExpr '>' sExpr			# suffixedList
-	sExpr '/' sExpr			# separatedList
+sExpr
+	: '(' sExpr ')' 		# sParen
+	| sExpr sExpr+			# sSequence
+	| ID '=' sExpr		 	# sAssignment
+	| sExpr ('?'|'+'|'*') 	# sMult
+	| sExpr '|' sExpr		# sAlt
+	| sExpr '<' sExpr		# sPref
+	| sExpr '>' sExpr		# sSuff
+	| sExpr '/' sExpr		# sSep
+	| '[' ID ']'			# sRef
+	| STRING				# sKeyword
+	| ID					# sCall
 	;
 
 	
@@ -99,7 +101,7 @@ expr
 
 // LEXER
 
-STRING : '"' (' '..'~')* '"';
+STRING : '\'' (' '..'~')* '\'';
 ID     : '^'?('a'..'z'|'A'..'Z'|'_') ('a'..'z'|'A'..'Z'|'_'|'0'..'9')*;
 INT    : '0'..'9'+;
 WS     : [ \t\n\r]+ -> skip ;
