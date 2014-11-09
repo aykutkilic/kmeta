@@ -60,7 +60,7 @@ class DenemeSourceViewerConfiguration extends SourceViewerConfiguration {
 		
 		#[ 
 		  'fn', 'class',
-		  'extend', 'syntax',
+		  'abstract', 'extends', 'syntax',
 		  'var', 'val', 'it',
 		  'switch', 'default',
 		  'if', 'else', 'else if',  

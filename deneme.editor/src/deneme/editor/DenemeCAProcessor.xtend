@@ -37,7 +37,6 @@ class DenemeCAProcessor implements IContentAssistProcessor {
 		parser.program();
 
 		println("offset: " + offset)
-
 		listener.completionProposalList
 	}
 

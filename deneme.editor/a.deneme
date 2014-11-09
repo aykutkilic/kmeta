@@ -1,20 +1,14 @@
-class Type {
-	syntax: '';
-}
-
-class BasicType extends Type {
-	syntax:;	
-}
+abstract class Type  { string  name; }
+abstract class Value { var 	   value; }
 
 class Class extends Type {
-	string  	name;
 	MemberVar * memberVars;
-	Syntax		^syntax;
+	Syntax		Syntax;
 	
 	syntax: 
 		'class' name=ID '{'
 			memberVars>';'
-			^syntax
+			Syntax
 		'}'
 	;
 }
@@ -22,21 +16,33 @@ class Class extends Type {
 class MemberVar {
 	Type 		 type;
 	Expression   defaultValue;
+	string		 name;
 	
 	syntax: 
-		type ID ('=' defaultValue=expr)?;
+		type name=ID ('=' defaultValue)?;
 }
 
 class ExplicitType extends Type {
-	Type		 type;
-	Multiplicity multiplicity;
+	Type		  type;
+	Multiplicity? multiplicity;
 	
 	syntax: type=[ID] multiplicity?;
 }
 
-class InferredType extends Type {
+class Multiplicity {
 	syntax:
-		'var';
+		type =	'?' 			  : optional
+				'*' 			  : any
+				'+' 			  : oneOrMore
+				'[' count=INT ']' : fixed;
+}
+
+class InferredType extends Type {
+	bool isConst;
+	syntax:
+		isConst = 'var' :  false 
+				  'val' :  true
+		;
 }
 
 class Syntax {
@@ -44,3 +50,94 @@ class Syntax {
 		'syntax' ':' ';'
 	;
 }
+
+abstract class Expression {
+}
+
+class ParenthesisExpression {
+	Expression expression;
+	syntax: '(' expression ')';
+}
+
+class RangeExpression {
+	Expression 	from;
+	Expression 	to;
+	Expression? increment;
+	
+	syntax: '[' from '..' to (':' increment)? ']';
+}
+
+/*
+	Expression 	how the value is computed
+	Type		type computation for expression and runtime value for dynamic cases.
+	Value		actual value during runtime
+	
+	Value dynamic typing, Expression static typing
+ */
+ 
+// list is evaluation of list expression by an interpreter or any executor
+class ListExpression {
+	Expression* elements;
+	
+	syntax: '[' elements ']';
+}
+
+class AccessListElementExpression {
+	Expression list;
+	Expression selection;
+	
+	syntax: 
+		list '[' expr ']';
+}
+
+/* RUNTIME conforms domain kmeta */
+
+Type bool {
+	name : 'bool';
+}
+
+IntType int {
+	name : 'int' // signed/unsigned size? big/little endian? byte order?
+}
+
+StringType string {
+	name : 'string'
+}
+
+RealType real {
+	name : 'real'
+}
+
+class IntValue extends Expression {
+	var type = IntType;
+	syntax: value=INT;
+}
+
+class StringValue extends Expression {
+	var type = StringType;
+	syntax: value=STRING;
+}
+
+class BoolValue extends Expression {
+	var type = BoolType;
+	syntax: value =
+		'true'  : true
+		'false' : false;
+}
+
+axiom G |- BoolValue   : bool
+axiom G |- IntValue    : int
+axiom G |- StringValue : string 
+axiom G |- RealValue   : real
+
+def fn typeof(MulOrDiv) {
+	int {
+		typeof(left)  == int
+		typeof(right) == int
+	}
+	string {
+		typeof(left)  == string
+		typeof(right) == int
+	}
+}
+

@@ -68,7 +68,8 @@ class DenemeEditor extends TextEditor {
 				}
 			})
 
-		parser.program();
+		/*var ctx = */parser.program();
+		//println(ctx.toStringTree)
 	}
 
 	def addMarker(int lineNumber, CommonToken token, String msg) {
