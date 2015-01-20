@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Core
+Bundle-SymbolicName: com.diagware.testgen.core
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: DIAGWARE
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.cdt.core;bundle-version="5.8.0",
+ org.eclipse.xtext.xbase.lib;bundle-version="2.7.2",
+ org.eclipse.text;bundle-version="3.5.300",
+ org.eclipse.core.resources;bundle-version="3.9.1",
+ org.junit;bundle-version="4.11.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
