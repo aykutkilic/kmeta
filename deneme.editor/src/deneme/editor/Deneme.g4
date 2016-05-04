@@ -6,7 +6,7 @@ package deneme.editor;
 }
 
 // PARSER
-program : 
+program:
 	(functiondef|classdef)*;
 
 statement: 

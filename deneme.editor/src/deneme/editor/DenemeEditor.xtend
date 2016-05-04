@@ -18,6 +18,13 @@ import org.eclipse.ui.ide.ResourceUtil
 import org.eclipse.ui.texteditor.MarkerUtilities
 import org.eclipse.core.resources.IMarker
 import org.antlr.v4.runtime.CommonToken
+import org.eclipse.jface.text.IDocumentListener
+import org.eclipse.jface.text.DocumentEvent
+import org.antlr.v4.runtime.tree.ParseTreeListener
+import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.ErrorNode
+import org.antlr.v4.runtime.tree.TerminalNode
+import deneme.editor.DenemeParser.ProgramContext
 
 class DenemeEditor extends TextEditor {
 	static val DENEME_SYNTAX_ERROR_MARKER_ID = "deneme.markers.syntaxerror"
@@ -36,11 +43,16 @@ class DenemeEditor extends TextEditor {
 		super.doSetInput(input)
 		document = documentProvider.getDocument(input)
 		resource = ResourceUtil::getResource(input)
+		document.addDocumentListener(new IDocumentListener() {
+			override documentAboutToBeChanged(DocumentEvent event) {}
+			
+			override documentChanged(DocumentEvent event) {
+				parseDocument();				
+			}
+		});
 	}
 
-	override protected editorSaved() {
-		super.editorSaved()
-
+	def void parseDocument() {
 		resource.deleteMarkers(DENEME_SYNTAX_ERROR_MARKER_ID, true, IResource.DEPTH_ZERO);
 
 		val text = document.get
@@ -67,9 +79,13 @@ class DenemeEditor extends TextEditor {
 					addMarker(line, offendingSymbol as CommonToken, msg)
 				}
 			})
+			
+		
+		val ctx = parser.program();
+	}
 
-		/*var ctx = */parser.program();
-		//println(ctx.toStringTree)
+	override protected editorSaved() {
+		super.editorSaved()
 	}
 
 	def addMarker(int lineNumber, CommonToken token, String msg) {

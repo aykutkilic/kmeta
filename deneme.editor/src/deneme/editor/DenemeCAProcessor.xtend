@@ -20,24 +20,31 @@ import org.antlr.v4.runtime.tree.TerminalNode
 import org.eclipse.jface.text.ITextViewer
 import org.eclipse.jface.text.contentassist.CompletionProposal
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor
+import org.antlr.v4.runtime.atn.ParserATNSimulator
+import org.antlr.v4.runtime.TokenStream
 
 class DenemeCAProcessor implements IContentAssistProcessor {
 
 	override computeCompletionProposals(ITextViewer viewer, int offset) {
 		val text = viewer.document.get
+		val err = new NewErrorStrategy
 		var lexer = new DenemeLexer(new ANTLRInputStream(text))
-		var tokens = new CommonTokenStream(lexer);
-		val parser = new DenemeParser(tokens);
-		parser.setBuildParseTree(true);
+		var tokens = new CommonTokenStream(lexer)
+		val parser = new DenemeParser(tokens)
+		parser.setBuildParseTree(true)
+		parser.errorHandler = err 
 
-		var listener = new DenemeCAParseTreeListener(parser, offset)
-		parser.addParseListener(listener)
-		parser.addErrorListener(listener)
+		var l1 = new DenemeCAParseTreeListener(parser, offset)
+		parser.addParseListener(l1)
+		parser.addErrorListener(l1)
+		
+		/*var l2 = new ParseTreeDumper(parser, offset)
+		parser.addParseListener(l2)
+		parser.addErrorListener(l2)*/
 
 		parser.program();
-
-		println("offset: " + offset)
-		listener.completionProposalList
+		
+		err.completionProposalList
 	}
 
 	override getCompletionProposalAutoActivationCharacters() { #['.'] }
@@ -65,10 +72,6 @@ class DenemeCAParseTreeListener implements ParseTreeListener, ANTLRErrorListener
 
 	override enterEveryRule(ParserRuleContext ctx) {
 		if(isTokenUnderCursor(ctx.start)) {
-			println(parser.currentToken.toString)
-			println(">> " + parser.ruleNames.get(ctx.ruleIndex))
-			println(">> " + ctx.start.text + " " + ctx.start.startIndex + ":" + ctx.start.stopIndex)
-			println(">> " + parser.expectedTokens.toList.filter[it > 0].map[parser.tokenNames.get(it)])
 			ruleContext = ctx
 			
 			createCompletionList(ctx.start, parser.expectedTokens)	
@@ -80,23 +83,15 @@ class DenemeCAParseTreeListener implements ParseTreeListener, ANTLRErrorListener
 		if(isTokenUnderCursor(parser.currentToken)) token = parser.currentToken
 		if(isTokenUnderCursor(ctx.stop)) token = ctx.stop
 		if(token!=null) {
-			println(parser.currentToken.toString)
-			println("<< " + parser.ruleNames.get(ctx.ruleIndex))
-			if (ctx.stop != null)
-				println("<< " + ctx.stop.text + " " + ctx.stop.startIndex + ":" + ctx.stop.stopIndex)
-			println("<< " + parser.expectedTokens.toList.filter[it > 0].map[parser.tokenNames.get(it)])
-				
 			createCompletionList(token, parser.expectedTokens)	
 		}
 	}
 
 	override visitErrorNode(ErrorNode node) {
-		println("ER ")
 	}
 
 	override visitTerminal(TerminalNode node) {
 		if(isTokenUnderCursor(node.symbol)) {
-			println('TT ' + node.text)
 			createCompletionList(node.symbol, parser.expectedTokens)	
 		}
 		
@@ -111,25 +106,20 @@ class DenemeCAParseTreeListener implements ParseTreeListener, ANTLRErrorListener
 		BitSet ambigAlts,
 		ATNConfigSet configs
 	) {
-		println("reportAmbiguity")
 	}
 
 	override reportAttemptingFullContext(Parser recognizer, DFA dfa, int startIndex, int stopIndex,
 		BitSet conflictingAlts, ATNConfigSet configs) {
-		println("reportAttemptingFullContext")
 	}
 
 	override reportContextSensitivity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, int prediction,
 		ATNConfigSet configs) {
-		println("reportContextSensitivity")
 	}
 
 	override syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
 		String msg, RecognitionException e) {
 		var token = offendingSymbol as CommonToken
 		if(!isTokenUnderCursor(token)) return;
-
-		println("-- " + token.startIndex + " - " + token.stopIndex);
 
 		var IntervalSet expected = null;
 		if (e != null) {
@@ -138,9 +128,7 @@ class DenemeCAParseTreeListener implements ParseTreeListener, ANTLRErrorListener
 			expected = recognizer.ATN.getExpectedTokens(recognizer.state, ruleContext)
 		}
 		
-		
 		if (expected != null) {
-			System.out.println("-- " + expected.toList.filter[it > 0].map[parser.tokenNames.get(it)])
 			if(isTokenUnderCursor(token)) {
 				createCompletionList(token, expected)
 			}

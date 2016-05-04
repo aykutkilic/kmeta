@@ -5,7 +5,7 @@
     <property name="package" value="deneme/editor" />
  
     <path id="classpath">
-        <pathelement location="antlr-4.4-complete.jar" />
+        <pathelement location="antlr-4.5.3-complete.jar" />
         <pathelement location="bin" />
     </path>
  
@@ -17,6 +17,8 @@
             <arg value="-lib" />
             <arg path="${src}/${package}" />
             <arg value="-listener" />
+        	<arg value="-atn" />
+        	<arg value="-Xforce-atn" />
  
             <arg value="${src}/${package}/Deneme.g4" />
         </java>
