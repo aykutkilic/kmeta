@@ -45,26 +45,66 @@ public class Antlr4Test {
 	@Test
 	public def void deneme() {
 		val g = new Grammar(someGrammar)
+		
 		g.ast.visit(new GrammarASTVisitor() {
-			override visit(GrammarAST node) {}
-			override visit(GrammarRootAST node) {}
+			override visit(GrammarAST node) {
+				node.children?.forEach[
+					if(it instanceof RuleAST) 					visit(it as RuleAST)
+					else if (it instanceof BlockAST)  			visit(it as BlockAST)
+					else if (it instanceof OptionalBlockAST)	visit(it as OptionalBlockAST)
+					else if (it instanceof PlusBlockAST)  		visit(it as PlusBlockAST)
+					else if (it instanceof StarBlockAST)  		visit(it as StarBlockAST)
+					else if (it instanceof AltAST)  			visit(it as AltAST)
+					else if (it instanceof NotAST)  			visit(it as NotAST)
+					else if (it instanceof PredAST)  			visit(it as PredAST)
+					else if (it instanceof RangeAST)  			visit(it as RangeAST)
+					else if (it instanceof SetAST)  			visit(it as SetAST)
+					else if (it instanceof RuleRefAST)  		visit(it as RuleRefAST)
+					else if (it instanceof TerminalAST)  		visit(it as TerminalAST)
+					
+					visit(it as GrammarAST)
+				]
+				node
+			}
+			
+			override visit(GrammarRootAST node) {
+				node.children?.forEach[this.visit(it as GrammarAST)]
+				node
+			}
 			
 			override visit(RuleAST node) {
 				System::out.println(node.ruleName)
-				null
+				node
 			}
 			
-			override visit(BlockAST node) {}
+			override visit(BlockAST node) {
+				node.children?.forEach[this.visit(it as GrammarAST)]
+				node
+			}
+			
 			override visit(OptionalBlockAST node) {}
 			override visit(PlusBlockAST node) {}
 			override visit(StarBlockAST node) {}
-			override visit(AltAST node) {}
+			
+			override visit(AltAST node) {
+				System::out.println(node.text)
+				node
+			}
+			
 			override visit(NotAST node) {}
 			override visit(PredAST node) {}
 			override visit(RangeAST node) {}
 			override visit(SetAST node) {}
-			override visit(RuleRefAST node) {}
-			override visit(TerminalAST node) {}
+			
+			override visit(RuleRefAST node) {
+				System::out.println(node.text)
+				node
+			}
+			
+			override visit(TerminalAST node) {
+				System::out.println(node.text)
+				node
+			}
 		})
 	}	
 }

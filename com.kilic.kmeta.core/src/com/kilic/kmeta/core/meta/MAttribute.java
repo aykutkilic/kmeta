@@ -1,0 +1,8 @@
+package com.kilic.kmeta.core.meta;
+
+public class MAttribute extends MStructuralFeature {
+	MType  type;
+	
+	public MType getType() { return type; }
+	public void setType(MType type) { this.type = type; }
+}
