@@ -180,6 +180,7 @@ public class CoreTests {
 	
 	@Test
 	public void test() {
-		
+		//Predicter m = new Predicter();
+		//m.match("(2+2)*x++ + y");
 	}
 }

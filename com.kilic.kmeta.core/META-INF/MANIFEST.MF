@@ -3,13 +3,11 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Core
 Bundle-SymbolicName: com.kilic.kmeta.core
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: com.kilic.kmeta.core.Activator
 Bundle-Vendor: KILIC
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: com.kilic.kmeta.core,
- com.kilic.kmeta.core.matcher,
- com.kilic.kmeta.core.meta,
+Export-Package: com.kilic.kmeta.core.meta,
+ com.kilic.kmeta.core.predicter,
  com.kilic.kmeta.core.syntax

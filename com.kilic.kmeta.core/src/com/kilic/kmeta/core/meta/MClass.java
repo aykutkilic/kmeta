@@ -30,6 +30,7 @@ public class MClass {
 	}
 	
 	public MClass[] getSuperClasses() { return (MClass[]) superClasses.toArray(); }
+	public MClass[] getSubClasses() { return (MClass[]) subClasses.toArray(); }
 	
 	public void addFeature(MStructuralFeature feature) { features.add(feature); }
 	public MStructuralFeature[] getFeatures() { return (MStructuralFeature[]) features.toArray(); }
