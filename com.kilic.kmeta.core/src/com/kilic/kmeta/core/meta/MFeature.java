@@ -1,6 +1,6 @@
 package com.kilic.kmeta.core.meta;
 
-public abstract class MStructuralFeature {
+public abstract class MFeature {
 	protected String name;
 	IMultiplicity mult = new OneMult();
 	MClass containerClass;

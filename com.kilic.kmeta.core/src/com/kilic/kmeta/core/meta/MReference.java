@@ -1,6 +1,6 @@
 package com.kilic.kmeta.core.meta;
 
-public class MReference extends MStructuralFeature {
+public class MReference extends MFeature {
 	boolean isContainment;
 	MClass type;
 	MReference opposite;

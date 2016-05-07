@@ -1,6 +1,6 @@
 package com.kilic.kmeta.core.meta;
 
-public class MAttribute extends MStructuralFeature {
+public class MAttribute extends MFeature {
 	MType  type;
 	
 	public MType getType() { return type; }

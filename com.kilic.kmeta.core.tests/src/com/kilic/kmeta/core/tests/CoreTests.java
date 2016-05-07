@@ -13,7 +13,7 @@ import com.kilic.kmeta.core.syntax.CharRangeExpr;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
-import com.kilic.kmeta.core.syntax.StructuralFeatureRef;
+import com.kilic.kmeta.core.syntax.FeatureRef;
 
 public class CoreTests {
 	MModel kmeta;
@@ -109,7 +109,7 @@ public class CoreTests {
 		NegE.setSyntax( 
 			new SequenceExpr(
 				new StringExpr("-"),
-				new StructuralFeatureRef(PreE_e)
+				new FeatureRef(PreE_e)
 			)
 		);
 		
@@ -120,9 +120,9 @@ public class CoreTests {
 		MulE.setPackage(core);
 		MulE.setSyntax(
 			new SequenceExpr(
-				new StructuralFeatureRef(BinE_l),
+				new FeatureRef(BinE_l),
 				new StringExpr("*"),
-				new StructuralFeatureRef(BinE_r)
+				new FeatureRef(BinE_r)
 			)
 		);
 		
@@ -133,9 +133,9 @@ public class CoreTests {
 		AddE.setPackage(core);
 		AddE.setSyntax(
 			new SequenceExpr(
-				new StructuralFeatureRef(BinE_l),
+				new FeatureRef(BinE_l),
 				new StringExpr("+"),
-				new StructuralFeatureRef(BinE_r)
+				new FeatureRef(BinE_r)
 			)
 		);
 
@@ -145,7 +145,7 @@ public class CoreTests {
 		IncrE.setPackage(core);
 		IncrE.setSyntax( 
 			new SequenceExpr(
-				new StructuralFeatureRef(SuffE_e),
+				new FeatureRef(SuffE_e),
 				new StringExpr("++")
 			)
 		);
@@ -160,7 +160,7 @@ public class CoreTests {
 		ParenE.setSyntax( 
 			new SequenceExpr(
 				new StringExpr("("),
-				new StructuralFeatureRef(ParenE_e),
+				new FeatureRef(ParenE_e),
 				new StringExpr(")")
 			)
 		);

@@ -11,7 +11,7 @@ public class MClass {
 	MPackage pack;
 	Set<MClass> superClasses = new HashSet<>();
 	Set<MClass> subClasses = new HashSet<>();
-	Set<MStructuralFeature> features = new HashSet<>();
+	Set<MFeature> features = new HashSet<>();
 
 	ISyntaxExpr syntax;
 	
@@ -32,8 +32,8 @@ public class MClass {
 	public MClass[] getSuperClasses() { return (MClass[]) superClasses.toArray(); }
 	public MClass[] getSubClasses() { return (MClass[]) subClasses.toArray(); }
 	
-	public void addFeature(MStructuralFeature feature) { features.add(feature); }
-	public MStructuralFeature[] getFeatures() { return (MStructuralFeature[]) features.toArray(); }
+	public void addFeature(MFeature feature) { features.add(feature); }
+	public MFeature[] getFeatures() { return (MFeature[]) features.toArray(); }
 
 	public ISyntaxExpr getSyntax() { return syntax; }
 	public void setSyntax(ISyntaxExpr syntax) { this.syntax = syntax; }
