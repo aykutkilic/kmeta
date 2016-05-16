@@ -1,10 +1,12 @@
 package com.kilic.kmeta.core.discriminator;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class CharSet {
-	Set<CharRange> ranges = new HashSet<>();
+	List<CharRange> ranges = new ArrayList<>();
 
 	public static CharSet LETTER = new CharSet().addRange(new CharRange('a', 'z'))
 												.addRange(new CharRange('A', 'Z'));
@@ -30,18 +32,23 @@ public class CharSet {
 	}
 
 	private void simplifyRanges() {
-		do {
-			for(CharRange r1 : ranges) {
-				for(CharRange r2 : ranges) {
-					if(r1.isUnifiable(r2)) {
-						unify(r1,r2);
-						continue;
-					}
+		while(unifyNext());
+	}
+	
+	private boolean unifyNext() {
+		for(int i=1; i<ranges.size();i++) {
+			for(int j=i+1; j<ranges.size(); j++) {
+				CharRange r1 = ranges.get(i);
+				CharRange r2 = ranges.get(j);
+
+				if( r1.isUnifiable(r2)){
+					unify(r1, r2);
+					return true;
 				}
 			}
-			
-			break;
-		} while(true);
+		}
+		
+		return false;
 	}
 
 	private void unify(CharRange r1, CharRange r2) {
@@ -53,7 +60,11 @@ public class CharSet {
 	}
 
 	public CharSet getUnion(CharSet b) {
-		return null;
+		CharSet result = new CharSet();
+		result.ranges.addAll(this.ranges);
+		result.ranges.addAll(b.ranges);
+		result.simplifyRanges();
+		return result;
 	}
 
 	public CharSet getInstersection(CharSet b) {
@@ -70,5 +81,15 @@ public class CharSet {
 		}
 		
 		return false;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append('[');
+		for(CharRange r : ranges)
+			result.append(r.toString());
+		result.append(']');
+		return result.toString();
 	}
 }

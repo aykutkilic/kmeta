@@ -67,15 +67,6 @@ public class CharRange {
 		return result;
 	}
 	
-	/**
-	 * Please note that empty set is not a member of empty set.
-	 */
-	public boolean equals(CharRange other) {
-		if(isEmpty() || other.isEmpty()) return false;
-		
-		return start == other.start && end==other.end;
-	}
-	
 	public boolean contains(CharRange other) {
 		if(other.isEmpty()) return true;
 		if(isEmpty() && !other.isEmpty()) return false;
@@ -115,5 +106,30 @@ public class CharRange {
 
 	public boolean isUnifiable(CharRange other) {
 		return isAdjacent(other) || !getIntersection(other).isEmpty();
+	}
+
+	/**
+	 * Please note that empty set is not a member of empty set.
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof CharRange) {
+			CharRange other = (CharRange)obj;
+			if(isEmpty() || other.isEmpty()) return false;
+			return start == other.start && end==other.end;
+		}
+		
+		return false;
+	}
+	
+	@Override
+	public String toString() {
+		if(isEmpty())
+			return new String( new char[] {238} );
+		
+		if(isSingleton())
+			return new String( new char[] { start } );
+		
+		return new String( new char[] { start,'-',end } );
 	}
 }
