@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.predicter;
+package com.kilic.kmeta.core.discriminator;
 
 import java.util.LinkedList;
 

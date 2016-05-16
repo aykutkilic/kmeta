@@ -8,6 +8,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: com.kilic.kmeta.core.meta,
- com.kilic.kmeta.core.predicter,
+Export-Package: com.kilic.kmeta.core.discriminator,
+ com.kilic.kmeta.core.meta,
  com.kilic.kmeta.core.syntax

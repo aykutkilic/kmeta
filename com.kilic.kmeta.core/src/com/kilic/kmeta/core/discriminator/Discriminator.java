@@ -1,22 +1,22 @@
-package com.kilic.kmeta.core.predicter;
+package com.kilic.kmeta.core.discriminator;
 
 import java.util.LinkedList;
 
 import com.kilic.kmeta.core.meta.MClass;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
-public class Predicter {
+public class Discriminator {
 	MClass clazz;
-	Predicter parent;
-	LinkedList<Predicter> children;
+	Discriminator parent;
+	LinkedList<Discriminator> children;
 	PredictionTreeNode root = new PredictionTreeNode(null);
 	
 	
-	public Predicter(MClass clazz) {
+	public Discriminator(MClass clazz) {
 		this.clazz = clazz;
 		
 		for(MClass subclass : clazz.getSubClasses() )
-			addChild(new Predicter(subclass));
+			addChild(new Discriminator(subclass));
 		
 		ISyntaxExpr syntax = clazz.getSyntax();
 		if( syntax!=null ) appendSyntax(syntax);
@@ -30,10 +30,10 @@ public class Predicter {
 	}
 
 	public MClass getMClass() { return clazz; }
-	public Predicter getParent() { return parent; }
-	public Predicter[] getChildren() { return (Predicter[]) children.toArray(); }
+	public Discriminator getParent() { return parent; }
+	public Discriminator[] getChildren() { return (Discriminator[]) children.toArray(); }
 	
-	protected void addChild(Predicter child) {
+	protected void addChild(Discriminator child) {
 		this.children.add(child);
 		child.parent = this;		
 	}
