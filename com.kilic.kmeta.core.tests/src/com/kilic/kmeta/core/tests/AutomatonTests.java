@@ -7,10 +7,11 @@ import com.kilic.kmeta.core.dfa.Automaton;
 import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
-import com.kilic.kmeta.core.syntax.SeparatorExpr;
+import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 
@@ -56,7 +57,10 @@ public class AutomatonTests {
 	@Test
 	public void testSyntaxExprConversion() {
 		ISyntaxExpr LetterList = new SequenceExpr(new StringExpr("["),
-				new SeparatorExpr(new AlternativeExpr(new CharSetExpr(CharSet.LETTER), new StringExpr("null")), ","),
+				new MultiplicityExpr(Multiplicity.OPTIONAL,
+						new SequenceExpr(new AlternativeExpr(new CharSetExpr(CharSet.LETTER), new StringExpr("null")),
+								new MultiplicityExpr(Multiplicity.ANY,
+										new SequenceExpr(new StringExpr(","), new StringExpr("null"))))),
 				new StringExpr("]"));
 
 		Automaton enfa = new Automaton();
