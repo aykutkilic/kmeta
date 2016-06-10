@@ -17,11 +17,11 @@ public class CharSetExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
-			targetState = dfa.createState();
+			targetState = nfa.createState();
 
-		dfa.createTransition(sourceState, targetState, new CharSetMatcher(charSet));
+		nfa.createTransition(sourceState, targetState, new CharSetMatcher(charSet));
 
 		return targetState;
 	}

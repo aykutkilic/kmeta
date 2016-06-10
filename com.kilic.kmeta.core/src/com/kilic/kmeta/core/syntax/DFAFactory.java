@@ -9,7 +9,7 @@ public class DFAFactory {
 		AutomatonState startState = resultDFA.createState();
 		resultDFA.setStartState(startState);
 
-		e.appendToDFA(resultDFA, startState, null);
+		e.appendToNFA(resultDFA, startState, null);
 
 		return resultDFA;
 	}

@@ -30,20 +30,20 @@ public class SeparatorExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
-		AutomatonState preSepState = dfa.createState();
-		AutomatonState secondEState = dfa.createState();
+	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
+		AutomatonState preSepState = nfa.createState();
+		AutomatonState secondEState = nfa.createState();
 		if (targetState == null)
-			targetState = dfa.createState();
+			targetState = nfa.createState();
 
-		expr.appendToDFA(dfa, sourceState, preSepState);
-		expr.appendToDFA(dfa, secondEState, targetState);
+		expr.appendToNFA(nfa, sourceState, preSepState);
+		expr.appendToNFA(nfa, secondEState, targetState);
 
-		dfa.createTransition(preSepState, secondEState, new StringMatcher(separator));
+		nfa.createTransition(preSepState, secondEState, new StringMatcher(separator));
 
-		dfa.createTransition(sourceState, targetState, null);
-		dfa.createTransition(preSepState, targetState, null);
-		dfa.createTransition(targetState, preSepState, null);
+		nfa.createTransition(sourceState, targetState, null);
+		nfa.createTransition(preSepState, targetState, null);
+		nfa.createTransition(targetState, preSepState, null);
 
 		return targetState;
 	}

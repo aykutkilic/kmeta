@@ -20,7 +20,7 @@ public class FeatureRef implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+	public AutomatonState appendToNFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
 		return null;
 	}
 }

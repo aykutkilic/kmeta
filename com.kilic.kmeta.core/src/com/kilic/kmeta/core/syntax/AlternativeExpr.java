@@ -18,12 +18,12 @@ public class AlternativeExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
-			targetState = dfa.createState();
+			targetState = nfa.createState();
 
 		for (ISyntaxExpr alt : alternatives) {
-			alt.appendToDFA(dfa, sourceState, targetState);
+			alt.appendToNFA(nfa, sourceState, targetState);
 		}
 
 		return targetState;

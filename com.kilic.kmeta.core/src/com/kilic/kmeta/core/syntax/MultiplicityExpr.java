@@ -30,33 +30,30 @@ public class MultiplicityExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
-			targetState = dfa.createState();
+			targetState = nfa.createState();
 
 		AutomatonState exprStartState = sourceState;
 		AutomatonState exprEndState = targetState;
 
-		// dfa.createTransition(sourceState, exprStartState, null);
-		// dfa.createTransition(exprEndState, targetState, null);
-
-		expr.appendToDFA(dfa, exprStartState, exprEndState);
+		expr.appendToNFA(nfa, exprStartState, exprEndState);
 
 		switch (multiplicity) {
 		case ONE:
 			break;
 
 		case OPTIONAL:
-			dfa.createTransition(exprStartState, exprEndState, null);
+			nfa.createTransition(exprStartState, exprEndState, null);
 			break;
 
 		case ANY:
-			dfa.createTransition(exprStartState, exprEndState, null);
-			dfa.createTransition(exprEndState, exprStartState, null);
+			nfa.createTransition(exprStartState, exprEndState, null);
+			nfa.createTransition(exprEndState, exprStartState, null);
 			break;
 
 		case ONEORMORE:
-			dfa.createTransition(exprEndState, exprStartState, null);
+			nfa.createTransition(exprEndState, exprStartState, null);
 			break;
 		}
 

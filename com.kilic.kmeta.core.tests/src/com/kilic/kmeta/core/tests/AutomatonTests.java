@@ -60,7 +60,7 @@ public class AutomatonTests {
 		Automaton enfa = new Automaton();
 		AutomatonState startState = enfa.createState();
 		enfa.setStartState(startState);
-		AutomatonState finalState = LetterList.appendToDFA(enfa, startState, null);
+		AutomatonState finalState = LetterList.appendToNFA(enfa, startState, null);
 		finalState.setFinal(true);
 
 		System.out.println(enfa.toString());

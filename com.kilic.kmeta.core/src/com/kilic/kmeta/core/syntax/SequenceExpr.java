@@ -23,20 +23,20 @@ public class SequenceExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
-			targetState = dfa.createState();
+			targetState = nfa.createState();
 
 		if (seq.size() == 0)
 			return sourceState;
 
 		AutomatonState currentSourceState = sourceState;
 		for (int i = 0; i < seq.size() - 1; i++) {
-			currentSourceState = seq.get(i).appendToDFA(dfa, currentSourceState, null);
+			currentSourceState = seq.get(i).appendToNFA(nfa, currentSourceState, null);
 		}
 
 		// appending the last element
-		seq.get(seq.size() - 1).appendToDFA(dfa, currentSourceState, targetState);
+		seq.get(seq.size() - 1).appendToNFA(nfa, currentSourceState, targetState);
 
 		return targetState;
 	}

@@ -15,11 +15,11 @@ public class ParenExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
-			targetState = dfa.createState();
+			targetState = nfa.createState();
 
-		expr.appendToDFA(dfa, sourceState, targetState);
+		expr.appendToNFA(nfa, sourceState, targetState);
 
 		return targetState;
 	}
