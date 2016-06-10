@@ -46,17 +46,20 @@ public class AutomatonState {
 		out.add(trans);
 	}
 
-	public AutomatonTransition[] getIncomingTransitions() {
-		return (AutomatonTransition[]) in.toArray();
+	public Set<AutomatonTransition> getIncomingTransitions() {
+		return in;
 	}
 
-	public AutomatonTransition[] getOutgoingTransitions() {
-		return (AutomatonTransition[]) out.toArray();
+	public Set<AutomatonTransition> getOutgoingTransitions() {
+		return out;
 	}
 
 	public AutomatonState move(IMatcher m) {
 		for (AutomatonTransition t : out) {
-			if (t.getGuardCondition() == m)
+			if (t.getGuardCondition() == null)
+				continue;
+
+			if (t.getGuardCondition().equals(m))
 				return t.getToState();
 		}
 

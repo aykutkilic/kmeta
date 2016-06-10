@@ -68,7 +68,7 @@ public class Automaton implements IMatcher {
 		AutomatonState current = startState;
 
 		while (!current.isFinalState()) {
-			AutomatonTransition[] outgoing = current.getOutgoingTransitions();
+			Set<AutomatonTransition> outgoing = current.getOutgoingTransitions();
 			List<AutomatonState> epsilonStates = new ArrayList<AutomatonState>();
 
 			for (AutomatonTransition t : outgoing) {
@@ -82,7 +82,7 @@ public class Automaton implements IMatcher {
 		return false;
 	}
 
-	public Automaton converteNFAToDFA() {
+	public Automaton convertNFAToDFA() {
 		Automaton result = new Automaton();
 
 		Map<AutomatonStateSet, AutomatonState> nfaClosureToDfaState = new HashMap<>();
@@ -92,6 +92,8 @@ public class Automaton implements IMatcher {
 
 		AutomatonStateSet startNFAClosure = AutomatonStateSet.createEpsilonClosure(startState, null);
 		AutomatonState startDFAState = result.createState();
+		startDFAState.setFinal(startNFAClosure.containsFinalState());
+
 		nfaClosureToDfaState.put(startNFAClosure, startDFAState);
 
 		Set<AutomatonStateSet> incompleteClosures = new HashSet<>();
@@ -106,20 +108,41 @@ public class Automaton implements IMatcher {
 				if (newNFAClosure.isEmpty())
 					continue;
 
+				AutomatonState toState;
+
 				if (!nfaClosureToDfaState.containsKey(newNFAClosure)) {
 					AutomatonState newDFAState = result.createState();
+					newDFAState.setFinal(newNFAClosure.containsFinalState());
+
 					nfaClosureToDfaState.put(newNFAClosure, newDFAState);
-					result.createTransition(currentDFAState, newDFAState, m);
 					incompleteClosures.add(newNFAClosure);
+
+					toState = newDFAState;
 				} else {
-					AutomatonState toState = nfaClosureToDfaState.get(newNFAClosure);
-					result.createTransition(currentDFAState, toState, m);
+					toState = nfaClosureToDfaState.get(newNFAClosure);
 				}
+
+				// if this transition is not already added:
+				if (currentDFAState.move(m) != toState)
+					result.createTransition(currentDFAState, toState, m);
 			}
 
 			incompleteClosures.remove(currentNFAClosure);
 		}
 
 		return result;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+
+		for (AutomatonState state : states) {
+			result.append(state.toString() + "\n");
+			for (AutomatonTransition transition : state.getOutgoingTransitions())
+				result.append("    " + transition.toString() + "\n");
+		}
+
+		return result.toString();
 	}
 }

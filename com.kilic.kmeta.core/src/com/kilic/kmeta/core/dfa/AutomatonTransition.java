@@ -24,20 +24,6 @@ public class AutomatonTransition implements IAttachable {
 	}
 
 	@Override
-	public String toString() {
-		StringBuilder str = new StringBuilder();
-		str.append(fromState.toString());
-		str.append('-');
-		if (guardCondition == null)
-			str.append((char) 0xDE);
-		else
-			str.append(guardCondition.toString());
-		str.append("->");
-		str.append(toState.toString());
-		return str.toString();
-	}
-
-	@Override
 	public void attachObject(Object o) {
 		attachedObject = o;
 	}
@@ -45,5 +31,19 @@ public class AutomatonTransition implements IAttachable {
 	@Override
 	public Object getAttachedObject() {
 		return attachedObject;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder str = new StringBuilder();
+		str.append(fromState.toString());
+		str.append('-');
+		if (guardCondition == null)
+			str.append("<e>");
+		else
+			str.append(guardCondition.toString());
+		str.append("->");
+		str.append(toState.toString());
+		return str.toString();
 	}
 }

@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class AutomatonStateSet {
-	Set<AutomatonState> states;
+	Set<AutomatonState> states = new HashSet<>();
 
 	public Set<AutomatonState> getStates() {
 		return states;
@@ -40,6 +40,15 @@ public class AutomatonStateSet {
 		return states.isEmpty();
 	}
 
+	public boolean containsFinalState() {
+		for (AutomatonState state : states) {
+			if (state.isFinalState())
+				return true;
+		}
+
+		return false;
+	}
+
 	public static AutomatonStateSet createEpsilonClosure(Set<AutomatonState> states, AutomatonStateSet current) {
 		if (current == null)
 			current = new AutomatonStateSet();
@@ -69,5 +78,32 @@ public class AutomatonStateSet {
 		}
 
 		return current;
+	}
+
+	@Override
+	public int hashCode() {
+		return states.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (other instanceof AutomatonStateSet) {
+			return this.states.equals(((AutomatonStateSet) other).states);
+		}
+
+		return false;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+
+		result.append("{ ");
+		for (AutomatonState state : states) {
+			result.append(state.toString() + " ");
+		}
+		result.append("}");
+
+		return result.toString();
 	}
 }
