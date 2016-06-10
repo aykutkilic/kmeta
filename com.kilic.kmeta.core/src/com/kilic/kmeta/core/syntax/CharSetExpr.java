@@ -1,8 +1,8 @@
 package com.kilic.kmeta.core.syntax;
 
 import com.kilic.kmeta.core.dfa.CharSetMatcher;
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.discriminator.CharSet;
 
 public class CharSetExpr implements ISyntaxExpr {
@@ -17,7 +17,7 @@ public class CharSetExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public DFAState appendToDFA(DFA dfa, DFAState sourceState, DFAState targetState) {
+	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
 			targetState = dfa.createState();
 

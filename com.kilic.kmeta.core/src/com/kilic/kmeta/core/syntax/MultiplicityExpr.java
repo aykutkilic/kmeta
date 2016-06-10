@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.meta.Multiplicity;
 
 public class MultiplicityExpr implements ISyntaxExpr {
@@ -30,12 +30,12 @@ public class MultiplicityExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public DFAState appendToDFA(DFA dfa, DFAState sourceState, DFAState targetState) {
+	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
 			targetState = dfa.createState();
 
-		DFAState exprStartState = dfa.createState();
-		DFAState exprEndState = dfa.createState();
+		AutomatonState exprStartState = dfa.createState();
+		AutomatonState exprEndState = dfa.createState();
 
 		dfa.createTransition(sourceState, exprStartState, null);
 		dfa.createTransition(exprEndState, targetState, null);

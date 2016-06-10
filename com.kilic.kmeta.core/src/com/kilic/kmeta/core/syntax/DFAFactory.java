@@ -1,12 +1,12 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 
 public class DFAFactory {
-	public static DFA createMatcherDFAFromSyntaxExpr(ISyntaxExpr e) {
-		DFA resultDFA = new DFA();
-		DFAState startState = resultDFA.createState();
+	public static Automaton createMatcherDFAFromSyntaxExpr(ISyntaxExpr e) {
+		Automaton resultDFA = new Automaton();
+		AutomatonState startState = resultDFA.createState();
 		resultDFA.setStartState(startState);
 
 		e.appendToDFA(resultDFA, startState, null);

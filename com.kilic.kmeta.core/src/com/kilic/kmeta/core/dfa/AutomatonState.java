@@ -3,18 +3,27 @@ package com.kilic.kmeta.core.dfa;
 import java.util.HashSet;
 import java.util.Set;
 
-public class DFAState {
+public class AutomatonState {
 	private static int stateIndexCounter = 0;
 
-	Set<DFATransition> in, out;
+	Set<AutomatonTransition> in, out;
 	boolean isFinalState;
 	int stateIndex;
+	Object attachedObject;
 
-	public DFAState() {
+	public AutomatonState() {
 		stateIndex = stateIndexCounter++;
 
 		in = new HashSet<>();
 		out = new HashSet<>();
+	}
+
+	public void attachObject(Object o) {
+		attachedObject = o;
+	}
+
+	public Object getAttachedObject() {
+		return attachedObject;
 	}
 
 	public int getStateIndex() {
@@ -29,20 +38,29 @@ public class DFAState {
 		return isFinalState;
 	}
 
-	public void addIncomingTransition(DFATransition trans) {
+	public void addIncomingTransition(AutomatonTransition trans) {
 		in.add(trans);
 	}
 
-	public void addOutgoingTransition(DFATransition trans) {
+	public void addOutgoingTransition(AutomatonTransition trans) {
 		out.add(trans);
 	}
 
-	public DFATransition[] getIncomingTransitions() {
-		return (DFATransition[]) in.toArray();
+	public AutomatonTransition[] getIncomingTransitions() {
+		return (AutomatonTransition[]) in.toArray();
 	}
 
-	public DFATransition[] getOutgoingTransitions() {
-		return (DFATransition[]) out.toArray();
+	public AutomatonTransition[] getOutgoingTransitions() {
+		return (AutomatonTransition[]) out.toArray();
+	}
+
+	public AutomatonState move(IMatcher m) {
+		for (AutomatonTransition t : out) {
+			if (t.getGuardCondition() == m)
+				return t.getToState();
+		}
+
+		return null;
 	}
 
 	@Override
@@ -60,8 +78,8 @@ public class DFAState {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof DFAState) {
-			return stateIndex == ((DFAState) other).getStateIndex();
+		if (other instanceof AutomatonState) {
+			return stateIndex == ((AutomatonState) other).getStateIndex();
 		}
 
 		return false;

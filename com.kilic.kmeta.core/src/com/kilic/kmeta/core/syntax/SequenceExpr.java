@@ -3,8 +3,8 @@ package com.kilic.kmeta.core.syntax;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 
 public class SequenceExpr implements ISyntaxExpr {
 	List<ISyntaxExpr> seq = new ArrayList<>();
@@ -23,14 +23,14 @@ public class SequenceExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public DFAState appendToDFA(DFA dfa, DFAState sourceState, DFAState targetState) {
+	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
 			targetState = dfa.createState();
 
 		if (seq.size() == 0)
 			return sourceState;
 
-		DFAState currentSourceState = sourceState;
+		AutomatonState currentSourceState = sourceState;
 		for (int i = 0; i < seq.size() - 1; i++) {
 			currentSourceState = seq.get(i).appendToDFA(dfa, currentSourceState, null);
 		}

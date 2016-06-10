@@ -1,8 +1,8 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 
 public interface ISyntaxExpr {
-	DFAState appendToDFA(DFA dfa, DFAState sourceState, DFAState targetState);
+	AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState);
 }

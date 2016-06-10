@@ -1,20 +1,21 @@
 package com.kilic.kmeta.core.dfa;
 
-public class DFATransition {
-	private DFAState fromState, toState;
+public class AutomatonTransition implements IAttachable {
+	private AutomatonState fromState, toState;
 	private IMatcher guardCondition;
+	private Object attachedObject;
 
-	public DFATransition(DFAState fromState, DFAState toState, IMatcher condition) {
+	public AutomatonTransition(AutomatonState fromState, AutomatonState toState, IMatcher condition) {
 		this.fromState = fromState;
 		this.toState = toState;
 		this.guardCondition = condition;
 	}
 
-	public DFAState getFromState() {
+	public AutomatonState getFromState() {
 		return fromState;
 	}
 
-	public DFAState getToState() {
+	public AutomatonState getToState() {
 		return toState;
 	}
 
@@ -34,5 +35,15 @@ public class DFATransition {
 		str.append("->");
 		str.append(toState.toString());
 		return str.toString();
+	}
+
+	@Override
+	public void attachObject(Object o) {
+		attachedObject = o;
+	}
+
+	@Override
+	public Object getAttachedObject() {
+		return attachedObject;
 	}
 }

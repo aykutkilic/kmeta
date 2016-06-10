@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.dfa.StringMatcher;
 
 public class SeparatorExpr implements ISyntaxExpr {
@@ -25,9 +25,9 @@ public class SeparatorExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public DFAState appendToDFA(DFA dfa, DFAState sourceState, DFAState targetState) {
-		DFAState preSepState = dfa.createState();
-		DFAState secondEState = dfa.createState();
+	public AutomatonState appendToDFA(Automaton dfa, AutomatonState sourceState, AutomatonState targetState) {
+		AutomatonState preSepState = dfa.createState();
+		AutomatonState secondEState = dfa.createState();
 		if (targetState == null)
 			targetState = dfa.createState();
 

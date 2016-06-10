@@ -3,9 +3,9 @@ package com.kilic.kmeta.core.dfa;
 import com.kilic.kmeta.core.stream.IStream;
 
 public class SubDFACallMatcher implements IMatcher {
-	DFA subDFA;
+	Automaton subDFA;
 
-	public SubDFACallMatcher(DFA subDFA) {
+	public SubDFACallMatcher(Automaton subDFA) {
 		this.subDFA = subDFA;
 	}
 
