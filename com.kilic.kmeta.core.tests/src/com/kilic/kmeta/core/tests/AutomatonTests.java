@@ -6,6 +6,12 @@ import org.junit.Test;
 import com.kilic.kmeta.core.dfa.Automaton;
 import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.dfa.StringMatcher;
+import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.syntax.CharSetExpr;
+import com.kilic.kmeta.core.syntax.ISyntaxExpr;
+import com.kilic.kmeta.core.syntax.SeparatorExpr;
+import com.kilic.kmeta.core.syntax.SequenceExpr;
+import com.kilic.kmeta.core.syntax.StringExpr;
 
 public class AutomatonTests {
 
@@ -44,5 +50,21 @@ public class AutomatonTests {
 
 		Automaton dfa = nfa.convertNFAToDFA();
 		System.out.println(dfa.toString());
+	}
+
+	@Test
+	public void testSyntaxExprConversion() {
+		ISyntaxExpr LetterList = new SequenceExpr(new StringExpr("["),
+				new SeparatorExpr(new CharSetExpr(CharSet.LETTER), ","), new StringExpr("]"));
+
+		Automaton enfa = new Automaton();
+		AutomatonState startState = enfa.createState();
+		enfa.setStartState(startState);
+		AutomatonState finalState = LetterList.appendToDFA(enfa, startState, null);
+		finalState.setFinal(true);
+
+		System.out.println(enfa.toString());
+		System.out.println("DFA:");
+		System.out.println(enfa.convertNFAToDFA());
 	}
 }

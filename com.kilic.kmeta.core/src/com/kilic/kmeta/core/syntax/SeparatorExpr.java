@@ -8,6 +8,11 @@ public class SeparatorExpr implements ISyntaxExpr {
 	String separator;
 	ISyntaxExpr expr;
 
+	public SeparatorExpr(ISyntaxExpr expr, String separator) {
+		this.expr = expr;
+		this.separator = separator;
+	}
+
 	public String getSeparator() {
 		return separator;
 	}

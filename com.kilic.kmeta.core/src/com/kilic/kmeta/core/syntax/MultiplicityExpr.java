@@ -34,11 +34,11 @@ public class MultiplicityExpr implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = dfa.createState();
 
-		AutomatonState exprStartState = dfa.createState();
-		AutomatonState exprEndState = dfa.createState();
+		AutomatonState exprStartState = sourceState;
+		AutomatonState exprEndState = targetState;
 
-		dfa.createTransition(sourceState, exprStartState, null);
-		dfa.createTransition(exprEndState, targetState, null);
+		// dfa.createTransition(sourceState, exprStartState, null);
+		// dfa.createTransition(exprEndState, targetState, null);
 
 		expr.appendToDFA(dfa, exprStartState, exprEndState);
 

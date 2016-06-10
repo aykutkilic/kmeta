@@ -66,6 +66,9 @@ public class AutomatonStateSet {
 		if (current == null)
 			current = new AutomatonStateSet();
 
+		if (current.states.contains(state))
+			return current;
+
 		current.states.add(state);
 
 		for (AutomatonTransition t : state.getOutgoingTransitions()) {
