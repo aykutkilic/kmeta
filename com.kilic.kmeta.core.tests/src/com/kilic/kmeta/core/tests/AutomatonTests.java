@@ -7,6 +7,7 @@ import com.kilic.kmeta.core.dfa.Automaton;
 import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 import com.kilic.kmeta.core.syntax.SeparatorExpr;
@@ -55,7 +56,8 @@ public class AutomatonTests {
 	@Test
 	public void testSyntaxExprConversion() {
 		ISyntaxExpr LetterList = new SequenceExpr(new StringExpr("["),
-				new SeparatorExpr(new CharSetExpr(CharSet.LETTER), ","), new StringExpr("]"));
+				new SeparatorExpr(new AlternativeExpr(new CharSetExpr(CharSet.LETTER), new StringExpr("null")), ","),
+				new StringExpr("]"));
 
 		Automaton enfa = new Automaton();
 		AutomatonState startState = enfa.createState();

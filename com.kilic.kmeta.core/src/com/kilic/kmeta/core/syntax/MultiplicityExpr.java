@@ -35,7 +35,9 @@ public class MultiplicityExpr implements ISyntaxExpr {
 			targetState = nfa.createState();
 
 		AutomatonState exprStartState = sourceState;
-		AutomatonState exprEndState = targetState;
+		AutomatonState exprEndState = nfa.createState();
+
+		nfa.createTransition(exprEndState, targetState, null);
 
 		expr.appendToNFA(nfa, exprStartState, exprEndState);
 

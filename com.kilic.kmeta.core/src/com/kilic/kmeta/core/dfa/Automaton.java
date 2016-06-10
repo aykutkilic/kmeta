@@ -57,6 +57,10 @@ public class Automaton implements IMatcher {
 
 	// null guard condition means epsilon.
 	public void createTransition(AutomatonState from, AutomatonState to, IMatcher condition) {
+		// ignore epsilon transitions to self.
+		if (from == to && condition == null)
+			return;
+
 		AutomatonTransition t = new AutomatonTransition(from, to, condition);
 
 		from.addOutgoingTransition(t);

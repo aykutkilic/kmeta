@@ -9,6 +9,11 @@ import com.kilic.kmeta.core.dfa.AutomatonState;
 public class AlternativeExpr implements ISyntaxExpr {
 	List<ISyntaxExpr> alternatives = new ArrayList<>();
 
+	public AlternativeExpr(ISyntaxExpr... exprs) {
+		for (ISyntaxExpr e : exprs)
+			alternatives.add(e);
+	}
+
 	public void addAlternative(ISyntaxExpr alternative) {
 		alternatives.add(alternative);
 	}
