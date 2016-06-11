@@ -3,12 +3,16 @@ package com.kilic.kmeta.core.tests;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MClass;
 import com.kilic.kmeta.core.meta.MModel;
 import com.kilic.kmeta.core.meta.MPackage;
 import com.kilic.kmeta.core.meta.MReference;
+import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.FeatureRef;
+import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 
@@ -130,8 +134,7 @@ public class CoreTests {
 		IntL.setName("IntL");
 		IntL.addSuperClass(LitE);
 		IntL.setPackage(core);
-		// IntL.setSyntax(new MultiplicityExpr(Multiplicity.ONEORMORE, new
-		// CharSetExpr(new Chars'0', '9')));
+		IntL.setSyntax(new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.DEC)));
 	}
 
 	@Test
