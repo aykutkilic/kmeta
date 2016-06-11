@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.automaton;
 
 import com.kilic.kmeta.core.stream.IStream;
 
@@ -15,7 +15,8 @@ public class StringMatcher implements IMatcher {
 
 	@Override
 	public boolean match(IStream stream) {
-		return false;
+		String string = stream.lookAheadString(stringToMatch.length());
+		return string.equals(stringToMatch);
 	}
 
 	@Override

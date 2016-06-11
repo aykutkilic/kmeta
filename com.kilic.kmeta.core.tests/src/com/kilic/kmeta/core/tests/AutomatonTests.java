@@ -1,13 +1,17 @@
 package com.kilic.kmeta.core.tests;
 
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kilic.kmeta.core.dfa.Automaton;
-import com.kilic.kmeta.core.dfa.AutomatonState;
-import com.kilic.kmeta.core.dfa.StringMatcher;
+import com.kilic.kmeta.core.automaton.Automaton;
+import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.automaton.StringMatcher;
 import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.stream.StringStream;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
@@ -56,21 +60,104 @@ public class AutomatonTests {
 
 	@Test
 	public void testSyntaxExprConversion() {
-		ISyntaxExpr LetterList = new SequenceExpr(new StringExpr("["),
-				new MultiplicityExpr(Multiplicity.OPTIONAL,
-						new SequenceExpr(new AlternativeExpr(new CharSetExpr(CharSet.LETTER), new StringExpr("null")),
-								new MultiplicityExpr(Multiplicity.ANY,
-										new SequenceExpr(new StringExpr(","), new StringExpr("null"))))),
-				new StringExpr("]"));
+		// @formatter:off
+		ISyntaxExpr LetterList = new SequenceExpr(
+			new StringExpr("["),
+			new MultiplicityExpr(Multiplicity.OPTIONAL,
+				new SequenceExpr(
+					new AlternativeExpr(
+						new CharSetExpr(CharSet.LETTER), 
+						new StringExpr("null")
+					),
+					new MultiplicityExpr(Multiplicity.ANY,
+						new SequenceExpr(
+							new StringExpr(","), 
+							new AlternativeExpr(
+								new CharSetExpr(CharSet.LETTER), 
+								new StringExpr("null")
+							)
+						)
+					)
+				)
+			),
+			new StringExpr("]")
+		);
+		// @formatter:on
 
-		Automaton enfa = new Automaton();
-		AutomatonState startState = enfa.createState();
-		enfa.setStartState(startState);
-		AutomatonState finalState = LetterList.appendToNFA(enfa, startState, null);
-		finalState.setFinal(true);
+		Automaton enfa = createNFAFromSyntax(LetterList);
 
 		System.out.println(enfa.toString());
 		System.out.println("DFA:");
-		System.out.println(enfa.convertNFAToDFA());
+		Automaton dfa = enfa.convertNFAToDFA();
+		System.out.println();
+
+		StringStream stream = new StringStream("[A,null,null,B,C,D]");
+		System.out.println(dfa.match(stream));
+	}
+
+	@Test
+	public void testRealLSynExprConversion() {
+		CharSet eE = new CharSet();
+		eE.addSingleton('e');
+		eE.addSingleton('E');
+		CharSet pM = new CharSet();
+		pM.addSingleton('+');
+		pM.addSingleton('-');
+
+		// @formatter:off
+		ISyntaxExpr E = new SequenceExpr(
+			new CharSetExpr(eE),
+			new MultiplicityExpr(Multiplicity.OPTIONAL, 
+				new CharSetExpr(pM)),
+			new MultiplicityExpr(Multiplicity.ONEORMORE, 
+				new CharSetExpr(CharSet.DEC))
+		);
+
+		ISyntaxExpr RealL = new AlternativeExpr(
+			new SequenceExpr(
+				new MultiplicityExpr(Multiplicity.ANY, 
+					new CharSetExpr(CharSet.DEC)),
+				new StringExpr("."), 
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.DEC)),
+				new MultiplicityExpr(Multiplicity.OPTIONAL, 
+					E)
+			),
+
+			new SequenceExpr(
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.DEC)), 
+				E 
+			)
+		);
+
+		// @formatter:on
+
+		Automaton nfa = createNFAFromSyntax(RealL);
+		Automaton dfa = nfa.convertNFAToDFA();
+		System.out.println(dfa.toString());
+
+		try {
+			String desktopPath = System.getProperty("user.home") + "\\Desktop\\";
+			dumpAutomatonToFile(dfa, desktopPath + "RealL.graphviz");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+	}
+
+	public Automaton createNFAFromSyntax(ISyntaxExpr e) {
+		Automaton enfa = new Automaton();
+		AutomatonState startState = enfa.createState();
+		enfa.setStartState(startState);
+		AutomatonState finalState = e.appendToNFA(enfa, startState, null);
+		finalState.setFinal(true);
+
+		return enfa;
+	}
+
+	private void dumpAutomatonToFile(Automaton a, String filePath) throws FileNotFoundException {
+		PrintWriter out = new PrintWriter(filePath);
+		out.append(a.toGraphviz());
+		out.close();
 	}
 }

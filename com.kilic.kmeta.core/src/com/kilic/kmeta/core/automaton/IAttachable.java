@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.automaton;
 
 public interface IAttachable {
 	void attachObject(Object o);

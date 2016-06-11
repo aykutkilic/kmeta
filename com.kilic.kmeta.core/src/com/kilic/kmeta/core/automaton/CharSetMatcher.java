@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.automaton;
 
 import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.stream.IStream;
@@ -16,7 +16,7 @@ public class CharSetMatcher implements IMatcher {
 
 	@Override
 	public boolean match(IStream stream) {
-		return charSetToMatch.containsSingleton(stream.getChar());
+		return charSetToMatch.containsSingleton(stream.lookAheadChar());
 	}
 
 	@Override

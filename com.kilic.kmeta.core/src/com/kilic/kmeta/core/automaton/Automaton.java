@@ -1,9 +1,7 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.automaton;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,6 +10,8 @@ import com.kilic.kmeta.core.stream.IStream;
 public class Automaton implements IMatcher {
 	Set<AutomatonState> states;
 	AutomatonState startState;
+
+	AutomatonState currentState;
 
 	public Automaton() {
 		states = new HashSet<>();
@@ -71,19 +71,22 @@ public class Automaton implements IMatcher {
 	public boolean match(IStream stream) {
 		AutomatonState current = startState;
 
-		while (!current.isFinalState()) {
+		boolean hasMatch;
+		do {
+			hasMatch = false;
 			Set<AutomatonTransition> outgoing = current.getOutgoingTransitions();
-			List<AutomatonState> epsilonStates = new ArrayList<AutomatonState>();
 
 			for (AutomatonTransition t : outgoing) {
 				IMatcher m = t.getGuardCondition();
-				if (m == null) {
-					epsilonStates.add(t.getToState());
+				if (m.match(stream)) {
+					current = t.getToState();
+					hasMatch = true;
+					break;
 				}
 			}
-		}
+		} while (hasMatch);
 
-		return false;
+		return current.isFinalState();
 	}
 
 	public Automaton convertNFAToDFA() {
@@ -96,6 +99,7 @@ public class Automaton implements IMatcher {
 
 		AutomatonStateSet startNFAClosure = AutomatonStateSet.createEpsilonClosure(startState, null);
 		AutomatonState startDFAState = result.createState();
+		result.setStartState(startDFAState);
 		startDFAState.setFinal(startNFAClosure.containsFinalState());
 
 		nfaClosureToDfaState.put(startNFAClosure, startDFAState);
@@ -142,10 +146,50 @@ public class Automaton implements IMatcher {
 		StringBuilder result = new StringBuilder();
 
 		for (AutomatonState state : states) {
+			if (state == startState)
+				result.append("->");
 			result.append(state.toString() + "\n");
 			for (AutomatonTransition transition : state.getOutgoingTransitions())
 				result.append("    " + transition.toString() + "\n");
 		}
+
+		return result.toString();
+	}
+
+	public Set<AutomatonState> getFinalStates() {
+		Set<AutomatonState> result = new HashSet<>();
+
+		for (AutomatonState state : states) {
+			if (state.isFinalState)
+				result.add(state);
+		}
+
+		return result;
+	}
+
+	// http://www.webgraphviz.com/
+	public String toGraphviz() {
+		StringBuilder result = new StringBuilder();
+
+		result.append("digraph finite_state_machine {\n");
+		result.append("  rankdir=S;\n");
+		result.append("  size=\"8,5\"\n");
+		result.append("node [shape = doublecircle]; ");
+		for (AutomatonState finalState : getFinalStates()) {
+			result.append("S" + finalState.stateIndex + " ");
+		}
+		result.append(";");
+		result.append("node [shape = circle];");
+		for (AutomatonState state : states) {
+			for (AutomatonTransition trans : state.out) {
+				IMatcher m = trans.getGuardCondition();
+				String label = m != null ? m.toString() : "<e>";
+				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \"" + label
+						+ "\" ];\n");
+			}
+		}
+
+		result.append("}\n");
 
 		return result.toString();
 	}

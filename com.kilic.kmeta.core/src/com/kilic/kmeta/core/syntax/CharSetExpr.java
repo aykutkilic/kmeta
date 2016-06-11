@@ -1,8 +1,8 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.dfa.CharSetMatcher;
-import com.kilic.kmeta.core.dfa.Automaton;
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.automaton.Automaton;
+import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.automaton.CharSetMatcher;
 import com.kilic.kmeta.core.discriminator.CharSet;
 
 public class CharSetExpr implements ISyntaxExpr {

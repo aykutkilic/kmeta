@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.automaton;
 
 public class AutomatonTransition implements IAttachable {
 	private AutomatonState fromState, toState;
