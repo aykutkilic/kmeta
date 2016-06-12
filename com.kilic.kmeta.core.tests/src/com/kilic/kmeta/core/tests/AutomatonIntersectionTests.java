@@ -53,6 +53,5 @@ public class AutomatonIntersectionTests {
 
 	@Test
 	public void findIntersections() {
-
 	}
 }

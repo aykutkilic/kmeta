@@ -8,18 +8,18 @@ import java.util.Set;
 import com.kilic.kmeta.core.stream.IStream;
 
 public class Automaton implements IMatcher {
-	Set<AutomatonState> states;
+	Map<Integer, AutomatonState> states;
 	AutomatonState startState;
 
 	AutomatonState currentState;
 
 	public Automaton() {
-		states = new HashSet<>();
+		states = new HashMap<>();
 	}
 
 	public AutomatonState createState() {
 		AutomatonState newState = new AutomatonState();
-		states.add(newState);
+		states.put(newState.stateIndex, newState);
 		return newState;
 	}
 
@@ -32,7 +32,7 @@ public class Automaton implements IMatcher {
 	}
 
 	public AutomatonState findStateByAttachedObject(Object o) {
-		for (AutomatonState state : states) {
+		for (AutomatonState state : states.values()) {
 			if (state.attachedObject == o)
 				return state;
 		}
@@ -41,7 +41,7 @@ public class Automaton implements IMatcher {
 	}
 
 	public AutomatonTransition findTransitionByAttachedObject(Object o) {
-		for (AutomatonState state : states) {
+		for (AutomatonState state : states.values()) {
 			for (AutomatonTransition trans : state.getOutgoingTransitions()) {
 				if (trans.getAttachedObject() == o)
 					return trans;
@@ -65,6 +65,17 @@ public class Automaton implements IMatcher {
 
 		from.addOutgoingTransition(t);
 		to.addIncomingTransition(t);
+	}
+
+	public Set<AutomatonState> getFinalStates() {
+		Set<AutomatonState> result = new HashSet<>();
+
+		for (AutomatonState state : states.values()) {
+			if (state.isFinalState)
+				result.add(state);
+		}
+
+		return result;
 	}
 
 	@Override
@@ -145,7 +156,7 @@ public class Automaton implements IMatcher {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 
-		for (AutomatonState state : states) {
+		for (AutomatonState state : states.values()) {
 			if (state == startState)
 				result.append("->");
 			result.append(state.toString() + "\n");
@@ -154,17 +165,6 @@ public class Automaton implements IMatcher {
 		}
 
 		return result.toString();
-	}
-
-	public Set<AutomatonState> getFinalStates() {
-		Set<AutomatonState> result = new HashSet<>();
-
-		for (AutomatonState state : states) {
-			if (state.isFinalState)
-				result.add(state);
-		}
-
-		return result;
 	}
 
 	public String toGraphviz() {
@@ -179,7 +179,7 @@ public class Automaton implements IMatcher {
 		}
 		result.append(";");
 		result.append("node [shape = circle];");
-		for (AutomatonState state : states) {
+		for (AutomatonState state : states.values()) {
 			for (AutomatonTransition trans : state.out) {
 				IMatcher m = trans.getGuardCondition();
 				String label = m != null ? m.toString() : "<e>";
