@@ -1,12 +1,12 @@
 package com.kilic.kmeta.core.automaton;
 
 import com.kilic.kmeta.core.stream.IStream;
-import com.kilic.kmeta.core.syntax.AttributeRef;
+import com.kilic.kmeta.core.syntax.FeatureRef;
 
 public class AttributeRefMatcher implements IMatcher {
-	AttributeRef attributeRef;
+	FeatureRef attributeRef;
 
-	public AttributeRefMatcher(AttributeRef attributeRef) {
+	public AttributeRefMatcher(FeatureRef attributeRef) {
 		this.attributeRef = attributeRef;
 	}
 

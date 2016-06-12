@@ -11,7 +11,7 @@ import com.kilic.kmeta.core.meta.MPackage;
 import com.kilic.kmeta.core.meta.MReference;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
-import com.kilic.kmeta.core.syntax.AttributeRef;
+import com.kilic.kmeta.core.syntax.FeatureRef;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
@@ -73,11 +73,11 @@ public class CoreTests {
 		BinE.setPackage(core);
 
 		BinE_l = new MReference();
-		BinE_l.setType(PrimE);
+		BinE_l.setTargetClass(PrimE);
 		BinE_l.setContainerClass(BinE);
 
 		BinE_r = new MReference();
-		BinE_r.setType(Expr);
+		BinE_r.setTargetClass(Expr);
 		BinE_r.setContainerClass(BinE);
 
 		PreE = new MClass();
@@ -86,7 +86,7 @@ public class CoreTests {
 		PreE.setPackage(core);
 
 		PreE_e = new MReference();
-		PreE_e.setType(PrimE);
+		PreE_e.setTargetClass(PrimE);
 		PreE_e.setContainerClass(PreE);
 
 		SuffE = new MClass();
@@ -94,41 +94,41 @@ public class CoreTests {
 		SuffE.addSuperClass(Expr);
 		SuffE.setPackage(core);
 		SuffE_e = new MReference();
-		SuffE_e.setType(PrimE);
+		SuffE_e.setTargetClass(PrimE);
 		SuffE_e.setContainerClass(SuffE);
 
 		NegE = new MClass();
 		NegE.setName("NegE");
 		NegE.addSuperClass(PreE);
 		NegE.setPackage(core);
-		NegE.setSyntax(new SequenceExpr(new StringExpr("-"), new AttributeRef(PreE_e)));
+		NegE.setSyntax(new SequenceExpr(new StringExpr("-"), new FeatureRef(PreE_e)));
 
 		MulE = new MClass();
 		MulE.setName("MulE");
 		MulE.addSuperClass(BinE);
 		MulE.setPackage(core);
-		MulE.setSyntax(new SequenceExpr(new AttributeRef(BinE_l), new StringExpr("*"), new AttributeRef(BinE_r)));
+		MulE.setSyntax(new SequenceExpr(new FeatureRef(BinE_l), new StringExpr("*"), new FeatureRef(BinE_r)));
 
 		AddE = new MClass();
 		AddE.setName("AddE");
 		AddE.addSuperClass(BinE);
 		AddE.setPackage(core);
-		AddE.setSyntax(new SequenceExpr(new AttributeRef(BinE_l), new StringExpr("+"), new AttributeRef(BinE_r)));
+		AddE.setSyntax(new SequenceExpr(new FeatureRef(BinE_l), new StringExpr("+"), new FeatureRef(BinE_r)));
 
 		IncrE = new MClass();
 		IncrE.setName("IncrE");
 		IncrE.addSuperClass(SuffE);
 		IncrE.setPackage(core);
-		IncrE.setSyntax(new SequenceExpr(new AttributeRef(SuffE_e), new StringExpr("++")));
+		IncrE.setSyntax(new SequenceExpr(new FeatureRef(SuffE_e), new StringExpr("++")));
 
 		ParenE = new MClass();
 		ParenE.setName("ParenE");
 		ParenE.addSuperClass(PrimE);
 		ParenE.setPackage(core);
 		ParenE_e = new MReference();
-		ParenE_e.setType(Expr);
+		ParenE_e.setTargetClass(Expr);
 		ParenE_e.setContainerClass(ParenE);
-		ParenE.setSyntax(new SequenceExpr(new StringExpr("("), new AttributeRef(ParenE_e), new StringExpr(")")));
+		ParenE.setSyntax(new SequenceExpr(new StringExpr("("), new FeatureRef(ParenE_e), new StringExpr(")")));
 
 		IntL = new MClass();
 		IntL.setName("IntL");
