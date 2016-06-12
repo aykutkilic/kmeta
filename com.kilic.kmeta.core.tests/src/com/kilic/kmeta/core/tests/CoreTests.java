@@ -11,7 +11,7 @@ import com.kilic.kmeta.core.meta.MPackage;
 import com.kilic.kmeta.core.meta.MReference;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
-import com.kilic.kmeta.core.syntax.FeatureRef;
+import com.kilic.kmeta.core.syntax.AttributeRef;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
@@ -101,25 +101,25 @@ public class CoreTests {
 		NegE.setName("NegE");
 		NegE.addSuperClass(PreE);
 		NegE.setPackage(core);
-		NegE.setSyntax(new SequenceExpr(new StringExpr("-"), new FeatureRef(PreE_e)));
+		NegE.setSyntax(new SequenceExpr(new StringExpr("-"), new AttributeRef(PreE_e)));
 
 		MulE = new MClass();
 		MulE.setName("MulE");
 		MulE.addSuperClass(BinE);
 		MulE.setPackage(core);
-		MulE.setSyntax(new SequenceExpr(new FeatureRef(BinE_l), new StringExpr("*"), new FeatureRef(BinE_r)));
+		MulE.setSyntax(new SequenceExpr(new AttributeRef(BinE_l), new StringExpr("*"), new AttributeRef(BinE_r)));
 
 		AddE = new MClass();
 		AddE.setName("AddE");
 		AddE.addSuperClass(BinE);
 		AddE.setPackage(core);
-		AddE.setSyntax(new SequenceExpr(new FeatureRef(BinE_l), new StringExpr("+"), new FeatureRef(BinE_r)));
+		AddE.setSyntax(new SequenceExpr(new AttributeRef(BinE_l), new StringExpr("+"), new AttributeRef(BinE_r)));
 
 		IncrE = new MClass();
 		IncrE.setName("IncrE");
 		IncrE.addSuperClass(SuffE);
 		IncrE.setPackage(core);
-		IncrE.setSyntax(new SequenceExpr(new FeatureRef(SuffE_e), new StringExpr("++")));
+		IncrE.setSyntax(new SequenceExpr(new AttributeRef(SuffE_e), new StringExpr("++")));
 
 		ParenE = new MClass();
 		ParenE.setName("ParenE");
@@ -128,7 +128,7 @@ public class CoreTests {
 		ParenE_e = new MReference();
 		ParenE_e.setType(Expr);
 		ParenE_e.setContainerClass(ParenE);
-		ParenE.setSyntax(new SequenceExpr(new StringExpr("("), new FeatureRef(ParenE_e), new StringExpr(")")));
+		ParenE.setSyntax(new SequenceExpr(new StringExpr("("), new AttributeRef(ParenE_e), new StringExpr(")")));
 
 		IntL = new MClass();
 		IntL.setName("IntL");

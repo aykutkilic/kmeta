@@ -167,7 +167,6 @@ public class Automaton implements IMatcher {
 		return result;
 	}
 
-	// http://www.webgraphviz.com/
 	public String toGraphviz() {
 		StringBuilder result = new StringBuilder();
 
