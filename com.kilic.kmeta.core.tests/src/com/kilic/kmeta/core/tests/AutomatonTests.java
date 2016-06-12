@@ -84,7 +84,7 @@ public class AutomatonTests {
 		);
 		// @formatter:on
 
-		Automaton enfa = createNFAFromSyntax(LetterList);
+		Automaton enfa = Utils.createNFAFromSyntax(LetterList);
 
 		System.out.println(enfa.toString());
 		System.out.println("DFA:");
@@ -133,7 +133,7 @@ public class AutomatonTests {
 
 		// @formatter:on
 
-		Automaton nfa = createNFAFromSyntax(RealL);
+		Automaton nfa = Utils.createNFAFromSyntax(RealL);
 		Automaton dfa = nfa.convertNFAToDFA();
 		System.out.println(dfa.toString());
 
@@ -143,16 +143,6 @@ public class AutomatonTests {
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
-	}
-
-	public Automaton createNFAFromSyntax(ISyntaxExpr e) {
-		Automaton enfa = new Automaton();
-		AutomatonState startState = enfa.createState();
-		enfa.setStartState(startState);
-		AutomatonState finalState = e.appendToNFA(enfa, startState, null);
-		finalState.setFinal(true);
-
-		return enfa;
 	}
 
 	private void dumpAutomatonToFile(Automaton a, String filePath) throws FileNotFoundException {
