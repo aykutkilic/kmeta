@@ -13,9 +13,9 @@ public class AutomatonRunState {
 	private AutomatonRunState() {
 	}
 
-	AutomatonRunState call(CallAutomatonMatcher matcher) {
+	AutomatonRunState call(CallAutomatonTransition transition) {
 		AutomatonRunState result = new AutomatonRunState();
-		Automaton automaton = matcher.getAutomaton();
+		Automaton automaton = transition.getAutomaton();
 
 		result.callStack = Arrays.copyOf(callStack, callStack.length + 1);
 		result.callStack[result.callStack.length - 1] = automaton.startState;

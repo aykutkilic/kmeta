@@ -73,13 +73,22 @@ public class Automaton {
 		to.addIncomingTransition(t);
 	}
 	
-	private void createEquivalentTransition(AutomatonState from, AutomatonState to, IAutomatonTransition t) {
+	public void createCallTransition(AutomatonState from, AutomatonState to, Automaton callee) {
+		CallAutomatonTransition t = new CallAutomatonTransition(from, to, callee);
+		
+		from.addOutgoingTransition(t);
+		to.addIncomingTransition(t);
+	}
+	
+	public void createEquivalentTransition(AutomatonState from, AutomatonState to, IAutomatonTransition t) {
 		IAutomatonTransition newTransition = null;
 		
 		if(t instanceof MatcherTransition) {
 			newTransition = new MatcherTransition(from, to, ((MatcherTransition) t).getMatcher());
 		} else if( t instanceof EpsilonTransition) {
 			newTransition = new EpsilonTransition(from,to);
+		} else if( t instanceof CallAutomatonTransition ) {
+			newTransition = new CallAutomatonTransition(from, to, ((CallAutomatonTransition)t).getAutomaton());
 		}
 		
 		assert(newTransition!=null);

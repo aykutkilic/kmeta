@@ -23,12 +23,4 @@ public class MatcherTransition extends AutomatonTransitionBase {
 			
 		return false;
 	}
-	
-	/*@Override
-	public boolean equals(Object other) {
-		if(other instanceof MatcherTransition)
-			return matcher.equals(((MatcherTransition) other).matcher);
-			
-		return false;
-	}*/
 }

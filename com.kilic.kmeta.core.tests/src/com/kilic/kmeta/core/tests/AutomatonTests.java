@@ -20,8 +20,8 @@ import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 
 public class AutomatonTests {
-
 	Automaton nfa;
+	String desktopPath;
 
 	@Before
 	public void init() {
@@ -48,6 +48,8 @@ public class AutomatonTests {
 
 		nfa.setStartState(s[0]);
 		s[10].setFinal(true);
+		
+		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
 	}
 
 	@Test
@@ -59,22 +61,37 @@ public class AutomatonTests {
 	}
 
 	@Test
-	public void testSyntaxExprConversion() {
+	public void testAutomatonCall() {
 		// @formatter:off
+		ISyntaxExpr DecL = new MultiplicityExpr(Multiplicity.ONEORMORE,
+			new CharSetExpr(CharSet.DEC)
+		);
+		
+		ISyntaxExpr HexL = new SequenceExpr(
+			new StringExpr("0x"),
+			new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.HEX))
+		);
+		
+		Automaton DecLDFA = Utils.createNFAFromSyntax(DecL).convertNFAToDFA();
+		Automaton HexLDFA = Utils.createNFAFromSyntax(HexL).convertNFAToDFA();
+		
 		ISyntaxExpr LetterList = new SequenceExpr(
 			new StringExpr("["),
 			new MultiplicityExpr(Multiplicity.OPTIONAL,
 				new SequenceExpr(
 					new AlternativeExpr(
 						new CharSetExpr(CharSet.LETTER), 
-						new StringExpr("null")
+						new AutomatonCallSynExpr(DecLDFA),
+						new AutomatonCallSynExpr(HexLDFA)
 					),
 					new MultiplicityExpr(Multiplicity.ANY,
 						new SequenceExpr(
 							new StringExpr(","), 
 							new AlternativeExpr(
 								new CharSetExpr(CharSet.LETTER), 
-								new StringExpr("null")
+								new StringExpr("null"),
+								new AutomatonCallSynExpr(DecLDFA),
+								new AutomatonCallSynExpr(HexLDFA)
 							)
 						)
 					)
@@ -93,6 +110,12 @@ public class AutomatonTests {
 
 		StringStream stream = new StringStream("[A,null,null,B,C,D]");
 		//System.out.println(dfa.match(stream));
+		
+		try {
+			dumpAutomatonToFile(dfa, desktopPath + "CallAutomaton.graphviz");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 	}
 
 	@Test
@@ -138,13 +161,12 @@ public class AutomatonTests {
 		System.out.println(dfa.toString());
 
 		try {
-			String desktopPath = System.getProperty("user.home") + "\\Desktop\\";
 			dumpAutomatonToFile(dfa, desktopPath + "RealL.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-
+	
 	private void dumpAutomatonToFile(Automaton a, String filePath) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(filePath);
 		out.append(a.toGraphviz());

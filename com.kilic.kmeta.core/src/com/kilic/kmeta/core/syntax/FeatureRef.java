@@ -1,6 +1,5 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.automaton.AttributeRefMatcher;
 import com.kilic.kmeta.core.automaton.Automaton;
 import com.kilic.kmeta.core.automaton.AutomatonState;
 import com.kilic.kmeta.core.meta.MAttribute;
@@ -26,8 +25,7 @@ public class FeatureRef implements ISyntaxExpr {
 	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
 		if (targetState == null)
 			targetState = nfa.createState();
-
-		nfa.createMatcherTransition(sourceState, targetState, new AttributeRefMatcher(this));
+		//nfa.createCallTransition(from, to, callee);
 
 		return targetState;
 	}
