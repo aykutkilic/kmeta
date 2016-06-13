@@ -3,6 +3,7 @@ package com.kilic.kmeta.core.automaton.analysis;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.kilic.kmeta.core.automaton.Automaton;
@@ -37,8 +38,12 @@ class AutomatonSetRunState {
 
 		// adding calls
 		for (IAutomatonTransition t : currentLocalState.getOutgoingTransitions()) {
+			if (t instanceof MatcherTransition) {
+				result.add(state);
+			}
+
 			if (t instanceof CallAutomatonTransition) {
-				AutomatonRunState newRunState = (AutomatonRunState) state.getCallStack().clone();
+				AutomatonRunState newRunState = new AutomatonRunState(state);
 				newRunState.call((CallAutomatonTransition) t);
 
 				result.add(newRunState);
@@ -122,9 +127,14 @@ class AutomatonSetRunState {
 		StringBuilder result = new StringBuilder();
 
 		result.append("[[\n");
-		for (Set<AutomatonRunState> set : automatonSetStates.values()) {
-			result.append("  {\n");
-			for (AutomatonRunState state : set)
+		for (Entry<Automaton, Set<AutomatonRunState>> entry : automatonSetStates.entrySet()) {
+			String label = entry.getKey().getLabel();
+			if (label != null)
+				result.append("  " + label + " {\n");
+			else
+				result.append("  {\n");
+
+			for (AutomatonRunState state : entry.getValue())
 				result.append("    " + state.toString() + "\n");
 			result.append("  }\n");
 		}

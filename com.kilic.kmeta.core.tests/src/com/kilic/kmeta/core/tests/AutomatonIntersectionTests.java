@@ -31,6 +31,7 @@ public class AutomatonIntersectionTests {
 				new CharSetExpr(CharSet.DEC)
 			)
 		).convertNFAToDFA();
+		DecL.setLabel("DecL");
 		
 		HexL = Utils.createNFAFromSyntax(
 			new SequenceExpr(
@@ -40,8 +41,10 @@ public class AutomatonIntersectionTests {
 				)
 			)
 		).convertNFAToDFA();
+		HexL.setLabel("HexL");
 		
 		IncrE = new Automaton();
+		IncrE.setLabel("IncrE");
 		AutomatonState startState = IncrE.createState();
 		AutomatonState midState = IncrE.createState();
 		AutomatonState finalState = IncrE.createState();
@@ -49,9 +52,8 @@ public class AutomatonIntersectionTests {
 		IncrE.setStartState(startState);
 		finalState.setFinal(true);
 		AutomatonSetMatcher LitE = new AutomatonSetMatcher();
-		LitE.addAutomaton(DecL);
-		LitE.addAutomaton(HexL);
-		IncrE.createMatcherTransition(startState, midState, LitE);
+		IncrE.createCallTransition(startState, midState, DecL);
+		IncrE.createCallTransition(startState, midState, HexL);
 		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
 		// @formatter:on
 	}
