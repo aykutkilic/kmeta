@@ -2,42 +2,55 @@ package com.kilic.kmeta.core.automaton;
 
 import java.util.Stack;
 
-public class AutomatonRunState implements Cloneable {
+public class AutomatonRunState {
 	Automaton automaton;
 	Stack<AutomatonState> callStack;
 
 	public AutomatonRunState(Automaton automaton) {
 		this.automaton = automaton;
+		callStack = new Stack<>();
 		callStack.push(automaton.startState);
 	}
-	
-	private AutomatonRunState() {}
-	
+
+	@SuppressWarnings("unchecked")
+	public AutomatonRunState(AutomatonRunState other) {
+		callStack = (Stack<AutomatonState>) other.callStack.clone();
+	}
+
 	public Automaton getAutomaton() {
 		return automaton;
 	}
-	
-	void call(CallAutomatonTransition transition) {
-		assert(transition.getFromState() == callStack.peek());
+
+	public Stack<AutomatonState> getCallStack() {
+		return callStack;
+	}
+
+	public AutomatonState getCurrentLocalState() {
+		return callStack.peek();
+	}
+
+	public void setCurrentLocalState(AutomatonState newState) {
+		callStack.pop();
+		callStack.push(newState);
+	}
+
+	public void call(CallAutomatonTransition transition) {
+		assert (transition.getFromState() == callStack.peek());
 		callStack.pop();
 		callStack.push(transition.getToState());
 		callStack.push(transition.getAutomaton().getStartState());
 	}
 
-	void returnFromCall() {
+	public void returnFromCall() {
 		callStack.pop();
 	}
 
-	@SuppressWarnings("unchecked")
-	@Override
-	protected Object clone() throws CloneNotSupportedException {
-		AutomatonRunState clone = new AutomatonRunState();
-		
-		clone.callStack = (Stack<AutomatonState>) callStack.clone();
-		
-		return clone;
+	public boolean isFinal() {
+		if (callStack.size() > 1)
+			return false;
+		return callStack.peek().isFinalState();
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof AutomatonRunState) {
@@ -45,5 +58,17 @@ public class AutomatonRunState implements Cloneable {
 		}
 
 		return false;
+	}
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+
+		result.append("< ");
+		for (AutomatonState state : callStack)
+			result.append(state.stateIndex + " ");
+		result.append(">");
+
+		return result.toString();
 	}
 }
