@@ -41,12 +41,12 @@ public class SeparatorExpr implements ISyntaxExpr {
 		expr.appendToNFA(nfa, sourceState, preSepState);
 		expr.appendToNFA(nfa, secondEState, preTargetState);
 
-		nfa.createTransition(preSepState, secondEState, new StringMatcher(separator));
+		nfa.createMatcherTransition(preSepState, secondEState, new StringMatcher(separator));
 
-		nfa.createTransition(sourceState, targetState, null);
-		nfa.createTransition(preSepState, targetState, null);
-		nfa.createTransition(preTargetState, preSepState, null);
-		nfa.createTransition(preTargetState, targetState, null);
+		nfa.createMatcherTransition(sourceState, targetState, null);
+		nfa.createMatcherTransition(preSepState, targetState, null);
+		nfa.createMatcherTransition(preTargetState, preSepState, null);
+		nfa.createMatcherTransition(preTargetState, targetState, null);
 
 		return targetState;
 	}

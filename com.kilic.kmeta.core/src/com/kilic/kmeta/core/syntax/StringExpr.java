@@ -24,7 +24,7 @@ public class StringExpr implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = nfa.createState();
 
-		nfa.createTransition(sourceState, targetState, new StringMatcher(string));
+		nfa.createMatcherTransition(sourceState, targetState, new StringMatcher(string));
 
 		return targetState;
 	}

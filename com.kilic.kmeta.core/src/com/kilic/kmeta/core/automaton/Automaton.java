@@ -7,7 +7,7 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.stream.IStream;
 
-public class Automaton implements IMatcher {
+public class Automaton {
 	Map<Integer, AutomatonState> states;
 	AutomatonState startState;
 
@@ -40,9 +40,9 @@ public class Automaton implements IMatcher {
 		return null;
 	}
 
-	public AutomatonTransition findTransitionByAttachedObject(Object o) {
+	public IAutomatonTransition findTransitionByAttachedObject(Object o) {
 		for (AutomatonState state : states.values()) {
-			for (AutomatonTransition trans : state.getOutgoingTransitions()) {
+			for (IAutomatonTransition trans : state.getOutgoingTransitions()) {
 				if (trans.getAttachedObject() == o)
 					return trans;
 			}
@@ -55,16 +55,37 @@ public class Automaton implements IMatcher {
 		states.remove(state);
 	}
 
-	// null guard condition means epsilon.
-	public void createTransition(AutomatonState from, AutomatonState to, IMatcher condition) {
-		// ignore epsilon transitions to self.
-		if (from == to && condition == null)
-			return;
-
-		AutomatonTransition t = new AutomatonTransition(from, to, condition);
+	public void createMatcherTransition(AutomatonState from, AutomatonState to, IMatcher matcher) {
+		MatcherTransition t = new MatcherTransition(from, to, matcher);
 
 		from.addOutgoingTransition(t);
 		to.addIncomingTransition(t);
+	}
+	
+	public void createEpsilonTransition(AutomatonState from, AutomatonState to) {
+		// ignore epsilon transitions to self.
+		if (from == to)
+			return;
+
+		EpsilonTransition t = new EpsilonTransition(from, to);
+
+		from.addOutgoingTransition(t);
+		to.addIncomingTransition(t);
+	}
+	
+	private void createEquivalentTransition(AutomatonState from, AutomatonState to, IAutomatonTransition t) {
+		IAutomatonTransition newTransition = null;
+		
+		if(t instanceof MatcherTransition) {
+			newTransition = new MatcherTransition(from, to, ((MatcherTransition) t).getMatcher());
+		} else if( t instanceof EpsilonTransition) {
+			newTransition = new EpsilonTransition(from,to);
+		}
+		
+		assert(newTransition!=null);
+		
+		from.addOutgoingTransition(newTransition);
+		to.addIncomingTransition(newTransition);
 	}
 
 	public Set<AutomatonState> getFinalStates() {
@@ -76,28 +97,6 @@ public class Automaton implements IMatcher {
 		}
 
 		return result;
-	}
-
-	@Override
-	public boolean match(IStream stream) {
-		AutomatonState current = startState;
-
-		boolean hasMatch;
-		do {
-			hasMatch = false;
-			Set<AutomatonTransition> outgoing = current.getOutgoingTransitions();
-
-			for (AutomatonTransition t : outgoing) {
-				IMatcher m = t.getGuardCondition();
-				if (m.match(stream)) {
-					current = t.getToState();
-					hasMatch = true;
-					break;
-				}
-			}
-		} while (hasMatch);
-
-		return current.isFinalState();
 	}
 
 	public Automaton convertNFAToDFA() {
@@ -122,8 +121,8 @@ public class Automaton implements IMatcher {
 			AutomatonStateSet currentNFAClosure = incompleteClosures.iterator().next();
 			AutomatonState currentDFAState = nfaClosureToDfaState.get(currentNFAClosure);
 
-			for (IMatcher m : currentNFAClosure.getAllTransitions()) {
-				AutomatonStateSet newNFAClosure = currentNFAClosure.move(m);
+			for (IAutomatonTransition t : currentNFAClosure.getAllTransitions()) {
+				AutomatonStateSet newNFAClosure = currentNFAClosure.move(t);
 				if (newNFAClosure.isEmpty())
 					continue;
 
@@ -142,8 +141,8 @@ public class Automaton implements IMatcher {
 				}
 
 				// if this transition is not already added:
-				if (currentDFAState.move(m) != toState)
-					result.createTransition(currentDFAState, toState, m);
+				if (currentDFAState.move(t) != toState)
+					result.createEquivalentTransition(currentDFAState, toState, t);
 			}
 
 			incompleteClosures.remove(currentNFAClosure);
@@ -160,7 +159,7 @@ public class Automaton implements IMatcher {
 			if (state == startState)
 				result.append("->");
 			result.append(state.toString() + "\n");
-			for (AutomatonTransition transition : state.getOutgoingTransitions())
+			for (IAutomatonTransition transition : state.getOutgoingTransitions())
 				result.append("    " + transition.toString() + "\n");
 		}
 
@@ -173,18 +172,20 @@ public class Automaton implements IMatcher {
 		result.append("digraph finite_state_machine {\n");
 		result.append("  rankdir=S;\n");
 		result.append("  size=\"8,5\"\n");
-		result.append("node [shape = doublecircle]; ");
+		result.append("node [shape = square];\n");
+		result.append("S"+ startState.stateIndex + ";\n");
+		result.append("node [shape = doublecircle];\n ");
+		
 		for (AutomatonState finalState : getFinalStates()) {
 			result.append("S" + finalState.stateIndex + " ");
 		}
-		result.append(";");
+		
+		result.append(";\n");
 		result.append("node [shape = circle];");
 		for (AutomatonState state : states.values()) {
-			for (AutomatonTransition trans : state.out) {
-				IMatcher m = trans.getGuardCondition();
-				String label = m != null ? m.toString() : "<e>";
-				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \"" + label
-						+ "\" ];\n");
+			for (IAutomatonTransition trans : state.out) {
+				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \"" 
+						+ trans.getLabel() + "\" ];\n");
 			}
 		}
 

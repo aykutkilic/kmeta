@@ -21,7 +21,7 @@ public class CharSetExpr implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = nfa.createState();
 
-		nfa.createTransition(sourceState, targetState, new CharSetMatcher(charSet));
+		nfa.createMatcherTransition(sourceState, targetState, new CharSetMatcher(charSet));
 
 		return targetState;
 	}

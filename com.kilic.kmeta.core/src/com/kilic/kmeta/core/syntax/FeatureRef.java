@@ -27,7 +27,7 @@ public class FeatureRef implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = nfa.createState();
 
-		nfa.createTransition(sourceState, targetState, new AttributeRefMatcher(this));
+		nfa.createMatcherTransition(sourceState, targetState, new AttributeRefMatcher(this));
 
 		return targetState;
 	}

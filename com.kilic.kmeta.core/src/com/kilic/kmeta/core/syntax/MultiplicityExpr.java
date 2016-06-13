@@ -37,7 +37,7 @@ public class MultiplicityExpr implements ISyntaxExpr {
 		AutomatonState exprStartState = sourceState;
 		AutomatonState exprEndState = nfa.createState();
 
-		nfa.createTransition(exprEndState, targetState, null);
+		nfa.createEpsilonTransition(exprEndState, targetState);
 
 		expr.appendToNFA(nfa, exprStartState, exprEndState);
 
@@ -46,16 +46,16 @@ public class MultiplicityExpr implements ISyntaxExpr {
 			break;
 
 		case OPTIONAL:
-			nfa.createTransition(exprStartState, exprEndState, null);
+			nfa.createEpsilonTransition(exprStartState, exprEndState);
 			break;
 
 		case ANY:
-			nfa.createTransition(exprStartState, exprEndState, null);
-			nfa.createTransition(exprEndState, exprStartState, null);
+			nfa.createEpsilonTransition(exprStartState, exprEndState);
+			nfa.createEpsilonTransition(exprEndState, exprStartState);
 			break;
 
 		case ONEORMORE:
-			nfa.createTransition(exprEndState, exprStartState, null);
+			nfa.createEpsilonTransition(exprEndState, exprStartState);
 			break;
 		}
 

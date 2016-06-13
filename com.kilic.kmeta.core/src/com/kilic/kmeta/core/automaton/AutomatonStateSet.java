@@ -10,25 +10,23 @@ public class AutomatonStateSet {
 		return states;
 	}
 
-	public Set<IMatcher> getAllTransitions() {
-		Set<IMatcher> result = new HashSet<>();
+	public Set<IAutomatonTransition> getAllTransitions() {
+		Set<IAutomatonTransition> result = new HashSet<>();
 
 		for (AutomatonState s : states) {
-			for (AutomatonTransition t : s.getOutgoingTransitions()) {
-				IMatcher guard = t.getGuardCondition();
-				if (guard != null)
-					result.add(guard);
+			for (IAutomatonTransition t : s.getOutgoingTransitions()) {
+				result.add(t);
 			}
 		}
 
 		return result;
 	}
 
-	public AutomatonStateSet move(IMatcher m) {
+	public AutomatonStateSet move(IAutomatonTransition transition) {
 		Set<AutomatonState> targetStates = new HashSet<>();
 
 		for (AutomatonState state : states) {
-			AutomatonState t = state.move(m);
+			AutomatonState t = state.move(transition);
 			if (t != null)
 				targetStates.add(t);
 		}
@@ -71,11 +69,11 @@ public class AutomatonStateSet {
 
 		current.states.add(state);
 
-		for (AutomatonTransition t : state.getOutgoingTransitions()) {
+		for (IAutomatonTransition t : state.getOutgoingTransitions()) {
 			if (current.states.contains(t))
 				continue;
 
-			if (t.getGuardCondition() == null) {
+			if (t instanceof EpsilonTransition) {
 				current.states.addAll(AutomatonStateSet.createEpsilonClosure(t.getToState(), current).states);
 			}
 		}

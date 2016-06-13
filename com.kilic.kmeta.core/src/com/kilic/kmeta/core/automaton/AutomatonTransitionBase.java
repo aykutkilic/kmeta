@@ -1,14 +1,12 @@
 package com.kilic.kmeta.core.automaton;
 
-public class AutomatonTransition implements IAttachable {
+public abstract class AutomatonTransitionBase implements IAutomatonTransition {
 	private AutomatonState fromState, toState;
-	private IMatcher guardCondition;
 	private Object attachedObject;
 
-	public AutomatonTransition(AutomatonState fromState, AutomatonState toState, IMatcher condition) {
+	public AutomatonTransitionBase(AutomatonState fromState, AutomatonState toState) {
 		this.fromState = fromState;
 		this.toState = toState;
-		this.guardCondition = condition;
 	}
 
 	public AutomatonState getFromState() {
@@ -17,10 +15,6 @@ public class AutomatonTransition implements IAttachable {
 
 	public AutomatonState getToState() {
 		return toState;
-	}
-
-	public IMatcher getGuardCondition() {
-		return guardCondition;
 	}
 
 	@Override
@@ -37,12 +31,16 @@ public class AutomatonTransition implements IAttachable {
 	public String toString() {
 		StringBuilder str = new StringBuilder();
 		str.append(fromState.toString());
-		str.append('-');
-		if (guardCondition == null)
-			str.append("<e>");
-		else
-			str.append(guardCondition.toString());
-		str.append("->");
+		
+		String label = getLabel();
+		if(label.isEmpty())
+			str.append("->");
+		else {
+			str.append('-');
+			str.append(label);
+			str.append("->");
+		}
+		
 		str.append(toState.toString());
 		return str.toString();
 	}

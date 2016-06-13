@@ -46,8 +46,8 @@ public class AutomatonIntersectionTests {
 		AutomatonSetMatcher LitE = new AutomatonSetMatcher();
 		LitE.addAutomaton(DecL);
 		LitE.addAutomaton(HexL);
-		IncrE.createTransition(startState, midState, LitE);
-		IncrE.createTransition(midState, finalState, new StringMatcher("++"));
+		IncrE.createMatcherTransition(startState, midState, LitE);
+		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
 		// @formatter:on
 	}
 

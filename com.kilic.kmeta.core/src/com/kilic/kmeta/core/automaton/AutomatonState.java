@@ -6,7 +6,7 @@ import java.util.Set;
 public class AutomatonState {
 	private static int stateIndexCounter = 0;
 
-	Set<AutomatonTransition> in, out;
+	Set<IAutomatonTransition> in, out;
 	boolean isFinalState;
 	int stateIndex;
 	Object attachedObject;
@@ -38,28 +38,28 @@ public class AutomatonState {
 		return isFinalState;
 	}
 
-	public void addIncomingTransition(AutomatonTransition trans) {
+	public void addIncomingTransition(IAutomatonTransition trans) {
 		in.add(trans);
 	}
 
-	public void addOutgoingTransition(AutomatonTransition trans) {
+	public void addOutgoingTransition(IAutomatonTransition trans) {
 		out.add(trans);
 	}
 
-	public Set<AutomatonTransition> getIncomingTransitions() {
+	public Set<IAutomatonTransition> getIncomingTransitions() {
 		return in;
 	}
 
-	public Set<AutomatonTransition> getOutgoingTransitions() {
+	public Set<IAutomatonTransition> getOutgoingTransitions() {
 		return out;
 	}
 
-	public AutomatonState move(IMatcher m) {
-		for (AutomatonTransition t : out) {
-			if (t.getGuardCondition() == null)
+	public AutomatonState move(IAutomatonTransition transition) {
+		for (IAutomatonTransition t : out) {
+			if(t instanceof EpsilonTransition)
 				continue;
 
-			if (t.getGuardCondition().equals(m))
+			if(transition.equals(t))
 				return t.getToState();
 		}
 

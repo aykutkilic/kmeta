@@ -32,19 +32,19 @@ public class AutomatonTests {
 		for (int i = 0; i <= 10; i++)
 			s[i] = nfa.createState();
 
-		nfa.createTransition(s[0], s[1], null);
-		nfa.createTransition(s[1], s[2], null);
-		nfa.createTransition(s[1], s[4], null);
-		nfa.createTransition(s[1], s[7], null);
-		nfa.createTransition(s[2], s[3], new StringMatcher("a"));
-		nfa.createTransition(s[3], s[6], null);
-		nfa.createTransition(s[4], s[5], new StringMatcher("b"));
-		nfa.createTransition(s[5], s[6], null);
-		nfa.createTransition(s[6], s[1], null);
-		nfa.createTransition(s[6], s[7], null);
-		nfa.createTransition(s[7], s[8], new StringMatcher("a"));
-		nfa.createTransition(s[8], s[9], new StringMatcher("b"));
-		nfa.createTransition(s[9], s[10], new StringMatcher("b"));
+		nfa.createEpsilonTransition(s[0], s[1]);
+		nfa.createEpsilonTransition(s[1], s[2]);
+		nfa.createEpsilonTransition(s[1], s[4]);
+		nfa.createEpsilonTransition(s[1], s[7]);
+		nfa.createMatcherTransition(s[2], s[3], new StringMatcher("a"));
+		nfa.createEpsilonTransition(s[3], s[6]);
+		nfa.createMatcherTransition(s[4], s[5], new StringMatcher("b"));
+		nfa.createEpsilonTransition(s[5], s[6]);
+		nfa.createEpsilonTransition(s[6], s[1]);
+		nfa.createEpsilonTransition(s[6], s[7]);
+		nfa.createMatcherTransition(s[7], s[8], new StringMatcher("a"));
+		nfa.createMatcherTransition(s[8], s[9], new StringMatcher("b"));
+		nfa.createMatcherTransition(s[9], s[10], new StringMatcher("b"));
 
 		nfa.setStartState(s[0]);
 		s[10].setFinal(true);
@@ -89,10 +89,10 @@ public class AutomatonTests {
 		System.out.println(enfa.toString());
 		System.out.println("DFA:");
 		Automaton dfa = enfa.convertNFAToDFA();
-		System.out.println();
+		System.out.println(dfa.toString());
 
 		StringStream stream = new StringStream("[A,null,null,B,C,D]");
-		System.out.println(dfa.match(stream));
+		//System.out.println(dfa.match(stream));
 	}
 
 	@Test
