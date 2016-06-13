@@ -19,4 +19,20 @@ public class AutomatonSetMatcher implements IMatcher {
 	public boolean match(IStream stream) {
 		return false;
 	}
+
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		result.append("[ ");
+
+		for (Automaton automaton : automatonSet) {
+			String label = automaton.getLabel();
+			if (label != null)
+				result.append(label + " ");
+		}
+
+		result.append("]");
+
+		return result.toString();
+	}
 }

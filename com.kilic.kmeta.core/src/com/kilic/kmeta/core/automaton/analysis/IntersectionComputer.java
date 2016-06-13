@@ -9,14 +9,16 @@ import com.kilic.kmeta.core.automaton.MatcherTransition;
 public class IntersectionComputer {
 	Set<Automaton> automatons;
 
-	AutomatonSetRunState currentStates;
-
 	public IntersectionComputer(Set<Automaton> automatons) {
 		this.automatons = automatons;
-		currentStates = new AutomatonSetRunState(automatons);
 	}
 
-	public boolean checkIntersections(AutomatonSetRunState currentState, Set<AutomatonSetRunState> history) {
+	public boolean hasIntersection() {
+		AutomatonSetRunState initState = new AutomatonSetRunState(automatons);
+		return checkIntersections(initState, null);
+	}
+
+	boolean checkIntersections(AutomatonSetRunState currentState, Set<AutomatonSetRunState> history) {
 		if (history == null)
 			history = new HashSet<>();
 
@@ -27,11 +29,10 @@ public class IntersectionComputer {
 			if (newState.hasIntersection())
 				return true;
 
-			if (history.contains(newState))
-				return false;
-
-			history.add(newState);
-			checkIntersections(newState, history);
+			if (!history.contains(newState)) {
+				history.add(newState);
+				checkIntersections(newState, history);
+			}
 		}
 
 		return false;

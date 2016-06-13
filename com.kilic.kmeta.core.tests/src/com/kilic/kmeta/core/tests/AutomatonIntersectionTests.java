@@ -1,17 +1,22 @@
 package com.kilic.kmeta.core.tests;
 
+import java.util.HashSet;
+
 import org.junit.Before;
 import org.junit.Test;
 
 import com.kilic.kmeta.core.automaton.Automaton;
 import com.kilic.kmeta.core.automaton.AutomatonState;
 import com.kilic.kmeta.core.automaton.StringMatcher;
+import com.kilic.kmeta.core.automaton.analysis.IntersectionComputer;
 import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
+
+import static org.junit.Assert.assertEquals;
 
 public class AutomatonIntersectionTests {
 	Automaton DecL;
@@ -53,5 +58,13 @@ public class AutomatonIntersectionTests {
 
 	@Test
 	public void findIntersections() {
+		HashSet<Automaton> automatons = new HashSet<Automaton>();
+		automatons.add(IncrE);
+		automatons.add(DecL);
+		automatons.add(HexL);
+
+		IntersectionComputer ic = new IntersectionComputer(automatons);
+
+		assertEquals(ic.hasIntersection(), false);
 	}
 }

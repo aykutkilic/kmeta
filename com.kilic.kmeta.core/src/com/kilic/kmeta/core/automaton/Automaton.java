@@ -5,9 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.kilic.kmeta.core.stream.IStream;
-
 public class Automaton {
+	String label;
 	Map<Integer, AutomatonState> states;
 	AutomatonState startState;
 
@@ -15,6 +14,14 @@ public class Automaton {
 
 	public Automaton() {
 		states = new HashMap<>();
+	}
+
+	public void setLabel(String label) {
+		this.label = label;
+	}
+
+	public String getLabel() {
+		return label;
 	}
 
 	public AutomatonState createState() {
@@ -61,7 +68,7 @@ public class Automaton {
 		from.addOutgoingTransition(t);
 		to.addIncomingTransition(t);
 	}
-	
+
 	public void createEpsilonTransition(AutomatonState from, AutomatonState to) {
 		// ignore epsilon transitions to self.
 		if (from == to)
@@ -72,27 +79,27 @@ public class Automaton {
 		from.addOutgoingTransition(t);
 		to.addIncomingTransition(t);
 	}
-	
+
 	public void createCallTransition(AutomatonState from, AutomatonState to, Automaton callee) {
 		CallAutomatonTransition t = new CallAutomatonTransition(from, to, callee);
-		
+
 		from.addOutgoingTransition(t);
 		to.addIncomingTransition(t);
 	}
-	
+
 	public void createEquivalentTransition(AutomatonState from, AutomatonState to, IAutomatonTransition t) {
 		IAutomatonTransition newTransition = null;
-		
-		if(t instanceof MatcherTransition) {
+
+		if (t instanceof MatcherTransition) {
 			newTransition = new MatcherTransition(from, to, ((MatcherTransition) t).getMatcher());
-		} else if( t instanceof EpsilonTransition) {
-			newTransition = new EpsilonTransition(from,to);
-		} else if( t instanceof CallAutomatonTransition ) {
-			newTransition = new CallAutomatonTransition(from, to, ((CallAutomatonTransition)t).getAutomaton());
+		} else if (t instanceof EpsilonTransition) {
+			newTransition = new EpsilonTransition(from, to);
+		} else if (t instanceof CallAutomatonTransition) {
+			newTransition = new CallAutomatonTransition(from, to, ((CallAutomatonTransition) t).getAutomaton());
 		}
-		
-		assert(newTransition!=null);
-		
+
+		assert (newTransition != null);
+
 		from.addOutgoingTransition(newTransition);
 		to.addIncomingTransition(newTransition);
 	}
@@ -164,6 +171,9 @@ public class Automaton {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 
+		if (label != null)
+			result.append(label + " : ");
+
 		for (AutomatonState state : states.values()) {
 			if (state == startState)
 				result.append("->");
@@ -182,18 +192,18 @@ public class Automaton {
 		result.append("  rankdir=S;\n");
 		result.append("  size=\"8,5\"\n");
 		result.append("node [shape = square];\n");
-		result.append("S"+ startState.stateIndex + ";\n");
+		result.append("S" + startState.stateIndex + ";\n");
 		result.append("node [shape = doublecircle];\n ");
-		
+
 		for (AutomatonState finalState : getFinalStates()) {
 			result.append("S" + finalState.stateIndex + " ");
 		}
-		
+
 		result.append(";\n");
 		result.append("node [shape = circle];");
 		for (AutomatonState state : states.values()) {
 			for (IAutomatonTransition trans : state.out) {
-				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \"" 
+				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \""
 						+ trans.getLabel() + "\" ];\n");
 			}
 		}
