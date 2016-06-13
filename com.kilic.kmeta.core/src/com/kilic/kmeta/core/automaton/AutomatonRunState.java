@@ -1,37 +1,43 @@
 package com.kilic.kmeta.core.automaton;
 
-import java.util.Arrays;
+import java.util.Stack;
 
-public class AutomatonRunState {
-	AutomatonState[] callStack;
+public class AutomatonRunState implements Cloneable {
+	Automaton automaton;
+	Stack<AutomatonState> callStack;
 
 	public AutomatonRunState(Automaton automaton) {
-		callStack = new AutomatonState[1];
-		callStack[0] = automaton.startState;
+		this.automaton = automaton;
+		callStack.push(automaton.startState);
+	}
+	
+	private AutomatonRunState() {}
+	
+	public Automaton getAutomaton() {
+		return automaton;
+	}
+	
+	void call(CallAutomatonTransition transition) {
+		assert(transition.getFromState() == callStack.peek());
+		callStack.pop();
+		callStack.push(transition.getToState());
+		callStack.push(transition.getAutomaton().getStartState());
 	}
 
-	private AutomatonRunState() {
+	void returnFromCall() {
+		callStack.pop();
 	}
 
-	AutomatonRunState call(CallAutomatonTransition transition) {
-		AutomatonRunState result = new AutomatonRunState();
-		Automaton automaton = transition.getAutomaton();
-
-		result.callStack = Arrays.copyOf(callStack, callStack.length + 1);
-		result.callStack[result.callStack.length - 1] = automaton.startState;
-
-		return result;
+	@SuppressWarnings("unchecked")
+	@Override
+	protected Object clone() throws CloneNotSupportedException {
+		AutomatonRunState clone = new AutomatonRunState();
+		
+		clone.callStack = (Stack<AutomatonState>) callStack.clone();
+		
+		return clone;
 	}
-
-	AutomatonRunState returnFromCall() {
-		AutomatonRunState result = new AutomatonRunState();
-
-		result.callStack = Arrays.copyOf(callStack, callStack.length - 1);
-		AutomatonState lastState = result.callStack[result.callStack.length - 1];
-
-		return result;
-	}
-
+	
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof AutomatonRunState) {
