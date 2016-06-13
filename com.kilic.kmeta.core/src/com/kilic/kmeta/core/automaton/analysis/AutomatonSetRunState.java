@@ -1,9 +1,17 @@
-package com.kilic.kmeta.core.automaton;
+package com.kilic.kmeta.core.automaton.analysis;
 
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import com.kilic.kmeta.core.automaton.Automaton;
+import com.kilic.kmeta.core.automaton.AutomatonRunState;
+import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.automaton.CallAutomatonTransition;
+import com.kilic.kmeta.core.automaton.IAutomatonTransition;
+import com.kilic.kmeta.core.automaton.IMatcher;
+import com.kilic.kmeta.core.automaton.MatcherTransition;
 
 // used to keep the states of parallel execution set of automatons.
 class AutomatonSetRunState {
