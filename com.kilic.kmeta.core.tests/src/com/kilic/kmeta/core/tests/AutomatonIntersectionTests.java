@@ -1,5 +1,6 @@
 package com.kilic.kmeta.core.tests;
 
+import java.io.FileNotFoundException;
 import java.util.HashSet;
 
 import org.junit.Before;
@@ -23,6 +24,8 @@ public class AutomatonIntersectionTests {
 	Automaton HexL;
 	Automaton IncrE;
 
+	String desktopPath;
+	
 	@Before
 	public void init() {
 		// @formatter:off
@@ -56,6 +59,8 @@ public class AutomatonIntersectionTests {
 		IncrE.createCallTransition(startState, midState, HexL);
 		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
 		// @formatter:on
+		
+		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
 	}
 
 	@Test
@@ -65,6 +70,14 @@ public class AutomatonIntersectionTests {
 		automatons.add(DecL);
 		automatons.add(HexL);
 
+		try {
+			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
+			Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
+			Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+		
 		IntersectionComputer ic = new IntersectionComputer(automatons);
 
 		assertEquals(ic.hasIntersection(), false);

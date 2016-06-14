@@ -112,7 +112,7 @@ public class AutomatonTests {
 		//System.out.println(dfa.match(stream));
 		
 		try {
-			dumpAutomatonToFile(dfa, desktopPath + "CallAutomaton.graphviz");
+			Utils.dumpAutomatonToFile(dfa, desktopPath + "CallAutomaton.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -161,15 +161,11 @@ public class AutomatonTests {
 		System.out.println(dfa.toString());
 
 		try {
-			dumpAutomatonToFile(dfa, desktopPath + "RealL.graphviz");
+			Utils.dumpAutomatonToFile(dfa, desktopPath + "RealL.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
 	
-	private void dumpAutomatonToFile(Automaton a, String filePath) throws FileNotFoundException {
-		PrintWriter out = new PrintWriter(filePath);
-		out.append(a.toGraphviz());
-		out.close();
-	}
+	
 }

@@ -28,10 +28,15 @@ public class IntersectionComputer {
 		if (history == null)
 			history = new HashSet<>();
 
+		System.out.println("current State = " + currentState.toString());
+		System.out.println("matcher transitions = " + currentState.getAllMatcherTransitions().toString());
 		for (MatcherTransition t : currentState.getAllMatcherTransitions()) {
 			AutomatonSetRunState newState = new AutomatonSetRunState(currentState);
 			newState.applyMatcherTransition(t);
-
+			
+			System.out.println("after transition :"+t.toString()); 
+			System.out.println("new State = " + newState.toString());
+			
 			if (newState.hasIntersection())
 				return true;
 
@@ -44,7 +49,7 @@ public class IntersectionComputer {
 		return false;
 	}
 
-	// returns true if run is dead.
+	// returns false if run is dead.
 	public static boolean moveRunStateByIntersection(AutomatonRunState runState, CharSet input) {
 		Set<MatcherTransition> matcherTransitions = getMatcherTransitions(runState);
 
@@ -53,12 +58,14 @@ public class IntersectionComputer {
 			if (m instanceof CharSetMatcher) {
 				CharSet charSet = ((CharSetMatcher) m).getCharSet();
 
-				if (charSet.intersects(input))
+				if (charSet.intersects(input)) {
 					runState.setCurrentLocalState(t.getToState());
+					return true;
+				}
 			}
 		}
 		
-		return true;
+		return false;
 	}
 
 	public static Set<MatcherTransition> getMatcherTransitions(AutomatonRunState runState) {

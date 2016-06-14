@@ -54,9 +54,8 @@ class AutomatonSetRunState {
 
 		// Adding return
 		if (currentLocalState.isFinalState() && state.getCallStack().size() > 1) {
-			AutomatonRunState newRunState = (AutomatonRunState) state.getCallStack().clone();
+			AutomatonRunState newRunState = new AutomatonRunState( state );
 			newRunState.returnFromCall();
-
 			result.add(newRunState);
 		}
 
@@ -79,17 +78,17 @@ class AutomatonSetRunState {
 	public void applyMatcherTransition(MatcherTransition transition) {
 		Set<Automaton> deadAutomatons = new HashSet<>();
 
-		for (Map.Entry<Automaton, Set<AutomatonRunState>> set : automatonSetStates.entrySet()) {
+		for (Map.Entry<Automaton, Set<AutomatonRunState>> entry : this.automatonSetStates.entrySet()) {
 			Set<AutomatonRunState> deadRuns = new HashSet<>();
 			Set<AutomatonRunState> newRuns = new HashSet<>();
-			Automaton automaton = set.getKey();
-			Set<AutomatonRunState> runStates = set.getValue();
+			Automaton automaton = entry.getKey();
+			Set<AutomatonRunState> runStates = entry.getValue();
 			IMatcher matcher = transition.getMatcher();
 			
 			for (AutomatonRunState runState : runStates) {
 				if(matcher instanceof CharSetMatcher) {
 					CharSet charSet = ((CharSetMatcher) matcher).getCharSet();
-					if(!IntersectionComputer.moveRunStateByIntersection(runState,charSet))
+					if(IntersectionComputer.moveRunStateByIntersection(runState,charSet))
 						newRuns.addAll(getAllStatesWithCallsAndReturns(runState) );
 					else
 						deadRuns.add(runState);
