@@ -69,14 +69,15 @@ public class Automaton {
 		// sequence of singleton charsets can be shrinked afterwards for performance improvements
 		if(matcher instanceof StringMatcher) {
 			String string = ((StringMatcher) matcher).getString();
-			
+			AutomatonState newFrom = from;
 			for( int i=0; i<string.length(); i++ ) {
-				AutomatonState newFrom = i==0 ? from : createState();
 				AutomatonState newTo = i==string.length()-1 ? to : createState();
 				
 				CharSet charSet = new CharSet();
 				charSet.addSingleton(string.charAt(i));
 				createMatcherTransition(newFrom, newTo, new CharSetMatcher(charSet));
+				
+				newFrom = newTo;
 			}
 		} else {
 			MatcherTransition t = new MatcherTransition(from, to, matcher);
@@ -131,7 +132,7 @@ public class Automaton {
 
 		return result;
 	}
-
+	
 	public Automaton convertNFAToDFA() {
 		Automaton result = new Automaton();
 
