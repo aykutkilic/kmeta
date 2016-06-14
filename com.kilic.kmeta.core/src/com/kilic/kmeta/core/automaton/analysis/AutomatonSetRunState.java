@@ -96,6 +96,7 @@ class AutomatonSetRunState {
 			}
 
 			runStates.addAll(newRuns);
+			runStates.removeAll(deadRuns);
 
 			if (runStates.isEmpty())
 				deadAutomatons.add(automaton);
