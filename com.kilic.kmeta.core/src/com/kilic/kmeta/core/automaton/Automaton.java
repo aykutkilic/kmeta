@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import com.kilic.kmeta.core.discriminator.CharSet;
+
 public class Automaton {
 	String label;
 	Map<Integer, AutomatonState> states;
@@ -63,10 +65,25 @@ public class Automaton {
 	}
 
 	public void createMatcherTransition(AutomatonState from, AutomatonState to, IMatcher matcher) {
-		MatcherTransition t = new MatcherTransition(from, to, matcher);
-
-		from.addOutgoingTransition(t);
-		to.addIncomingTransition(t);
+		// string matchers are substitutes with charset matchers until intersection analysis is completed
+		// sequence of singleton charsets can be shrinked afterwards for performance improvements
+		if(matcher instanceof StringMatcher) {
+			String string = ((StringMatcher) matcher).getString();
+			
+			for( int i=0; i<string.length(); i++ ) {
+				AutomatonState newFrom = i==0 ? from : createState();
+				AutomatonState newTo = i==string.length()-1 ? to : createState();
+				
+				CharSet charSet = new CharSet();
+				charSet.addSingleton(string.charAt(i));
+				createMatcherTransition(newFrom, newTo, new CharSetMatcher(charSet));
+			}
+		} else {
+			MatcherTransition t = new MatcherTransition(from, to, matcher);
+	
+			from.addOutgoingTransition(t);
+			to.addIncomingTransition(t);
+		}
 	}
 
 	public void createEpsilonTransition(AutomatonState from, AutomatonState to) {

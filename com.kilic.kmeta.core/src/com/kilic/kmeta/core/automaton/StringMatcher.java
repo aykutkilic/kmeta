@@ -6,6 +6,7 @@ public class StringMatcher implements IMatcher {
 	String stringToMatch;
 
 	public StringMatcher(String stringToMatch) {
+		assert(!stringToMatch.isEmpty());
 		this.stringToMatch = stringToMatch;
 	}
 

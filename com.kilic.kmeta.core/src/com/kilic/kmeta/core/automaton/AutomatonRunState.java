@@ -4,7 +4,7 @@ import java.util.Stack;
 
 public class AutomatonRunState {
 	Automaton automaton;
-	Stack<ICallStackElement> callStack;
+	Stack<AutomatonState> callStack;
 
 	public AutomatonRunState(Automaton automaton) {
 		this.automaton = automaton;
@@ -14,22 +14,22 @@ public class AutomatonRunState {
 
 	@SuppressWarnings("unchecked")
 	public AutomatonRunState(AutomatonRunState other) {
-		callStack = (Stack<ICallStackElement>) other.callStack.clone();
+		callStack = (Stack<AutomatonState>) other.callStack.clone();
 	}
 
 	public Automaton getAutomaton() {
 		return automaton;
 	}
 
-	public Stack<ICallStackElement> getCallStack() {
+	public Stack<AutomatonState> getCallStack() {
 		return callStack;
 	}
 
-	public ICallStackElement getCurrentLocalState() {
+	public AutomatonState getCurrentLocalState() {
 		return callStack.peek();
 	}
 
-	public void setCurrentLocalState(ICallStackElement newState) {
+	public void setCurrentLocalState(AutomatonState newState) {
 		callStack.pop();
 		callStack.push(newState);
 	}
@@ -49,7 +49,7 @@ public class AutomatonRunState {
 		if (callStack.size() > 1)
 			return false;
 		
-		ICallStackElement topElem = callStack.peek();
+		AutomatonState topElem = callStack.peek();
 		if(topElem instanceof AutomatonState)
 			return ((AutomatonState) topElem).isFinalState();
 		
@@ -70,7 +70,7 @@ public class AutomatonRunState {
 		StringBuilder result = new StringBuilder();
 
 		result.append("< ");
-		for (ICallStackElement stackElement : callStack)
+		for (AutomatonState stackElement : callStack)
 			result.append(stackElement.toString() + " ");
 		result.append(">");
 

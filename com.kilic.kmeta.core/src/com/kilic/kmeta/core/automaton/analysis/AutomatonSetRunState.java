@@ -12,10 +12,8 @@ import com.kilic.kmeta.core.automaton.AutomatonState;
 import com.kilic.kmeta.core.automaton.CallAutomatonTransition;
 import com.kilic.kmeta.core.automaton.CharSetMatcher;
 import com.kilic.kmeta.core.automaton.IAutomatonTransition;
-import com.kilic.kmeta.core.automaton.ICallStackElement;
 import com.kilic.kmeta.core.automaton.IMatcher;
 import com.kilic.kmeta.core.automaton.MatcherTransition;
-import com.kilic.kmeta.core.automaton.StringMatcher;
 import com.kilic.kmeta.core.discriminator.CharSet;
 
 // used to keep the states of parallel execution set of automatons.
@@ -39,32 +37,27 @@ class AutomatonSetRunState {
 	public Set<AutomatonRunState> getAllStatesWithCallsAndReturns(AutomatonRunState state) {
 		Set<AutomatonRunState> result = new HashSet<>();
 
-		ICallStackElement currentLocalState = state.getCurrentLocalState();
-
-		if(currentLocalState instanceof TransitionSubState) {
-			result.add(state);
-		} else {
-			AutomatonState currentState = (AutomatonState)currentLocalState;
-			// adding calls
-			for (IAutomatonTransition t : currentState.getOutgoingTransitions()) {
-				if (t instanceof MatcherTransition) {
-					result.add(state);
-				}
-	
-				if (t instanceof CallAutomatonTransition) {
-					AutomatonRunState newRunState = new AutomatonRunState(state);
-					newRunState.call((CallAutomatonTransition) t);
-					result.add(newRunState);
-				}
+		AutomatonState currentLocalState = state.getCurrentLocalState();
+		
+		// adding calls
+		for (IAutomatonTransition t : currentLocalState.getOutgoingTransitions()) {
+			if (t instanceof MatcherTransition) {
+				result.add(state);
 			}
-	
-			// Adding return
-			if (currentState.isFinalState() && state.getCallStack().size() > 1) {
-				AutomatonRunState newRunState = (AutomatonRunState) state.getCallStack().clone();
-				newRunState.returnFromCall();
-	
+
+			if (t instanceof CallAutomatonTransition) {
+				AutomatonRunState newRunState = new AutomatonRunState(state);
+				newRunState.call((CallAutomatonTransition) t);
 				result.add(newRunState);
 			}
+		}
+
+		// Adding return
+		if (currentLocalState.isFinalState() && state.getCallStack().size() > 1) {
+			AutomatonRunState newRunState = (AutomatonRunState) state.getCallStack().clone();
+			newRunState.returnFromCall();
+
+			result.add(newRunState);
 		}
 
 		return result;
@@ -88,34 +81,22 @@ class AutomatonSetRunState {
 
 		for (Map.Entry<Automaton, Set<AutomatonRunState>> set : automatonSetStates.entrySet()) {
 			Set<AutomatonRunState> deadRuns = new HashSet<>();
-			Set<AutomatonRunState> newRuns = null;
+			Set<AutomatonRunState> newRuns = new HashSet<>();
 			Automaton automaton = set.getKey();
 			Set<AutomatonRunState> runStates = set.getValue();
 			IMatcher matcher = transition.getMatcher();
-
+			
 			for (AutomatonRunState runState : runStates) {
 				if(matcher instanceof CharSetMatcher) {
 					CharSet charSet = ((CharSetMatcher) matcher).getCharSet();
 					if(!IntersectionComputer.moveRunStateByIntersection(runState,charSet))
-						newRuns = getAllStatesWithCallsAndReturns(runState);
+						newRuns.addAll(getAllStatesWithCallsAndReturns(runState) );
 					else
 						deadRuns.add(runState);
-				} else if(matcher instanceof StringMatcher) {
-					for(char c : ((StringMatcher) matcher).getString().toCharArray()) {
-						CharSet charSet = new CharSet();
-						charSet.addSingleton(c);
-						if(!IntersectionComputer.moveRunStateByIntersection(runState,charSet))
-							newRuns = getAllStatesWithCallsAndReturns(runState);
-						else {
-							deadRuns.add(runState);
-							break;
-						}
-					}
 				}
 			}
 
-			if (newRuns != null)
-				runStates.addAll(newRuns);
+			runStates.addAll(newRuns);
 
 			if (runStates.isEmpty())
 				deadAutomatons.add(automaton);
