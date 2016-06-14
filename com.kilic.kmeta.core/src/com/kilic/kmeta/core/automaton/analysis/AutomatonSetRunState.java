@@ -132,7 +132,21 @@ class AutomatonSetRunState {
 
 	@Override
 	public boolean equals(Object obj) {
-		return super.equals(obj);
+		if (obj instanceof AutomatonSetRunState) {
+			AutomatonSetRunState other = (AutomatonSetRunState) obj;
+			return automatonSetStates.equals(other.automatonSetStates);
+			/*
+			 * AutomatonSetRunState other = (AutomatonSetRunState) obj; for
+			 * (Entry<Automaton, Set<AutomatonRunState>> entry :
+			 * automatonSetStates.entrySet()) { Set<AutomatonRunState>
+			 * otherValue = other.automatonSetStates.get(entry.getKey());
+			 * Set<AutomatonRunState> value = entry.getValue(); if
+			 * (!value.equals(otherValue)) return false; }
+			 * 
+			 * return true;
+			 */
+		}
+		return false;
 	}
 
 	@Override

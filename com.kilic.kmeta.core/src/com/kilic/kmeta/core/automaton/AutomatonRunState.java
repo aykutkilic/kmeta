@@ -57,6 +57,11 @@ public class AutomatonRunState {
 	}
 
 	@Override
+	public int hashCode() {
+		return callStack.hashCode();
+	}
+
+	@Override
 	public boolean equals(Object other) {
 		if (other instanceof AutomatonRunState) {
 			return callStack.equals(((AutomatonRunState) other).callStack);

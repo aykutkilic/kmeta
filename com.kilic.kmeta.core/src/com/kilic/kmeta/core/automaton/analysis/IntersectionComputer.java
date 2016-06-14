@@ -29,7 +29,6 @@ public class IntersectionComputer {
 			history = new HashSet<>();
 
 		System.out.println("current State = " + currentState.toString());
-		System.out.println("hash = " + currentState.hashCode());
 		System.out.println("matchers = " + currentState.getAllMatchers().toString());
 		for (IMatcher m : currentState.getAllMatchers()) {
 			AutomatonSetRunState newState = new AutomatonSetRunState(currentState);
