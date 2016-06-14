@@ -27,7 +27,14 @@ class AutomatonSetRunState {
 	}
 
 	public AutomatonSetRunState(AutomatonSetRunState other) {
-		automatonSetStates = new HashMap<>(other.automatonSetStates);
+		automatonSetStates = new HashMap<>();
+		for (Entry<Automaton, Set<AutomatonRunState>> entry : other.automatonSetStates.entrySet()) {
+			Set<AutomatonRunState> newSet = new HashSet<>();
+			for (AutomatonRunState runState : entry.getValue()) {
+				newSet.add(new AutomatonRunState(runState));
+			}
+			automatonSetStates.put(entry.getKey(), newSet);
+		}
 	}
 
 	public Map<Automaton, Set<AutomatonRunState>> getStates() {
@@ -38,7 +45,7 @@ class AutomatonSetRunState {
 		Set<AutomatonRunState> result = new HashSet<>();
 
 		AutomatonState currentLocalState = state.getCurrentLocalState();
-		
+
 		// adding calls
 		for (IAutomatonTransition t : currentLocalState.getOutgoingTransitions()) {
 			if (t instanceof MatcherTransition) {
@@ -54,28 +61,29 @@ class AutomatonSetRunState {
 
 		// Adding return
 		if (currentLocalState.isFinalState() && state.getCallStack().size() > 1) {
-			AutomatonRunState newRunState = new AutomatonRunState( state );
+			AutomatonRunState newRunState = new AutomatonRunState(state);
 			newRunState.returnFromCall();
 			result.add(newRunState);
 		}
 
 		return result;
 	}
-	
-	
-	public Set<MatcherTransition> getAllMatcherTransitions() {
-		Set<MatcherTransition> result = new HashSet<>();
+
+	public Set<IMatcher> getAllMatchers() {
+		Set<IMatcher> result = new HashSet<>();
 
 		for (Set<AutomatonRunState> set : automatonSetStates.values()) {
 			for (AutomatonRunState runState : set) {
-				result.addAll(IntersectionComputer.getMatcherTransitions(runState));
+				for (MatcherTransition t : IntersectionComputer.getMatcherTransitions(runState)) {
+					result.add(t.getMatcher());
+				}
 			}
 		}
 
 		return result;
 	}
 
-	public void applyMatcherTransition(MatcherTransition transition) {
+	public void applyMatcher(IMatcher matcher) {
 		Set<Automaton> deadAutomatons = new HashSet<>();
 
 		for (Map.Entry<Automaton, Set<AutomatonRunState>> entry : this.automatonSetStates.entrySet()) {
@@ -83,13 +91,12 @@ class AutomatonSetRunState {
 			Set<AutomatonRunState> newRuns = new HashSet<>();
 			Automaton automaton = entry.getKey();
 			Set<AutomatonRunState> runStates = entry.getValue();
-			IMatcher matcher = transition.getMatcher();
-			
+
 			for (AutomatonRunState runState : runStates) {
-				if(matcher instanceof CharSetMatcher) {
+				if (matcher instanceof CharSetMatcher) {
 					CharSet charSet = ((CharSetMatcher) matcher).getCharSet();
-					if(IntersectionComputer.moveRunStateByIntersection(runState,charSet))
-						newRuns.addAll(getAllStatesWithCallsAndReturns(runState) );
+					if (IntersectionComputer.moveRunStateByIntersection(runState, charSet))
+						newRuns.addAll(getAllStatesWithCallsAndReturns(runState));
 					else
 						deadRuns.add(runState);
 				}
@@ -119,6 +126,16 @@ class AutomatonSetRunState {
 	}
 
 	@Override
+	public int hashCode() {
+		return automatonSetStates.hashCode();
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		return super.equals(obj);
+	}
+
+	@Override
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 
@@ -126,13 +143,13 @@ class AutomatonSetRunState {
 		for (Entry<Automaton, Set<AutomatonRunState>> entry : automatonSetStates.entrySet()) {
 			String label = entry.getKey().getLabel();
 			if (label != null)
-				result.append("  " + label + " {\n");
+				result.append("  " + label + " {");
 			else
-				result.append("  {\n");
+				result.append(" { ");
 
 			for (AutomatonRunState state : entry.getValue())
-				result.append("    " + state.toString() + "\n");
-			result.append("  }\n");
+				result.append(state.toString() + " ");
+			result.append("}\n");
 		}
 
 		result.append("]]\n");

@@ -29,20 +29,28 @@ public class IntersectionComputer {
 			history = new HashSet<>();
 
 		System.out.println("current State = " + currentState.toString());
-		System.out.println("matcher transitions = " + currentState.getAllMatcherTransitions().toString());
-		for (MatcherTransition t : currentState.getAllMatcherTransitions()) {
+		System.out.println("hash = " + currentState.hashCode());
+		System.out.println("matchers = " + currentState.getAllMatchers().toString());
+		for (IMatcher m : currentState.getAllMatchers()) {
 			AutomatonSetRunState newState = new AutomatonSetRunState(currentState);
-			newState.applyMatcherTransition(t);
-			
-			System.out.println("after transition :"+t.toString()); 
+			newState.applyMatcher(m);
+			System.out.println("after matcher :" + m.toString());
 			System.out.println("new State = " + newState.toString());
-			
+
+			int totalParallelRuns = 0;
+			for (Set<AutomatonRunState> set : newState.getStates().values())
+				totalParallelRuns += set.size();
+
+			if (totalParallelRuns < 2)
+				continue;
+
 			if (newState.hasIntersection())
 				return true;
 
 			if (!history.contains(newState)) {
 				history.add(newState);
-				checkIntersections(newState, history);
+				if (checkIntersections(newState, history))
+					return true;
 			}
 		}
 
@@ -64,7 +72,7 @@ public class IntersectionComputer {
 				}
 			}
 		}
-		
+
 		return false;
 	}
 
@@ -72,7 +80,7 @@ public class IntersectionComputer {
 		Set<MatcherTransition> result = new HashSet<>();
 
 		AutomatonState localState = runState.getCurrentLocalState();
-		for (IAutomatonTransition t : ((AutomatonState) localState).getOutgoingTransitions()) {
+		for (IAutomatonTransition t : localState.getOutgoingTransitions()) {
 			if (t instanceof MatcherTransition) {
 				result.add((MatcherTransition) t);
 			}

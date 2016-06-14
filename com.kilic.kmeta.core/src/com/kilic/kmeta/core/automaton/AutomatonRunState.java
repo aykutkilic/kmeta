@@ -48,11 +48,11 @@ public class AutomatonRunState {
 	public boolean isFinal() {
 		if (callStack.size() > 1)
 			return false;
-		
+
 		AutomatonState topElem = callStack.peek();
-		if(topElem instanceof AutomatonState)
-			return ((AutomatonState) topElem).isFinalState();
-		
+		if (topElem instanceof AutomatonState)
+			return topElem.isFinalState();
+
 		return false;
 	}
 
@@ -69,7 +69,7 @@ public class AutomatonRunState {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 
-		result.append("< ");
+		result.append("<");
 		for (AutomatonState stackElement : callStack)
 			result.append(stackElement.toString() + " ");
 		result.append(">");
