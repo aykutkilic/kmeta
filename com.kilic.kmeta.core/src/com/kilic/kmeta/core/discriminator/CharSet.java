@@ -113,6 +113,18 @@ public class CharSet {
 		return result;
 	}
 
+	public boolean intersects(CharSet b) {
+		for (CharRange ra : ranges) {
+			for (CharRange rb : b.ranges) {
+				CharRange i = ra.getIntersection(rb);
+				if (!i.isEmpty())
+					return true;
+			}
+		}
+
+		return false;
+	}
+	
 	public boolean containsSingleton(char singleton) {
 		for (CharRange r : ranges) {
 			if (r.containsSingleton(singleton))

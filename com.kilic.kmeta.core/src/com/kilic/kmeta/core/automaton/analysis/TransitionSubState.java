@@ -10,8 +10,9 @@ public class TransitionSubState implements ICallStackElement {
 	final IAutomatonTransition transition;
 	int subState = 0;
 	
-	public TransitionSubState(IAutomatonTransition transition) {
+	public TransitionSubState(IAutomatonTransition transition, int subState) {
 		this.transition = transition;
+		this.subState = subState;
 	}
 	
 	public void setSubState(int newSubState) {
