@@ -1,9 +1,9 @@
 package com.kilic.kmeta.core.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.util.HashSet;
-import java.util.Set;
-import java.util.Stack;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -19,11 +19,7 @@ import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
-
 public class AutomatonIntersectionTests {
-	private static final String Set = null;
 	Automaton DecL;
 	Automaton HexL;
 	Automaton IncrE;
