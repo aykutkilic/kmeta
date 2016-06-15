@@ -5,6 +5,7 @@ public class CallAutomatonTransition extends AutomatonTransitionBase {
 
 	public CallAutomatonTransition(AutomatonState from, AutomatonState to, Automaton automaton) {
 		super(from, to);
+		assert (automaton != null);
 		this.automaton = automaton;
 	}
 

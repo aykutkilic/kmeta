@@ -27,7 +27,7 @@ public class Automaton {
 	}
 
 	public AutomatonState createState() {
-		AutomatonState newState = new AutomatonState();
+		AutomatonState newState = new AutomatonState(this);
 		states.put(newState.stateIndex, newState);
 		return newState;
 	}
@@ -65,23 +65,25 @@ public class Automaton {
 	}
 
 	public void createMatcherTransition(AutomatonState from, AutomatonState to, IMatcher matcher) {
-		// string matchers are substitutes with charset matchers until intersection analysis is completed
-		// sequence of singleton charsets can be shrinked afterwards for performance improvements
-		if(matcher instanceof StringMatcher) {
+		// string matchers are substitutes with charset matchers until
+		// intersection analysis is completed
+		// sequence of singleton charsets can be shrinked afterwards for
+		// performance improvements
+		if (matcher instanceof StringMatcher) {
 			String string = ((StringMatcher) matcher).getString();
 			AutomatonState newFrom = from;
-			for( int i=0; i<string.length(); i++ ) {
-				AutomatonState newTo = i==string.length()-1 ? to : createState();
-				
+			for (int i = 0; i < string.length(); i++) {
+				AutomatonState newTo = i == string.length() - 1 ? to : createState();
+
 				CharSet charSet = new CharSet();
 				charSet.addSingleton(string.charAt(i));
 				createMatcherTransition(newFrom, newTo, new CharSetMatcher(charSet));
-				
+
 				newFrom = newTo;
 			}
 		} else {
 			MatcherTransition t = new MatcherTransition(from, to, matcher);
-	
+
 			from.addOutgoingTransition(t);
 			to.addIncomingTransition(t);
 		}
@@ -132,7 +134,7 @@ public class Automaton {
 
 		return result;
 	}
-	
+
 	public Automaton convertNFAToDFA() {
 		Automaton result = new Automaton();
 

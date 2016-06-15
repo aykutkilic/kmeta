@@ -25,6 +25,7 @@ public class AutomatonIntersectionTests {
 	Automaton IncrE;
 	Automaton AddE;
 	Automaton MulE;
+	Automaton NegE;
 	Automaton TerroristE;
 
 	String desktopPath;
@@ -50,16 +51,34 @@ public class AutomatonIntersectionTests {
 		HexL.setLabel("HexL");
 		
 		TerroristE = Utils.createNFAFromSyntax(
-			new StringExpr("0x16*2+8+++2*0xFFFF")
+			new StringExpr("#")
 		).convertNFAToDFA();
 		TerroristE.setLabel("TerroristE");
 		
+		createNegE();
 		createIncrE();
 		createAddE();
 		createMulE();
+		
 		// @formatter:on
 
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
+	}
+
+	private void createNegE() {
+		NegE = new Automaton();
+		NegE.setLabel("NegE");
+
+		AutomatonState startState = NegE.createState();
+		AutomatonState midState = NegE.createState();
+		AutomatonState finalState = NegE.createState();
+
+		NegE.setStartState(startState);
+		finalState.setFinal(true);
+
+		NegE.createMatcherTransition(startState, midState, new StringMatcher("++"));
+		// NegE.createCallTransition(midState, finalState, HexL);
+		NegE.createCallTransition(midState, finalState, DecL);
 	}
 
 	private void createIncrE() {
@@ -73,8 +92,9 @@ public class AutomatonIntersectionTests {
 		IncrE.setStartState(startState);
 		finalState.setFinal(true);
 
+		IncrE.createCallTransition(startState, midState, NegE);
 		IncrE.createCallTransition(startState, midState, DecL);
-		IncrE.createCallTransition(startState, midState, HexL);
+		// IncrE.createCallTransition(startState, midState, HexL);
 		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
 	}
 
@@ -89,12 +109,14 @@ public class AutomatonIntersectionTests {
 		AddE.setStartState(s0);
 		s3.setFinal(true);
 
+		AddE.createCallTransition(s0, s1, NegE);
 		AddE.createCallTransition(s0, s1, DecL);
-		AddE.createCallTransition(s0, s1, HexL);
+		// AddE.createCallTransition(s0, s1, HexL);
 		AddE.createCallTransition(s0, s1, IncrE);
 		AddE.createMatcherTransition(s1, s2, new StringMatcher("+"));
+		AddE.createCallTransition(s2, s3, NegE);
 		AddE.createCallTransition(s2, s3, DecL);
-		AddE.createCallTransition(s2, s3, HexL);
+		// AddE.createCallTransition(s2, s3, HexL);
 		AddE.createCallTransition(s2, s3, IncrE);
 		AddE.createEpsilonTransition(s3, s1);
 
@@ -113,11 +135,13 @@ public class AutomatonIntersectionTests {
 		MulE.setStartState(s0);
 		s3.setFinal(true);
 
+		MulE.createCallTransition(s0, s1, NegE);
 		MulE.createCallTransition(s0, s1, AddE);
 		MulE.createCallTransition(s0, s1, IncrE);
 		MulE.createCallTransition(s0, s1, DecL);
 		MulE.createCallTransition(s0, s1, HexL);
 		MulE.createMatcherTransition(s1, s2, new StringMatcher("*"));
+		MulE.createCallTransition(s2, s3, NegE);
 		MulE.createCallTransition(s2, s3, AddE);
 		MulE.createCallTransition(s2, s3, DecL);
 		MulE.createCallTransition(s2, s3, HexL);
@@ -134,10 +158,11 @@ public class AutomatonIntersectionTests {
 
 		automatons.add(IncrE);
 		automatons.add(DecL);
-		automatons.add(HexL);
+		// automatons.add(HexL);
 		automatons.add(AddE);
-		automatons.add(MulE);
-		automatons.add(TerroristE);
+		// automatons.add(MulE);
+		automatons.add(NegE);
+		// automatons.add(TerroristE);
 
 		try {
 			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
@@ -145,6 +170,7 @@ public class AutomatonIntersectionTests {
 			Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
 			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
 			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
+			Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
 			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

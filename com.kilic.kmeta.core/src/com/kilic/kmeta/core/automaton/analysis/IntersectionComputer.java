@@ -1,8 +1,10 @@
 package com.kilic.kmeta.core.automaton.analysis;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import com.kilic.kmeta.core.automaton.Automaton;
@@ -26,12 +28,13 @@ public class IntersectionComputer {
 		return checkIntersections(initState, null, null);
 	}
 
-	boolean checkIntersections(AutomatonSetRunState currentState, List<IMatcher> matcherHistory, Set<AutomatonSetRunState> stateSetHistory) {
+	boolean checkIntersections(AutomatonSetRunState currentState, List<IMatcher> matcherHistory,
+			Map<AutomatonSetRunState, List<IMatcher>> stateSetHistory) {
 		if (matcherHistory == null)
 			matcherHistory = new ArrayList<>();
-		
+
 		if (stateSetHistory == null)
-			stateSetHistory = new HashSet<>();
+			stateSetHistory = new HashMap<>();
 
 		for (IMatcher m : currentState.getAllMatchers()) {
 			ArrayList<IMatcher> newMatcherHistory = new ArrayList<>(matcherHistory);
@@ -52,16 +55,18 @@ public class IntersectionComputer {
 
 			if (newState.hasIntersection()) {
 				System.out.println("intersection for matcher sequence:");
-				System.out.println(matcherHistory);
+				System.out.println(newMatcherHistory);
 				return true;
 			}
 
-			if (!stateSetHistory.contains(newState)) {
-				stateSetHistory.add(newState);
+			if (!stateSetHistory.containsKey(newState)) {
+				stateSetHistory.put(newState, newMatcherHistory);
 				if (checkIntersections(newState, newMatcherHistory, stateSetHistory))
 					return true;
-			} else 
-				System.out.println("StateSet already exists");
+			} else {
+				System.out.println("StateSet already exists for sequence" + stateSetHistory.get(newState));
+
+			}
 		}
 
 		return false;

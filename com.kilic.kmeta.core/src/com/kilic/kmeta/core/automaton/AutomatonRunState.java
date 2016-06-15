@@ -46,31 +46,30 @@ public class AutomatonRunState {
 	}
 
 	public boolean isFinal() {
-		if (callStack.size() > 1)
-			return false;
+		for (AutomatonState state : callStack) {
+			if (!state.isFinalState())
+				return false;
+		}
 
-		AutomatonState topElem = callStack.peek();
-		if (topElem instanceof AutomatonState)
-			return topElem.isFinalState();
-
-		return false;
+		return true;
 	}
 
 	@Override
 	public int hashCode() {
 		int hashCode = 1;
-		for( AutomatonState s : callStack)
-			hashCode = hashCode*31 + s.hashCode();
-		
+		for (AutomatonState s : callStack)
+			hashCode = hashCode * 31 + s.hashCode();
+
 		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		if( this == other ) return true;
+		if (this == other)
+			return true;
 		if (!(other instanceof AutomatonRunState))
 			return false;
-		
+
 		return callStack.equals(((AutomatonRunState) other).callStack);
 	}
 
@@ -79,8 +78,12 @@ public class AutomatonRunState {
 		StringBuilder result = new StringBuilder();
 
 		result.append("<");
-		for (AutomatonState stackElement : callStack)
-			result.append(stackElement.toString() + " ");
+		for (AutomatonState state : callStack) {
+			String label = state.getContainer().getLabel();
+			if (label != null)
+				result.append(label + ":");
+			result.append(state.toString() + " ");
+		}
 		result.append(">");
 
 		return result.toString();

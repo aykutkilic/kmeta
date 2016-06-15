@@ -10,12 +10,15 @@ public class AutomatonState {
 	boolean isFinalState;
 	int stateIndex;
 	Object attachedObject;
+	Automaton container;
 
-	public AutomatonState() {
+	protected AutomatonState(Automaton container) {
 		stateIndex = stateIndexCounter++;
 
 		in = new HashSet<>();
 		out = new HashSet<>();
+
+		this.container = container;
 	}
 
 	public void attachObject(Object o) {
@@ -56,14 +59,18 @@ public class AutomatonState {
 
 	public AutomatonState move(IAutomatonTransition transition) {
 		for (IAutomatonTransition t : out) {
-			if(t instanceof EpsilonTransition)
+			if (t instanceof EpsilonTransition)
 				continue;
 
-			if(transition.equals(t))
+			if (transition.equals(t))
 				return t.getToState();
 		}
 
 		return null;
+	}
+
+	public Automaton getContainer() {
+		return container;
 	}
 
 	@Override
@@ -83,7 +90,7 @@ public class AutomatonState {
 	public boolean equals(Object other) {
 		if (!(other instanceof AutomatonState))
 			return false;
-		
+
 		return stateIndex == ((AutomatonState) other).getStateIndex();
 	}
 

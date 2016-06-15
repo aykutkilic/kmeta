@@ -2,9 +2,11 @@ package com.kilic.kmeta.core.automaton.analysis;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.Stack;
 
 import com.kilic.kmeta.core.automaton.Automaton;
 import com.kilic.kmeta.core.automaton.AutomatonRunState;
@@ -60,10 +62,10 @@ class AutomatonSetRunState {
 		}
 
 		// Adding return
-		if (currentLocalState.isFinalState() ) {
+		if (currentLocalState.isFinalState()) {
 			result.add(state);
-		
-			if(state.getCallStack().size() > 1) {
+
+			if (state.getCallStack().size() > 1) {
 				AutomatonRunState newRunState = new AutomatonRunState(state);
 				newRunState.returnFromCall();
 				result.addAll(getAllStatesWithCallsAndReturns(newRunState));
@@ -108,7 +110,6 @@ class AutomatonSetRunState {
 
 			runStates.removeAll(deadRuns);
 			runStates.addAll(newRuns);
-			
 
 			if (runStates.isEmpty())
 				deadAutomatons.add(automaton);
@@ -121,12 +122,43 @@ class AutomatonSetRunState {
 
 	public boolean hasIntersection() {
 		int finalCount = 0;
+		Set<AutomatonRunState> finalStates = new HashSet<>();
 		for (Set<AutomatonRunState> set : automatonSetStates.values()) {
 			for (AutomatonRunState state : set) {
-				if (state.isFinal())
-					finalCount++;
-				
-				if(finalCount>1)
+				if (state.isFinal()) {
+					// check if call stacks overlap
+					boolean overlapping = false;
+					for (AutomatonRunState finalState : finalStates) {
+						Stack<AutomatonState> a = state.getCallStack();
+						Stack<AutomatonState> b = finalState.getCallStack();
+
+						overlapping = true;
+						Iterator<AutomatonState> ai = a.iterator();
+						Iterator<AutomatonState> bi = b.iterator();
+						while (ai.hasNext() && bi.hasNext()) {
+							if (!ai.next().equals(bi.next())) {
+								overlapping = false;
+								break;
+							}
+						}
+
+						if (overlapping) {
+							finalStates.remove(state);
+							finalStates.remove(finalState);
+							if (a.size() > b.size())
+								finalStates.add(state);
+							else
+								finalStates.add(finalState);
+							break;
+						}
+					}
+
+					finalStates.add(state);
+					if (!overlapping)
+						finalCount++;
+				}
+
+				if (finalCount > 1)
 					return true;
 			}
 		}
