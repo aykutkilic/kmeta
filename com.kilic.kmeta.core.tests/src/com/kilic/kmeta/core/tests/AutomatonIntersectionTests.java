@@ -86,31 +86,4 @@ public class AutomatonIntersectionTests {
 
 		assertEquals(ic.hasIntersection(), false);
 	}
-
-	@Test
-	public void runStateSetEqualityTest() {
-		Automaton a = new Automaton();
-
-		AutomatonState s1 = a.createState();
-		AutomatonState s2 = a.createState();
-		AutomatonState s3 = a.createState();
-
-		Stack<AutomatonState> callStack1 = new Stack<>();
-		Stack<AutomatonState> callStack2 = new Stack<>();
-
-		callStack1.push(s1);
-		callStack2.push(s2);
-		callStack2.push(s3);
-
-		Set<Stack<AutomatonState>> runStates1 = new HashSet<>();
-		Set<Stack<AutomatonState>> runStates2 = new HashSet<>();
-
-		runStates1.add(callStack1);
-		runStates1.add(callStack2);
-
-		runStates2.add(callStack2);
-		runStates2.add(callStack1);
-
-		assertTrue(runStates1.equals(runStates2));
-	}
 }

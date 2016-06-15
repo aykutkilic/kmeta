@@ -28,10 +28,10 @@ public class IntersectionComputer {
 		if (history == null)
 			history = new HashSet<>();
 
-		System.out.println("current State = " + currentState.toString());
-		System.out.println("matchers = " + currentState.getAllMatchers().toString());
 		for (IMatcher m : currentState.getAllMatchers()) {
 			AutomatonSetRunState newState = new AutomatonSetRunState(currentState);
+			System.out.println("current State = " + newState.toString());
+			System.out.println("matchers = " + currentState.getAllMatchers().toString());
 			newState.applyMatcher(m);
 			System.out.println("after matcher :" + m.toString());
 			System.out.println("new State = " + newState.toString());
@@ -50,7 +50,8 @@ public class IntersectionComputer {
 				history.add(newState);
 				if (checkIntersections(newState, history))
 					return true;
-			}
+			} else 
+				System.out.println("StateSet already exists");
 		}
 
 		return false;

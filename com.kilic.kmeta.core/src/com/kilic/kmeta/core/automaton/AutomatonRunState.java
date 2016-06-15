@@ -58,16 +58,20 @@ public class AutomatonRunState {
 
 	@Override
 	public int hashCode() {
-		return callStack.hashCode();
+		int hashCode = 1;
+		for( AutomatonState s : callStack)
+			hashCode = hashCode*31 + s.hashCode();
+		
+		return hashCode;
 	}
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof AutomatonRunState) {
-			return callStack.equals(((AutomatonRunState) other).callStack);
-		}
-
-		return false;
+		if( this == other ) return true;
+		if (!(other instanceof AutomatonRunState))
+			return false;
+		
+		return callStack.equals(((AutomatonRunState) other).callStack);
 	}
 
 	@Override

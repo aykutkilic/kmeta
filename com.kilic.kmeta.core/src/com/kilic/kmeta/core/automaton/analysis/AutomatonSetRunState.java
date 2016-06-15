@@ -93,17 +93,18 @@ class AutomatonSetRunState {
 			Set<AutomatonRunState> runStates = entry.getValue();
 
 			for (AutomatonRunState runState : runStates) {
+				AutomatonRunState newState = new AutomatonRunState(runState);
 				if (matcher instanceof CharSetMatcher) {
 					CharSet charSet = ((CharSetMatcher) matcher).getCharSet();
-					if (IntersectionComputer.moveRunStateByIntersection(runState, charSet))
-						newRuns.addAll(getAllStatesWithCallsAndReturns(runState));
-					else
-						deadRuns.add(runState);
+					if (IntersectionComputer.moveRunStateByIntersection(newState, charSet))
+						newRuns.addAll(getAllStatesWithCallsAndReturns(newState));
+					deadRuns.add(runState);
 				}
 			}
 
-			runStates.addAll(newRuns);
 			runStates.removeAll(deadRuns);
+			runStates.addAll(newRuns);
+			
 
 			if (runStates.isEmpty())
 				deadAutomatons.add(automaton);

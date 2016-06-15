@@ -81,11 +81,10 @@ public class AutomatonState {
 
 	@Override
 	public boolean equals(Object other) {
-		if (other instanceof AutomatonState) {
-			return stateIndex == ((AutomatonState) other).getStateIndex();
-		}
-
-		return false;
+		if (!(other instanceof AutomatonState))
+			return false;
+		
+		return stateIndex == ((AutomatonState) other).getStateIndex();
 	}
 
 	@Override
