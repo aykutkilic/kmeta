@@ -51,7 +51,7 @@ public class AutomatonIntersectionTests {
 		HexL.setLabel("HexL");
 		
 		TerroristE = Utils.createNFAFromSyntax(
-			new StringExpr("#")
+			new StringExpr("0xAAA*1+2+3+6+5+4*5+++52*5")
 		).convertNFAToDFA();
 		TerroristE.setLabel("TerroristE");
 		
@@ -76,8 +76,8 @@ public class AutomatonIntersectionTests {
 		NegE.setStartState(startState);
 		finalState.setFinal(true);
 
-		NegE.createMatcherTransition(startState, midState, new StringMatcher("++"));
-		// NegE.createCallTransition(midState, finalState, HexL);
+		NegE.createMatcherTransition(startState, midState, new StringMatcher("+"));
+		NegE.createCallTransition(midState, finalState, HexL);
 		NegE.createCallTransition(midState, finalState, DecL);
 	}
 
@@ -94,7 +94,7 @@ public class AutomatonIntersectionTests {
 
 		IncrE.createCallTransition(startState, midState, NegE);
 		IncrE.createCallTransition(startState, midState, DecL);
-		// IncrE.createCallTransition(startState, midState, HexL);
+		IncrE.createCallTransition(startState, midState, HexL);
 		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
 	}
 
@@ -111,12 +111,12 @@ public class AutomatonIntersectionTests {
 
 		AddE.createCallTransition(s0, s1, NegE);
 		AddE.createCallTransition(s0, s1, DecL);
-		// AddE.createCallTransition(s0, s1, HexL);
+		AddE.createCallTransition(s0, s1, HexL);
 		AddE.createCallTransition(s0, s1, IncrE);
 		AddE.createMatcherTransition(s1, s2, new StringMatcher("+"));
 		AddE.createCallTransition(s2, s3, NegE);
 		AddE.createCallTransition(s2, s3, DecL);
-		// AddE.createCallTransition(s2, s3, HexL);
+		AddE.createCallTransition(s2, s3, HexL);
 		AddE.createCallTransition(s2, s3, IncrE);
 		AddE.createEpsilonTransition(s3, s1);
 
@@ -158,11 +158,11 @@ public class AutomatonIntersectionTests {
 
 		automatons.add(IncrE);
 		automatons.add(DecL);
-		// automatons.add(HexL);
+		automatons.add(HexL);
 		automatons.add(AddE);
-		// automatons.add(MulE);
+		automatons.add(MulE);
 		automatons.add(NegE);
-		// automatons.add(TerroristE);
+		automatons.add(TerroristE);
 
 		try {
 			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
