@@ -18,6 +18,11 @@ public class CharSetMatcher implements IMatcher {
 	public boolean match(IStream stream) {
 		return charSetToMatch.containsSingleton(stream.lookAheadChar());
 	}
+	
+	@Override
+	public int hashCode() {
+		return charSetToMatch.hashCode();
+	}
 
 	@Override
 	public boolean equals(Object other) {

@@ -135,6 +135,11 @@ public class CharSet {
 	}
 
 	@Override
+	public int hashCode() {
+		return this.ranges.hashCode();
+	}
+	
+	@Override
 	public boolean equals(Object other) {
 		if (other instanceof CharSet)
 			return this.ranges.equals(((CharSet) other).ranges);

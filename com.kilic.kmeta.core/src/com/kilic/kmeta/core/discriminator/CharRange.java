@@ -126,6 +126,12 @@ public class CharRange {
 	public boolean isUnifiable(CharRange other) {
 		return isAdjacent(other) || !getIntersection(other).isEmpty();
 	}
+	
+	
+	@Override
+	public int hashCode() {
+		return start*0x10000 + end;
+	}
 
 	/**
 	 * Please note that empty set is not a member of empty set.

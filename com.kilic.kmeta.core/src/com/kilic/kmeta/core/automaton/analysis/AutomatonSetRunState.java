@@ -55,15 +55,19 @@ class AutomatonSetRunState {
 			if (t instanceof CallAutomatonTransition) {
 				AutomatonRunState newRunState = new AutomatonRunState(state);
 				newRunState.call((CallAutomatonTransition) t);
-				result.add(newRunState);
+				result.addAll(getAllStatesWithCallsAndReturns(newRunState));
 			}
 		}
 
 		// Adding return
-		if (currentLocalState.isFinalState() && state.getCallStack().size() > 1) {
-			AutomatonRunState newRunState = new AutomatonRunState(state);
-			newRunState.returnFromCall();
-			result.add(newRunState);
+		if (currentLocalState.isFinalState() ) {
+			result.add(state);
+		
+			if(state.getCallStack().size() > 1) {
+				AutomatonRunState newRunState = new AutomatonRunState(state);
+				newRunState.returnFromCall();
+				result.addAll(getAllStatesWithCallsAndReturns(newRunState));
+			}
 		}
 
 		return result;
@@ -116,14 +120,18 @@ class AutomatonSetRunState {
 	}
 
 	public boolean hasIntersection() {
+		int finalCount = 0;
 		for (Set<AutomatonRunState> set : automatonSetStates.values()) {
 			for (AutomatonRunState state : set) {
-				if (!state.isFinal())
-					return false;
+				if (state.isFinal())
+					finalCount++;
+				
+				if(finalCount>1)
+					return true;
 			}
 		}
 
-		return true;
+		return false;
 	}
 
 	@Override
