@@ -1,7 +1,5 @@
 package com.kilic.kmeta.core.tests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 
@@ -19,11 +17,15 @@ import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 
+import static org.junit.Assert.assertEquals;
+
 public class AutomatonIntersectionTests {
 	Automaton DecL;
 	Automaton HexL;
 	Automaton IncrE;
 	Automaton AddE;
+	Automaton MulE;
+	Automaton TerroristE;
 
 	String desktopPath;
 
@@ -47,8 +49,14 @@ public class AutomatonIntersectionTests {
 		).convertNFAToDFA();
 		HexL.setLabel("HexL");
 		
+		TerroristE = Utils.createNFAFromSyntax(
+			new StringExpr("0x16*2+8+++2*0xFFFF")
+		).convertNFAToDFA();
+		TerroristE.setLabel("TerroristE");
+		
 		createIncrE();
 		createAddE();
+		createMulE();
 		// @formatter:on
 
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
@@ -61,51 +69,83 @@ public class AutomatonIntersectionTests {
 		AutomatonState startState = IncrE.createState();
 		AutomatonState midState = IncrE.createState();
 		AutomatonState finalState = IncrE.createState();
-		
+
 		IncrE.setStartState(startState);
 		finalState.setFinal(true);
-		
+
 		IncrE.createCallTransition(startState, midState, DecL);
 		IncrE.createCallTransition(startState, midState, HexL);
 		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
 	}
-	
+
 	private void createAddE() {
 		AddE = new Automaton();
-		AddE.setLabel("AddE");
-		
+
 		AutomatonState s0 = AddE.createState();
 		AutomatonState s1 = AddE.createState();
 		AutomatonState s2 = AddE.createState();
 		AutomatonState s3 = AddE.createState();
-		
+
 		AddE.setStartState(s0);
 		s3.setFinal(true);
-		
+
 		AddE.createCallTransition(s0, s1, DecL);
 		AddE.createCallTransition(s0, s1, HexL);
 		AddE.createCallTransition(s0, s1, IncrE);
 		AddE.createMatcherTransition(s1, s2, new StringMatcher("+"));
-		AddE.createCallTransition(s2, s3, AddE);
-		AddE.createEpsilonTransition(s3, s2);
-		
+		AddE.createCallTransition(s2, s3, DecL);
+		AddE.createCallTransition(s2, s3, HexL);
+		AddE.createCallTransition(s2, s3, IncrE);
+		AddE.createEpsilonTransition(s3, s1);
+
 		AddE = AddE.convertNFAToDFA();
+		AddE.setLabel("AddE");
+	}
+
+	private void createMulE() {
+		MulE = new Automaton();
+
+		AutomatonState s0 = MulE.createState();
+		AutomatonState s1 = MulE.createState();
+		AutomatonState s2 = MulE.createState();
+		AutomatonState s3 = MulE.createState();
+
+		MulE.setStartState(s0);
+		s3.setFinal(true);
+
+		MulE.createCallTransition(s0, s1, AddE);
+		MulE.createCallTransition(s0, s1, IncrE);
+		MulE.createCallTransition(s0, s1, DecL);
+		MulE.createCallTransition(s0, s1, HexL);
+		MulE.createMatcherTransition(s1, s2, new StringMatcher("*"));
+		MulE.createCallTransition(s2, s3, AddE);
+		MulE.createCallTransition(s2, s3, DecL);
+		MulE.createCallTransition(s2, s3, HexL);
+		MulE.createCallTransition(s2, s3, IncrE);
+		MulE.createEpsilonTransition(s3, s1);
+
+		MulE = MulE.convertNFAToDFA();
+		MulE.setLabel("MulE");
 	}
 
 	@Test
 	public void findIntersectionTest() {
 		HashSet<Automaton> automatons = new HashSet<Automaton>();
-		
+
 		automatons.add(IncrE);
 		automatons.add(DecL);
 		automatons.add(HexL);
 		automatons.add(AddE);
+		automatons.add(MulE);
+		automatons.add(TerroristE);
 
 		try {
 			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
 			Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
 			Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
 			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
+			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
+			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -114,7 +154,7 @@ public class AutomatonIntersectionTests {
 
 		assertEquals(ic.hasIntersection(), false);
 	}
-	
+
 	@Test
 	public void intersectionTest1() {
 		// @formatter:off
