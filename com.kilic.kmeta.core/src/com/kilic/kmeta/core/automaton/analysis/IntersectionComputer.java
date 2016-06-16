@@ -39,12 +39,12 @@ public class IntersectionComputer {
 		for (IMatcher m : currentState.getAllMatchers()) {
 			ArrayList<IMatcher> newMatcherHistory = new ArrayList<>(matcherHistory);
 			AutomatonSetRunState newState = new AutomatonSetRunState(currentState);
-			System.out.println("current State = " + newState.toString());
-			System.out.println("matchers = " + currentState.getAllMatchers().toString());
+			//System.out.println("current State = " + newState.toString());
+			//System.out.println("matchers = " + currentState.getAllMatchers().toString());
 			newMatcherHistory.add(m);
-			System.out.println("after matcher seq: " + newMatcherHistory);
+			//System.out.println("after matcher seq: " + newMatcherHistory);
 			newState.applyMatcher(m);
-			System.out.println("new State = " + newState.toString());
+			//System.out.println("new State = " + newState.toString());
 
 			int totalParallelRuns = 0;
 			for (Set<AutomatonRunState> set : newState.getStates().values())
@@ -64,8 +64,7 @@ public class IntersectionComputer {
 				if (checkIntersections(newState, newMatcherHistory, stateSetHistory))
 					return true;
 			} else {
-				System.out.println("StateSet already exists for sequence" + stateSetHistory.get(newState));
-
+				//System.out.println("StateSet already exists for sequence" + stateSetHistory.get(newState));
 			}
 		}
 

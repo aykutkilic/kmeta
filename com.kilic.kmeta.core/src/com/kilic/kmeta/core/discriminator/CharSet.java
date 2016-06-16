@@ -22,8 +22,10 @@ public class CharSet {
 		return this;
 	}
 
-	public CharSet addSingleton(char singleton) {
-		ranges.add(new CharRange(singleton));
+	public CharSet addSingleton(char... singletons) {
+		for( char singleton : singletons )
+			ranges.add(new CharRange(singleton));
+		
 		simplifyRanges();
 		return this;
 	}

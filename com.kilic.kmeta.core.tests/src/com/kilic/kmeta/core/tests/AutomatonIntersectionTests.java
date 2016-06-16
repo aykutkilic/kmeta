@@ -8,11 +8,14 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.automaton.Automaton;
 import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.automaton.CharSetMatcher;
 import com.kilic.kmeta.core.automaton.StringMatcher;
 import com.kilic.kmeta.core.automaton.analysis.IntersectionComputer;
 import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
+import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
@@ -22,6 +25,7 @@ import static org.junit.Assert.assertEquals;
 public class AutomatonIntersectionTests {
 	Automaton DecL;
 	Automaton HexL;
+	Automaton RealL;
 	Automaton IncrE;
 	Automaton AddE;
 	Automaton MulE;
@@ -51,10 +55,11 @@ public class AutomatonIntersectionTests {
 		HexL.setLabel("HexL");
 		
 		TerroristE = Utils.createNFAFromSyntax(
-			new StringExpr("0xAAA*1+2+3+6+5+4*5+++52*5")
+			new StringExpr("0xAAA*1+2+3+6+5+-4e-34*5+++52*5")
 		).convertNFAToDFA();
 		TerroristE.setLabel("TerroristE");
 		
+		createRealL();
 		createNegE();
 		createIncrE();
 		createAddE();
@@ -65,6 +70,46 @@ public class AutomatonIntersectionTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
 	}
 
+	private void createRealL() {
+		CharSet eE = new CharSet();
+		eE.addSingleton('e');
+		eE.addSingleton('E');
+		CharSet pM = new CharSet();
+		pM.addSingleton('+');
+		pM.addSingleton('-');
+
+		// @formatter:off
+		ISyntaxExpr E = new SequenceExpr(
+			new CharSetExpr(eE),
+			new MultiplicityExpr(Multiplicity.OPTIONAL, 
+				new CharSetExpr(pM)),
+			new MultiplicityExpr(Multiplicity.ONEORMORE, 
+				new CharSetExpr(CharSet.DEC))
+		);
+
+		ISyntaxExpr RealLSyn = new AlternativeExpr(
+			new SequenceExpr(
+				new MultiplicityExpr(Multiplicity.ANY, 
+					new CharSetExpr(CharSet.DEC)),
+				new StringExpr("."), 
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.DEC)),
+				new MultiplicityExpr(Multiplicity.OPTIONAL, 
+					E)
+			),
+
+			new SequenceExpr(
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.DEC)), 
+				E 
+			)
+		);
+
+		// @formatter:on
+
+		RealL = Utils.createNFAFromSyntax(RealLSyn).convertNFAToDFA();
+	}
+	
 	private void createNegE() {
 		NegE = new Automaton();
 		NegE.setLabel("NegE");
@@ -76,9 +121,10 @@ public class AutomatonIntersectionTests {
 		NegE.setStartState(startState);
 		finalState.setFinal(true);
 
-		NegE.createMatcherTransition(startState, midState, new StringMatcher("+"));
+		NegE.createMatcherTransition(startState, midState, new CharSetMatcher(new CharSet().addSingleton('+','-')));
 		NegE.createCallTransition(midState, finalState, HexL);
 		NegE.createCallTransition(midState, finalState, DecL);
+		NegE.createCallTransition(midState, finalState, RealL);
 	}
 
 	private void createIncrE() {
@@ -95,7 +141,9 @@ public class AutomatonIntersectionTests {
 		IncrE.createCallTransition(startState, midState, NegE);
 		IncrE.createCallTransition(startState, midState, DecL);
 		IncrE.createCallTransition(startState, midState, HexL);
+		IncrE.createCallTransition(startState, midState, RealL);
 		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("++"));
+		IncrE.createMatcherTransition(midState, finalState, new StringMatcher("--"));
 	}
 
 	private void createAddE() {
@@ -112,11 +160,13 @@ public class AutomatonIntersectionTests {
 		AddE.createCallTransition(s0, s1, NegE);
 		AddE.createCallTransition(s0, s1, DecL);
 		AddE.createCallTransition(s0, s1, HexL);
+		AddE.createCallTransition(s0, s1, RealL);
 		AddE.createCallTransition(s0, s1, IncrE);
-		AddE.createMatcherTransition(s1, s2, new StringMatcher("+"));
+		AddE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('+','-')));
 		AddE.createCallTransition(s2, s3, NegE);
 		AddE.createCallTransition(s2, s3, DecL);
 		AddE.createCallTransition(s2, s3, HexL);
+		AddE.createCallTransition(s2, s3, RealL);
 		AddE.createCallTransition(s2, s3, IncrE);
 		AddE.createEpsilonTransition(s3, s1);
 
@@ -140,11 +190,13 @@ public class AutomatonIntersectionTests {
 		MulE.createCallTransition(s0, s1, IncrE);
 		MulE.createCallTransition(s0, s1, DecL);
 		MulE.createCallTransition(s0, s1, HexL);
-		MulE.createMatcherTransition(s1, s2, new StringMatcher("*"));
+		MulE.createCallTransition(s0, s1, RealL);
+		MulE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('*','/')));
 		MulE.createCallTransition(s2, s3, NegE);
 		MulE.createCallTransition(s2, s3, AddE);
 		MulE.createCallTransition(s2, s3, DecL);
 		MulE.createCallTransition(s2, s3, HexL);
+		MulE.createCallTransition(s2, s3, RealL);
 		MulE.createCallTransition(s2, s3, IncrE);
 		MulE.createEpsilonTransition(s3, s1);
 
@@ -159,22 +211,23 @@ public class AutomatonIntersectionTests {
 		automatons.add(IncrE);
 		automatons.add(DecL);
 		automatons.add(HexL);
+		automatons.add(RealL);
 		automatons.add(AddE);
 		automatons.add(MulE);
 		automatons.add(NegE);
-		automatons.add(TerroristE);
+		//automatons.add(TerroristE);
 
-		try {
+/*		try {
 			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
 			Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
 			Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
 			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
 			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
 			Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
-			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz");
+			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz"); 
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
-		}
+		}*/
 
 		IntersectionComputer ic = new IntersectionComputer(automatons);
 
