@@ -111,7 +111,7 @@ public class AutomatonIntersectionTests {
 		RealL = Utils.createNFAFromSyntax(RealLSyn).convertNFAToDFA();
 		RealL.setLabel("RealL");
 	}
-	
+
 	private void createNegE() {
 		NegE = new Automaton();
 		NegE.setLabel("NegE");
@@ -123,7 +123,7 @@ public class AutomatonIntersectionTests {
 		NegE.setStartState(startState);
 		finalState.setFinal(true);
 
-		NegE.createMatcherTransition(startState, midState, new CharSetMatcher(new CharSet().addSingleton('+','-')));
+		NegE.createMatcherTransition(startState, midState, new CharSetMatcher(new CharSet().addSingleton('+', '-')));
 		NegE.createCallTransition(midState, finalState, HexL);
 		NegE.createCallTransition(midState, finalState, DecL);
 		NegE.createCallTransition(midState, finalState, RealL);
@@ -164,7 +164,7 @@ public class AutomatonIntersectionTests {
 		AddE.createCallTransition(s0, s1, HexL);
 		AddE.createCallTransition(s0, s1, RealL);
 		AddE.createCallTransition(s0, s1, IncrE);
-		AddE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('+','-')));
+		AddE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('+', '-')));
 		AddE.createCallTransition(s2, s3, NegE);
 		AddE.createCallTransition(s2, s3, DecL);
 		AddE.createCallTransition(s2, s3, HexL);
@@ -193,7 +193,7 @@ public class AutomatonIntersectionTests {
 		MulE.createCallTransition(s0, s1, DecL);
 		MulE.createCallTransition(s0, s1, HexL);
 		MulE.createCallTransition(s0, s1, RealL);
-		MulE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('*','/')));
+		MulE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('*', '/')));
 		MulE.createCallTransition(s2, s3, NegE);
 		MulE.createCallTransition(s2, s3, AddE);
 		MulE.createCallTransition(s2, s3, DecL);
@@ -217,7 +217,7 @@ public class AutomatonIntersectionTests {
 		automatons.add(AddE);
 		automatons.add(MulE);
 		automatons.add(NegE);
-		//automatons.add(TerroristE);
+		// automatons.add(TerroristE);
 
 		try {
 			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
@@ -226,7 +226,7 @@ public class AutomatonIntersectionTests {
 			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
 			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
 			Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
-			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz"); 
+			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -235,23 +235,26 @@ public class AutomatonIntersectionTests {
 
 		assertEquals(ic.hasIntersection(), false);
 		automatons.clear();
-		
+
 		automatons.add(DecL);
 		automatons.add(HexL);
 		automatons.add(RealL);
 
 		DiscriminationAutomatonComputer dc = new DiscriminationAutomatonComputer(automatons);
 		dc.createDiscriminationAutomaton();
-		
+
 		try {
 			Utils.dumpAutomatonToFile(dc.getDiscriminatorAutomaton(), desktopPath + "dc.graphviz");
-			/*Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
-			Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
-			Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
-			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
-			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
-			Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
-			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz");*/ 
+			/*
+			 * Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
+			 * Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
+			 * Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
+			 * Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
+			 * Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
+			 * Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
+			 * Utils.dumpAutomatonToFile(TerroristE, desktopPath +
+			 * "TerroristE.graphviz");
+			 */
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}

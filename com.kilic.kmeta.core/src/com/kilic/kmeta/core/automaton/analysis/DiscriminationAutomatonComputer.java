@@ -20,42 +20,42 @@ public class DiscriminationAutomatonComputer {
 	public DiscriminationAutomatonComputer(Set<Automaton> automatons) {
 		this.automatons = automatons;
 	}
-	
-	public Automaton getDiscriminatorAutomaton(){
+
+	public Automaton getDiscriminatorAutomaton() {
 		return discriminatorAutomaton;
 	}
-	
+
 	public Automaton createDiscriminationAutomaton() {
 		discriminatorAutomaton = new Automaton();
 		stateSetHistory = new HashMap<>();
-		
+
 		ParallelAutomatonRunState initState = new ParallelAutomatonRunState(automatons);
 		AutomatonState initDfaState = getDfaStateForRunState(initState);
 		discriminatorAutomaton.setStartState(initDfaState);
 		createAutomaton(initState, null);
-		
+
 		return discriminatorAutomaton;
 	}
-		
+
 	AutomatonState getDfaStateForRunState(ParallelAutomatonRunState state) {
 		AutomatonState result;
-		if(!stateSetHistory.containsKey(state)) {
+		if (!stateSetHistory.containsKey(state)) {
 			result = discriminatorAutomaton.createState();
 			stateSetHistory.put(state, result);
 		} else
 			result = stateSetHistory.get(state);
-		
+
 		return result;
 	}
-	
-	boolean createAutomaton(ParallelAutomatonRunState currentState, List<CharSet> matcherHistory) {
+
+	void createAutomaton(ParallelAutomatonRunState currentState, List<CharSet> matcherHistory) {
 		if (matcherHistory == null)
 			matcherHistory = new ArrayList<>();
 
 		AutomatonState currentDfaState = getDfaStateForRunState(currentState);
-		
+
 		Set<CharSet> dcsSet = getDistinctCharSets(currentState);
-		for (CharSet dcs : dcsSet) {			
+		for (CharSet dcs : dcsSet) {
 			ArrayList<CharSet> newMatcherHistory = new ArrayList<>(matcherHistory);
 			ParallelAutomatonRunState newState = new ParallelAutomatonRunState(currentState);
 			System.out.println("current State = " + newState.toString());
@@ -65,36 +65,30 @@ public class DiscriminationAutomatonComputer {
 			newState.applyCharSet(dcs);
 			System.out.println("new State = " + newState.toString());
 
+			boolean newStateAlreadyExists = stateSetHistory.containsKey(newState);
 			AutomatonState toDfaState = getDfaStateForRunState(newState);
 			discriminatorAutomaton.createMatcherTransition(currentDfaState, toDfaState, new CharSetMatcher(dcs));
-			
+
 			int totalParallelRuns = 0;
 			int totalFinalStates = 0;
 			for (Set<AutomatonRunState> set : newState.getStates().values()) {
 				totalParallelRuns += set.size();
-				for(AutomatonRunState runState : set) {
-					if(runState.isFinal())
+				for (AutomatonRunState runState : set) {
+					if (runState.isFinal())
 						totalFinalStates++;
 				}
 			}
 
-			toDfaState.setFinal(totalFinalStates == 1);
-				
-			if (totalParallelRuns < 2) {
-				continue;
-			}
+			toDfaState.setFinal(totalFinalStates == 1 || totalParallelRuns == 1);
 
-			if (!stateSetHistory.containsKey(newState)) {
-				if (createAutomaton(newState, newMatcherHistory))
-					return true;
-			} else {
-				//System.out.println("StateSet already exists for sequence" + stateSetHistory.get(newState));
-			}
+			if (totalParallelRuns < 2)
+				continue;
+
+			if (!newStateAlreadyExists)
+				createAutomaton(newState, newMatcherHistory);
 		}
-		
-		return true;
 	}
-	
+
 	public Set<CharSet> getDistinctCharSets(ParallelAutomatonRunState state) {
 		return CharSet.getDistinctCharSets(state.getAllMatchers());
 	}
