@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.discriminator;
+package com.kilic.kmeta.core.util;
 
 import java.util.ArrayList;
 import java.util.List;

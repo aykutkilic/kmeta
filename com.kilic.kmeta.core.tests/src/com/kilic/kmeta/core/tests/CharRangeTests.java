@@ -1,7 +1,9 @@
 package com.kilic.kmeta.core.tests;
 
 import org.junit.Test;
-import com.kilic.kmeta.core.discriminator.CharRange;
+
+import com.kilic.kmeta.core.util.CharRange;
+
 import static org.junit.Assert.*;
 
 public class CharRangeTests {

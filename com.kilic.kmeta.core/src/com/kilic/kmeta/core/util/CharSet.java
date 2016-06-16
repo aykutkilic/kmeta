@@ -1,9 +1,12 @@
-package com.kilic.kmeta.core.discriminator;
+package com.kilic.kmeta.core.util;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class CharSet {
 	List<CharRange> ranges = new ArrayList<>();
@@ -28,6 +31,14 @@ public class CharSet {
 		
 		simplifyRanges();
 		return this;
+	}
+	
+	public boolean isEmpty() {
+		for(CharRange r : ranges)
+			if(!r.isEmpty())
+				return false;
+		
+		return true;
 	}
 
 	private void simplifyRanges() {
@@ -134,6 +145,40 @@ public class CharSet {
 		}
 
 		return false;
+	}
+	
+	public static Set<CharSet> getDistinctCharSets(Set<CharSet> charSets){
+		Set<CharSet> result = new HashSet<>();
+		
+		for( CharSet cs : charSets) {
+			if(result.isEmpty()) {
+				result.add(cs);
+				continue;
+			}
+			
+			for( CharSet dcs : new HashSet<>(result) ) {
+				if(dcs.equals(cs))
+					continue;
+				
+				CharSet intersection = dcs.getInstersection(cs);
+				
+				if(intersection.isEmpty()) {
+					result.add(cs);
+				} else {
+					result.remove(dcs);
+					
+					CharSet dcsMinusCs = dcs.getSubtraction(cs);
+					if(!dcsMinusCs.isEmpty())
+						result.add(dcsMinusCs);
+					
+					result.add(intersection);
+					
+					cs = cs.getSubtraction(dcs);
+				}
+			}
+		}
+		
+		return result;
 	}
 
 	@Override

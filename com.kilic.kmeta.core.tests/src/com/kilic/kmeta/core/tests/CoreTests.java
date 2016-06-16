@@ -3,7 +3,6 @@ package com.kilic.kmeta.core.tests;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MClass;
 import com.kilic.kmeta.core.meta.MModel;
@@ -15,6 +14,7 @@ import com.kilic.kmeta.core.syntax.FeatureRef;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class CoreTests {
 	MModel kmeta;

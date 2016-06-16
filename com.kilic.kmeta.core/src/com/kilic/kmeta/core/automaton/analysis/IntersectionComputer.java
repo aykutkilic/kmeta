@@ -14,7 +14,7 @@ import com.kilic.kmeta.core.automaton.CharSetMatcher;
 import com.kilic.kmeta.core.automaton.IAutomatonTransition;
 import com.kilic.kmeta.core.automaton.IMatcher;
 import com.kilic.kmeta.core.automaton.MatcherTransition;
-import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class IntersectionComputer {
 	Set<Automaton> automatons;
@@ -24,26 +24,26 @@ public class IntersectionComputer {
 	}
 
 	public boolean hasIntersection() {
-		AutomatonSetRunState initState = new AutomatonSetRunState(automatons);
+		ParallelAutomatonRunState initState = new ParallelAutomatonRunState(automatons);
 		return checkIntersections(initState, null, null);
 	}
 
-	boolean checkIntersections(AutomatonSetRunState currentState, List<IMatcher> matcherHistory,
-			Map<AutomatonSetRunState, List<IMatcher>> stateSetHistory) {
+	boolean checkIntersections(ParallelAutomatonRunState currentState, List<CharSet> matcherHistory,
+			Map<ParallelAutomatonRunState, List<CharSet>> stateSetHistory) {
 		if (matcherHistory == null)
 			matcherHistory = new ArrayList<>();
 
 		if (stateSetHistory == null)
 			stateSetHistory = new HashMap<>();
 
-		for (IMatcher m : currentState.getAllMatchers()) {
-			ArrayList<IMatcher> newMatcherHistory = new ArrayList<>(matcherHistory);
-			AutomatonSetRunState newState = new AutomatonSetRunState(currentState);
+		for (CharSet cs : currentState.getAllMatchers()) {
+			ArrayList<CharSet> newMatcherHistory = new ArrayList<>(matcherHistory);
+			ParallelAutomatonRunState newState = new ParallelAutomatonRunState(currentState);
 			//System.out.println("current State = " + newState.toString());
 			//System.out.println("matchers = " + currentState.getAllMatchers().toString());
-			newMatcherHistory.add(m);
+			newMatcherHistory.add(cs);
 			//System.out.println("after matcher seq: " + newMatcherHistory);
-			newState.applyMatcher(m);
+			newState.applyCharSet(cs);
 			//System.out.println("new State = " + newState.toString());
 
 			int totalParallelRuns = 0;

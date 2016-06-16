@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.automaton;
 
-import com.kilic.kmeta.core.discriminator.CharSet;
 import com.kilic.kmeta.core.stream.IStream;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class CharSetMatcher implements IMatcher {
 	CharSet charSetToMatch;

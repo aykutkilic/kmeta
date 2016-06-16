@@ -16,19 +16,19 @@ import com.kilic.kmeta.core.automaton.CharSetMatcher;
 import com.kilic.kmeta.core.automaton.IAutomatonTransition;
 import com.kilic.kmeta.core.automaton.IMatcher;
 import com.kilic.kmeta.core.automaton.MatcherTransition;
-import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.util.CharSet;
 
 // used to keep the states of parallel execution set of automatons.
-class AutomatonSetRunState {
+class ParallelAutomatonRunState {
 	public Map<Automaton, Set<AutomatonRunState>> automatonSetStates = new HashMap<>();
 
-	public AutomatonSetRunState(Set<Automaton> automatons) {
+	public ParallelAutomatonRunState(Set<Automaton> automatons) {
 		for (Automaton a : automatons) {
 			automatonSetStates.put(a, getAllStatesWithCallsAndReturns(new AutomatonRunState(a)));
 		}
 	}
 
-	public AutomatonSetRunState(AutomatonSetRunState other) {
+	public ParallelAutomatonRunState(ParallelAutomatonRunState other) {
 		automatonSetStates = new HashMap<>();
 		for (Entry<Automaton, Set<AutomatonRunState>> entry : other.automatonSetStates.entrySet()) {
 			Set<AutomatonRunState> newSet = new HashSet<>();
@@ -75,13 +75,17 @@ class AutomatonSetRunState {
 		return result;
 	}
 
-	public Set<IMatcher> getAllMatchers() {
-		Set<IMatcher> result = new HashSet<>();
+	public Set<CharSet> getAllMatchers() {
+		Set<CharSet> result = new HashSet<>();
 
 		for (Set<AutomatonRunState> set : automatonSetStates.values()) {
 			for (AutomatonRunState runState : set) {
 				for (MatcherTransition t : IntersectionComputer.getMatcherTransitions(runState)) {
-					result.add(t.getMatcher());
+					IMatcher m = t.getMatcher();
+					if( m instanceof CharSetMatcher ) {
+						result.add(((CharSetMatcher) m).getCharSet());
+					} else
+						assert(false);
 				}
 			}
 		}
@@ -89,7 +93,7 @@ class AutomatonSetRunState {
 		return result;
 	}
 
-	public void applyMatcher(IMatcher matcher) {
+	public void applyCharSet(CharSet charSet) {
 		Set<Automaton> deadAutomatons = new HashSet<>();
 
 		for (Map.Entry<Automaton, Set<AutomatonRunState>> entry : this.automatonSetStates.entrySet()) {
@@ -100,12 +104,9 @@ class AutomatonSetRunState {
 
 			for (AutomatonRunState runState : runStates) {
 				AutomatonRunState newState = new AutomatonRunState(runState);
-				if (matcher instanceof CharSetMatcher) {
-					CharSet charSet = ((CharSetMatcher) matcher).getCharSet();
-					if (IntersectionComputer.moveRunStateByIntersection(newState, charSet))
-						newRuns.addAll(getAllStatesWithCallsAndReturns(newState));
-					deadRuns.add(runState);
-				}
+				if (IntersectionComputer.moveRunStateByIntersection(newState, charSet))
+					newRuns.addAll(getAllStatesWithCallsAndReturns(newState));
+				deadRuns.add(runState);
 			}
 
 			runStates.removeAll(deadRuns);
@@ -173,8 +174,8 @@ class AutomatonSetRunState {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof AutomatonSetRunState) {
-			AutomatonSetRunState other = (AutomatonSetRunState) obj;
+		if (obj instanceof ParallelAutomatonRunState) {
+			ParallelAutomatonRunState other = (ParallelAutomatonRunState) obj;
 			return automatonSetStates.equals(other.automatonSetStates);
 			/*
 			 * AutomatonSetRunState other = (AutomatonSetRunState) obj; for

@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class Automaton {
 	String label;

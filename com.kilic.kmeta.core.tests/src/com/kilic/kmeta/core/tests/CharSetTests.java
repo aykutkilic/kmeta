@@ -1,9 +1,12 @@
 package com.kilic.kmeta.core.tests;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.junit.Test;
 
-import com.kilic.kmeta.core.discriminator.CharRange;
-import com.kilic.kmeta.core.discriminator.CharSet;
+import com.kilic.kmeta.core.util.CharRange;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class CharSetTests {
 	@Test
@@ -36,5 +39,17 @@ public class CharSetTests {
 
 		System.out.println(new CharSet().addRange(new CharRange('0', '3')).addRange(new CharRange('6', '9'))
 				.getSubtraction(new CharSet().addSingleton('2').addSingleton('7')));
+	}
+	
+	@Test
+	public void distinctionTest() {
+		Set<CharSet> input = new HashSet<>();
+		
+		input.add(CharSet.DEC);
+		input.add(CharSet.HEX);
+		input.add(CharSet.LETTER);
+		input.add(new CharSet().addSingleton('a','y','k','u','t'));
+		
+		System.out.println(CharSet.getDistinctCharSets(input));
 	}
 }

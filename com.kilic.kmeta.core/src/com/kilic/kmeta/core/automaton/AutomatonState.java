@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.automaton;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AutomatonState {
+public class AutomatonState implements IAttachable {
 	private static int stateIndexCounter = 0;
 
 	Set<IAutomatonTransition> in, out;
