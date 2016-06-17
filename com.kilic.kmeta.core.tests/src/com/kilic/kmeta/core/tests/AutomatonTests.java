@@ -1,7 +1,6 @@
 package com.kilic.kmeta.core.tests;
 
 import java.io.FileNotFoundException;
-import java.io.PrintWriter;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -20,11 +19,16 @@ import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class AutomatonTests {
-	Automaton nfa;
 	String desktopPath;
 
 	@Before
 	public void init() {
+		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
+	}
+
+	@Test
+	public void testNFADFAConversion() {
+		Automaton nfa;
 		// example in
 		// http://web.cecs.pdx.edu/~harry/compilers/slides/LexicalPart3.pdf
 		nfa = new Automaton();
@@ -48,12 +52,7 @@ public class AutomatonTests {
 
 		nfa.setStartState(s[0]);
 		s[10].setFinal(true);
-		
-		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
-	}
 
-	@Test
-	public void testNFADFAConversion() {
 		System.out.println(nfa.toString());
 
 		Automaton dfa = nfa.convertNFAToDFA();
@@ -109,8 +108,8 @@ public class AutomatonTests {
 		System.out.println(dfa.toString());
 
 		StringStream stream = new StringStream("[A,null,null,B,C,D]");
-		//System.out.println(dfa.match(stream));
-		
+		// System.out.println(dfa.match(stream));
+
 		try {
 			Utils.dumpAutomatonToFile(dfa, desktopPath + "CallAutomaton.graphviz");
 		} catch (FileNotFoundException e) {
@@ -156,16 +155,14 @@ public class AutomatonTests {
 
 		// @formatter:on
 
-		Automaton nfa = Utils.createNFAFromSyntax(RealL);
-		Automaton dfa = nfa.convertNFAToDFA();
-		System.out.println(dfa.toString());
-
 		try {
+			Automaton nfa = Utils.createNFAFromSyntax(RealL);
+			Utils.dumpAutomatonToFile(nfa, desktopPath + "RealLNFA.graphviz");
+			Automaton dfa = nfa.convertNFAToDFA();
 			Utils.dumpAutomatonToFile(dfa, desktopPath + "RealL.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 	}
-	
-	
+
 }

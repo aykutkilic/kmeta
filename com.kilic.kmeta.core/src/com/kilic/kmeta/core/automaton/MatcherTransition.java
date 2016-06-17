@@ -4,8 +4,8 @@ public class MatcherTransition extends AutomatonTransitionBase {
 	private IMatcher matcher;
 
 	public MatcherTransition(AutomatonState fromState, AutomatonState toState, IMatcher matcher) {
-		super(fromState,toState);
-		assert(matcher!=null);
+		super(fromState, toState);
+		assert (matcher != null);
 		this.matcher = matcher;
 	}
 
@@ -13,14 +13,21 @@ public class MatcherTransition extends AutomatonTransitionBase {
 		return matcher;
 	}
 
+	@Override
 	public String getLabel() {
 		return matcher.toString();
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return matcher.hashCode();
+	}
+
+	@Override
 	public boolean isEquivalent(IAutomatonTransition other) {
-		if(other instanceof MatcherTransition)
+		if (other instanceof MatcherTransition)
 			return matcher.equals(((MatcherTransition) other).matcher);
-			
+
 		return false;
 	}
 }

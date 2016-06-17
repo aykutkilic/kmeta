@@ -1,5 +1,7 @@
 package com.kilic.kmeta.core.tests;
 
+import static org.junit.Assert.assertEquals;
+
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 
@@ -21,8 +23,6 @@ import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
 
-import static org.junit.Assert.assertEquals;
-
 public class AutomatonIntersectionTests {
 	Automaton DecL;
 	Automaton HexL;
@@ -37,6 +37,8 @@ public class AutomatonIntersectionTests {
 
 	@Before
 	public void init() {
+		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
+
 		// @formatter:off
 		DecL = Utils.createNFAFromSyntax(
 			new MultiplicityExpr(Multiplicity.ONEORMORE, 
@@ -59,16 +61,13 @@ public class AutomatonIntersectionTests {
 			new StringExpr("0xAAA*1+2+3+6+5+-4e-34*5+++52*5")
 		).convertNFAToDFA();
 		TerroristE.setLabel("TerroristE");
-		
+		// @formatter:on
+
 		createRealL();
 		createNegE();
 		createIncrE();
 		createAddE();
 		createMulE();
-		
-		// @formatter:on
-
-		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
 	}
 
 	private void createRealL() {
@@ -108,7 +107,15 @@ public class AutomatonIntersectionTests {
 
 		// @formatter:on
 
-		RealL = Utils.createNFAFromSyntax(RealLSyn).convertNFAToDFA();
+		Automaton RealLNFA = Utils.createNFAFromSyntax(RealLSyn);
+
+		try {
+			Utils.dumpAutomatonToFile(RealLNFA, desktopPath + "RealLNFA.graphviz");
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
+
+		RealL = RealLNFA.convertNFAToDFA();
 		RealL.setLabel("RealL");
 	}
 
@@ -223,6 +230,7 @@ public class AutomatonIntersectionTests {
 			Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
 			Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
 			Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
+			Utils.dumpAutomatonToFile(RealL, desktopPath + "RealL.graphviz");
 			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
 			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
 			Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
@@ -245,16 +253,6 @@ public class AutomatonIntersectionTests {
 
 		try {
 			Utils.dumpAutomatonToFile(dc.getDiscriminatorAutomaton(), desktopPath + "dc.graphviz");
-			/*
-			 * Utils.dumpAutomatonToFile(IncrE, desktopPath + "IncrE.graphviz");
-			 * Utils.dumpAutomatonToFile(DecL, desktopPath + "DecL.graphviz");
-			 * Utils.dumpAutomatonToFile(HexL, desktopPath + "HexL.graphviz");
-			 * Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
-			 * Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
-			 * Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
-			 * Utils.dumpAutomatonToFile(TerroristE, desktopPath +
-			 * "TerroristE.graphviz");
-			 */
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
