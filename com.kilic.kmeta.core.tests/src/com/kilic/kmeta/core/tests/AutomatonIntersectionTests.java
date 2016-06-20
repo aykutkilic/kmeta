@@ -1,7 +1,5 @@
 package com.kilic.kmeta.core.tests;
 
-import static org.junit.Assert.assertEquals;
-
 import java.io.FileNotFoundException;
 import java.util.HashSet;
 
@@ -23,6 +21,8 @@ import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
 
+import static org.junit.Assert.assertEquals;
+
 public class AutomatonIntersectionTests {
 	Automaton DecL;
 	Automaton HexL;
@@ -30,6 +30,7 @@ public class AutomatonIntersectionTests {
 	Automaton IncrE;
 	Automaton AddE;
 	Automaton MulE;
+	Automaton ParenE;
 	Automaton NegE;
 	Automaton TerroristE;
 
@@ -66,8 +67,9 @@ public class AutomatonIntersectionTests {
 		createRealL();
 		createNegE();
 		createIncrE();
-		createAddE();
 		createMulE();
+		createAddE();
+		createParenE();
 	}
 
 	private void createRealL() {
@@ -166,12 +168,14 @@ public class AutomatonIntersectionTests {
 		AddE.setStartState(s0);
 		s3.setFinal(true);
 
+		AddE.createCallTransition(s0, s1, MulE);
 		AddE.createCallTransition(s0, s1, NegE);
 		AddE.createCallTransition(s0, s1, DecL);
 		AddE.createCallTransition(s0, s1, HexL);
 		AddE.createCallTransition(s0, s1, RealL);
 		AddE.createCallTransition(s0, s1, IncrE);
 		AddE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('+', '-')));
+		AddE.createCallTransition(s0, s1, MulE);
 		AddE.createCallTransition(s2, s3, NegE);
 		AddE.createCallTransition(s2, s3, DecL);
 		AddE.createCallTransition(s2, s3, HexL);
@@ -195,14 +199,12 @@ public class AutomatonIntersectionTests {
 		s3.setFinal(true);
 
 		MulE.createCallTransition(s0, s1, NegE);
-		MulE.createCallTransition(s0, s1, AddE);
 		MulE.createCallTransition(s0, s1, IncrE);
 		MulE.createCallTransition(s0, s1, DecL);
 		MulE.createCallTransition(s0, s1, HexL);
 		MulE.createCallTransition(s0, s1, RealL);
 		MulE.createMatcherTransition(s1, s2, new CharSetMatcher(new CharSet().addSingleton('*', '/')));
 		MulE.createCallTransition(s2, s3, NegE);
-		MulE.createCallTransition(s2, s3, AddE);
 		MulE.createCallTransition(s2, s3, DecL);
 		MulE.createCallTransition(s2, s3, HexL);
 		MulE.createCallTransition(s2, s3, RealL);
@@ -213,17 +215,43 @@ public class AutomatonIntersectionTests {
 		MulE.setLabel("MulE");
 	}
 
+	private void createParenE() {
+		ParenE = new Automaton();
+
+		AutomatonState s0 = ParenE.createState();
+		AutomatonState s1 = ParenE.createState();
+		AutomatonState s2 = ParenE.createState();
+		AutomatonState s3 = ParenE.createState();
+
+		ParenE.setStartState(s0);
+		s3.setFinal(true);
+
+		ParenE.createMatcherTransition(s0, s1, new CharSetMatcher(new CharSet().addSingleton('(')));
+		ParenE.createCallTransition(s1, s2, NegE);
+		ParenE.createCallTransition(s1, s2, AddE);
+		ParenE.createCallTransition(s1, s2, MulE);
+		ParenE.createCallTransition(s1, s2, ParenE);
+		ParenE.createCallTransition(s1, s2, IncrE);
+		ParenE.createCallTransition(s1, s2, DecL);
+		ParenE.createCallTransition(s1, s2, HexL);
+		ParenE.createCallTransition(s1, s2, RealL);
+		ParenE.createMatcherTransition(s2, s3, new CharSetMatcher(new CharSet().addSingleton(')')));
+		ParenE = ParenE.convertNFAToDFA();
+		ParenE.setLabel("ParenE");
+	}
+
 	@Test
 	public void findIntersectionTest() {
 		HashSet<Automaton> automatons = new HashSet<Automaton>();
 
-		automatons.add(IncrE);
+		// automatons.add(IncrE);
 		automatons.add(DecL);
 		automatons.add(HexL);
 		automatons.add(RealL);
-		automatons.add(AddE);
-		automatons.add(MulE);
+		// automatons.add(AddE);
+		// automatons.add(MulE);
 		automatons.add(NegE);
+		automatons.add(ParenE);
 		// automatons.add(TerroristE);
 
 		try {
@@ -234,20 +262,14 @@ public class AutomatonIntersectionTests {
 			Utils.dumpAutomatonToFile(AddE, desktopPath + "AddE.graphviz");
 			Utils.dumpAutomatonToFile(MulE, desktopPath + "MulE.graphviz");
 			Utils.dumpAutomatonToFile(NegE, desktopPath + "NegE.graphviz");
-			Utils.dumpAutomatonToFile(TerroristE, desktopPath + "TerroristE.graphviz");
+			Utils.dumpAutomatonToFile(ParenE, desktopPath + "ParenE.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		}
 
-		IntersectionComputer ic = new IntersectionComputer(automatons);
+		// IntersectionComputer ic = new IntersectionComputer(automatons);
 
-		assertEquals(ic.hasIntersection(), false);
-		automatons.clear();
-
-		automatons.add(DecL);
-		automatons.add(HexL);
-		automatons.add(RealL);
-
+		// assertEquals(ic.hasIntersection(), false);
 		DiscriminationAutomatonComputer dc = new DiscriminationAutomatonComputer(automatons);
 		dc.createDiscriminationAutomaton();
 
