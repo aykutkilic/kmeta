@@ -5,11 +5,9 @@ public interface IStream {
 
 	String getString(int length);
 
-	char lookAheadChar();
+	char lookAheadChar(int count);
 
-	String lookAheadString(int length);
-
-	void rollbackLookAhead();
+	String lookAheadString(int count, int length);
 
 	boolean hasEnded();
 

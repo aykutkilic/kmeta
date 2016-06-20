@@ -4,7 +4,6 @@ public class StringStream implements IStream {
 	String string;
 
 	int pos;
-	int lookaheadPos;
 
 	public StringStream(String string) {
 		this.string = string;
@@ -12,10 +11,10 @@ public class StringStream implements IStream {
 
 	@Override
 	public char nextChar() {
-		if (pos > string.length())
-			return string.charAt(pos++);
+		if (pos >= string.length())
+			return 0;
 
-		return 0;
+		return string.charAt(pos++);
 	}
 
 	@Override
@@ -29,32 +28,21 @@ public class StringStream implements IStream {
 	}
 
 	@Override
-	public char lookAheadChar() {
-		if (pos < string.length())
-			return string.charAt(lookaheadPos++);
-
+	public char lookAheadChar(int count) {
+		if (pos + count < string.length())
+			return string.charAt(pos + count);
 		return 0;
 	}
 
 	@Override
-	public String lookAheadString(int length) {
-		if (pos + length > string.length())
+	public String lookAheadString(int count, int length) {
+		if (pos + count + length > string.length())
 			length = string.length() - pos;
-		String result = string.substring(pos, pos + length);
-		lookaheadPos += length;
-
-		return result;
-	}
-
-	@Override
-	public void rollbackLookAhead() {
-		lookaheadPos = pos;
+		return string.substring(pos + count, pos + count + length);
 	}
 
 	@Override
 	public boolean hasEnded() {
-		// TODO Auto-generated method stub
-		return false;
+		return pos >= string.length();
 	}
-
 }

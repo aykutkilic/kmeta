@@ -6,7 +6,7 @@ public class StringMatcher implements IMatcher {
 	String stringToMatch;
 
 	public StringMatcher(String stringToMatch) {
-		assert(!stringToMatch.isEmpty());
+		assert (!stringToMatch.isEmpty());
 		this.stringToMatch = stringToMatch;
 	}
 
@@ -16,7 +16,7 @@ public class StringMatcher implements IMatcher {
 
 	@Override
 	public boolean match(IStream stream) {
-		String string = stream.lookAheadString(stringToMatch.length());
+		String string = stream.lookAheadString(0, stringToMatch.length());
 		return string.equals(stringToMatch);
 	}
 

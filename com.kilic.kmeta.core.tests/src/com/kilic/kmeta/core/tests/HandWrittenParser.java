@@ -26,7 +26,11 @@ public class HandWrittenParser {
 	CharSet HEXOnly = HEX.getSubtraction(DEC);
 
 	public HandWrittenParser(IStream stream) {
+		this.stream = stream;
+	}
 
+	public void parse() {
+		X();
 	}
 
 	void X() {
@@ -40,7 +44,7 @@ public class HandWrittenParser {
 	}
 
 	int predictA() {
-		switch (stream.lookAheadChar()) {
+		switch (stream.lookAheadChar(0)) {
 		case '+':
 		case '-':
 			return 1;
@@ -52,15 +56,15 @@ public class HandWrittenParser {
 	void A() {
 		M();
 
-		switch (predictA()) {
-		case 1:
+		while (predictA() == 1) {
 			char op = stream.nextChar();
+			System.out.print("A" + op + "]");
 			M();
 		}
 	}
 
 	int predictM() {
-		switch (stream.lookAheadChar()) {
+		switch (stream.lookAheadChar(0)) {
 		case '*':
 		case '/':
 			return 1;
@@ -72,15 +76,15 @@ public class HandWrittenParser {
 	void M() {
 		N();
 
-		switch (predictM()) {
-		case 1:
+		while (predictM() == 1) {
 			char op = stream.nextChar();
+			System.out.print("M[" + op + "]");
 			N();
 		}
 	}
 
 	int predictN() {
-		switch (stream.lookAheadChar()) {
+		switch (stream.lookAheadChar(0)) {
 		case '+':
 		case '-':
 			return 1;
@@ -92,6 +96,8 @@ public class HandWrittenParser {
 	void N() {
 		switch (predictN()) {
 		case 1:
+			char op = stream.nextChar();
+			System.out.print("N[" + op + "]");
 			L();
 			return;
 		}
@@ -100,110 +106,128 @@ public class HandWrittenParser {
 	}
 
 	int predictL() {
-		char c = stream.lookAheadChar();
+		int i = 0;
+		char c = stream.lookAheadChar(i);
 		if (c == '(') {
 			return 1;
 		}
 
 		if (c == '0') {
-			c = stream.lookAheadChar();
+			i++;
+			c = stream.lookAheadChar(i);
 			if (c == 'x')
 				return 3;
 
 			if (DEC.containsSingleton(c)) {
 				do {
-					if (stream.hasEnded())
-						break;
-					c = stream.lookAheadChar();
-				} while (DEC.containsSingleton(c));
+					i++;
+					c = stream.lookAheadChar(i);
+				} while (c != 0 && DEC.containsSingleton(c));
+
 				if (c == '.')
 					return 4;
-				if (DEC.containsSingleton(c))
-					return 2;
+
+				return 2;
 			}
 		}
 
 		if (DEC.containsSingleton(c)) {
 			do {
-				if (stream.hasEnded())
-					break;
-				c = stream.lookAheadChar();
-			} while (DEC.containsSingleton(c));
+				i++;
+				c = stream.lookAheadChar(i);
+			} while (c != 0 && DEC.containsSingleton(c));
 			if (c == '.')
 				return 4;
-			if (DEC.containsSingleton(c))
-				return 2;
+
+			return 2;
 		}
 
 		return 0;
 	}
 
 	void L() {
-		char c;
-
 		switch (predictL()) {
 		case 1:
 			P();
+			break;
 		case 2:
 			D();
+			break;
 		case 3:
 			H();
+			break;
 		case 4:
 			R();
+			break;
 		}
 	}
 
 	void P() {
+		System.out.print("P");
 		stream.nextChar(); // (
 		E();
 		stream.nextChar(); // )
 	}
 
 	void D() {
+		StringBuilder d = new StringBuilder();
 		char c;
-		do {
-			if (stream.hasEnded())
-				return;
+		while (DEC.containsSingleton(stream.lookAheadChar(0))) {
 			c = stream.nextChar();
-		} while (DEC.containsSingleton(c));
+			d.append(c);
+		}
+
+		System.out.print(d.toString());
 	}
 
 	void H() {
+		StringBuilder h = new StringBuilder();
 		char c;
-		stream.nextChar(); // 0
-		stream.nextChar(); // x
+		c = stream.nextChar(); // 0
+		c = stream.nextChar(); // x
 
-		do {
-			if (stream.hasEnded())
-				return;
+		h.append("0x");
+		while (HEX.containsSingleton(stream.lookAheadChar(0))) {
 			c = stream.nextChar();
-		} while (HEX.containsSingleton(c));
+			h.append(c);
+		}
+
+		System.out.print(h.toString());
 	}
 
 	void R() {
+		StringBuilder r = new StringBuilder();
 		char c;
-		do {
+		while (DEC.containsSingleton(stream.lookAheadChar(0))) {
 			c = stream.nextChar();
-		} while (DEC.containsSingleton(c));
+			r.append(c);
+		}
 
-		stream.nextChar(); // .
+		c = stream.nextChar(); // .
+		r.append(c);
 
-		do {
+		while (DEC.containsSingleton(stream.lookAheadChar(0))) {
 			c = stream.nextChar();
-		} while (DEC.containsSingleton(c));
+			r.append(c);
+		}
 
-		if (stream.lookAheadChar() == 'e') {
-			stream.nextChar(); // e
+		if (stream.lookAheadChar(0) == 'e') {
+			c = stream.nextChar(); // e
+			r.append(c);
 
-			switch (stream.lookAheadChar()) {
+			switch (stream.lookAheadChar(0)) {
 			case '+':
 			case '-':
 				c = stream.nextChar(); // +-
+				r.append(c);
 			}
 
-			while (DEC.containsSingleton(stream.lookAheadChar())) {
+			while (DEC.containsSingleton(stream.lookAheadChar(0))) {
 				c = stream.nextChar();
+				r.append(c);
 			}
 		}
+
+		System.out.print(r.toString());
 	}
 }

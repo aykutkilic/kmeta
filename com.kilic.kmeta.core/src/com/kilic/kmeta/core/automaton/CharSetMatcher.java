@@ -16,9 +16,9 @@ public class CharSetMatcher implements IMatcher {
 
 	@Override
 	public boolean match(IStream stream) {
-		return charSetToMatch.containsSingleton(stream.lookAheadChar());
+		return charSetToMatch.containsSingleton(stream.lookAheadChar(0));
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return charSetToMatch.hashCode();
