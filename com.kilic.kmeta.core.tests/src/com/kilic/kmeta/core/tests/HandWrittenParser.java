@@ -6,7 +6,7 @@ import com.kilic.kmeta.core.util.CharSet;
 /*
  * Handwritten parser for Grammar:
  * formatter:off
- * X: E*
+ * X: (E ';')*
  * E: L | N | M | A
  * A: E [+-] E
  * M: E [/*] E
@@ -36,6 +36,8 @@ public class HandWrittenParser {
 	void X() {
 		while (!stream.hasEnded()) {
 			E();
+			if (expect(';'))
+				stream.nextChar();
 		}
 	}
 
@@ -159,6 +161,9 @@ public class HandWrittenParser {
 		case 4:
 			R();
 			break;
+		default:
+			System.out.println("Syntax Error = can not match L");
+			stream.nextChar();
 		}
 	}
 
@@ -166,7 +171,8 @@ public class HandWrittenParser {
 		System.out.print("P");
 		stream.nextChar(); // (
 		E();
-		stream.nextChar(); // )
+		if (expect(')'))
+			stream.nextChar(); // )
 	}
 
 	void D() {
@@ -187,6 +193,7 @@ public class HandWrittenParser {
 		c = stream.nextChar(); // x
 
 		h.append("0x");
+		expect(HEX);
 		while (HEX.containsSingleton(stream.lookAheadChar(0))) {
 			c = stream.nextChar();
 			h.append(c);
@@ -229,5 +236,20 @@ public class HandWrittenParser {
 		}
 
 		System.out.print(r.toString());
+	}
+
+	boolean expect(char c) {
+		return expect(new CharSet().addSingleton(c));
+	}
+
+	boolean expect(CharSet cs) {
+		char c = stream.lookAheadChar(0);
+
+		if (!cs.containsSingleton(c)) {
+			System.out.println("Mismatched input '" + c + "'. Expecting " + cs.toString());
+			return false;
+		}
+
+		return true;
 	}
 }
