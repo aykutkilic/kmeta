@@ -11,8 +11,9 @@ import com.kilic.kmeta.core.util.CharSet;
  * A: E [+-] E
  * M: E [/*] E
  * N: [+-] E
- * L: P | D | H | R
+ * L: P | V | D | H | R
  * P: '(' E ')'
+ * V: LET+
  * D: DEC+
  * H: 0x HEX+
  * R: DEC* '.' DEC+ ( 'e' [+-] DEC+ )?
@@ -21,6 +22,7 @@ import com.kilic.kmeta.core.util.CharSet;
 public class HandWrittenParser {
 	IStream stream;
 
+	CharSet LET = CharSet.LETTER;
 	CharSet DEC = CharSet.DEC;
 	CharSet HEX = CharSet.HEX;
 	CharSet HEXOnly = HEX.getSubtraction(DEC);
@@ -114,11 +116,15 @@ public class HandWrittenParser {
 			return 1;
 		}
 
+		if (LET.containsSingleton(c)) {
+			return 2;
+		}
+
 		if (c == '0') {
 			i++;
 			c = stream.lookAheadChar(i);
 			if (c == 'x')
-				return 3;
+				return 4;
 
 			if (DEC.containsSingleton(c)) {
 				do {
@@ -127,9 +133,9 @@ public class HandWrittenParser {
 				} while (c != 0 && DEC.containsSingleton(c));
 
 				if (c == '.')
-					return 4;
+					return 5;
 
-				return 2;
+				return 3;
 			}
 		}
 
@@ -139,9 +145,9 @@ public class HandWrittenParser {
 				c = stream.lookAheadChar(i);
 			} while (c != 0 && DEC.containsSingleton(c));
 			if (c == '.')
-				return 4;
+				return 5;
 
-			return 2;
+			return 3;
 		}
 
 		return 0;
@@ -153,12 +159,15 @@ public class HandWrittenParser {
 			P();
 			break;
 		case 2:
-			D();
+			V();
 			break;
 		case 3:
-			H();
+			D();
 			break;
 		case 4:
+			H();
+			break;
+		case 5:
 			R();
 			break;
 		default:
@@ -173,6 +182,18 @@ public class HandWrittenParser {
 		E();
 		if (expect(')'))
 			stream.nextChar(); // )
+	}
+
+	void V() {
+		StringBuilder d = new StringBuilder();
+
+		char c;
+		while (LET.containsSingleton(stream.lookAheadChar(0))) {
+			c = stream.nextChar();
+			d.append(c);
+		}
+
+		System.out.print(d.toString());
 	}
 
 	void D() {
