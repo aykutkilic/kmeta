@@ -6,17 +6,26 @@ import com.kilic.kmeta.core.util.CharSet;
 /*
  * Handwritten parser for Grammar:
  * formatter:off
- * X: (E ';')*
- * E: L | N | M | A
+ * X: (VAR | ABST | FN)*
+ * 
+ * E: L | N | I | M | A
  * A: E [+-] E
  * M: E [/*] E
  * N: [+-] E
+ * I: E ('++'|'--')
  * L: P | V | D | H | R
  * P: '(' E ')'
- * V: LET+
+ * V: ID
  * D: DEC+
  * H: 0x HEX+
  * R: DEC* '.' DEC+ ( 'e' [+-] DEC+ )?
+ * 
+ * VAR: 'var' ID ID ('=' E)?
+ * ABST: 'def' ID ID '(' PARAM/',' ')' ';'
+ * FN:  'def' ID ID '(' PARAM/',' ')' '{' (E ';')* '}'
+ * PARAM: ID ID ('=' E)?
+ * ID: LET (LET|DEC|_)*
+ * 
  * formatteron
  */
 public class HandWrittenParser {
