@@ -1,7 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: Google Guava
-Bundle-SymbolicName: com.google.guava
-Bundle-Version: 18.0.0
-Bundle-Vendor: Google
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
