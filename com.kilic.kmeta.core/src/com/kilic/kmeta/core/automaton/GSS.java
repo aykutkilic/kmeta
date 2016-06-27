@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+// Graph Structured Stack
+// Used for step locked execution of ATNs or DFA.
 public class GSS {
 	Map<Integer, GSSNode> top;
 	Set<GSSNode> nodes;
@@ -19,42 +21,48 @@ public class GSS {
 		nodes = new HashSet<>(other.nodes);
 	}
 
-	public GSSNode init(Integer state) {
+	public void init(Integer state) {
 		if (top.containsKey(state))
-			return top.get(state);
+			return;
 
 		GSSNode newNode = new GSSNode(state);
 
 		nodes.add(newNode);
 		top.put(state, newNode);
-
-		return newNode;
 	}
 
 	public GSSNode move(Integer from, Integer to) {
 		assert (top.containsKey(from));
 
 		GSSNode node = top.get(from);
-		GSSNode newNode = node.cloneMoved(to);
+		GSSNode newNode = top.containsKey(to) ? top.get(to) : node.cloneMoved(to);
+		
+		nodes.add(newNode);
+		top.put(to, newNode);
+		
 		removeNode(node);
-
+		
 		return newNode;
 	}
 
 	void removeNode(GSSNode node) {
 		assert (top.containsValue(node));
 		node.disconnect();
-		top.remove(node);
+		top.remove(node.state);
 	}
 
 	public void call(Integer from, Integer returnState, Integer startState) {
 		assert (top.containsKey(from));
-
-		GSSNode returnNode = top.get(from).cloneMoved(returnState);
+		
+		GSSNode returnNode = move(from, returnState);
 		GSSNode newStackTop = top.containsKey(startState) ? top.get(startState) : new GSSNode(startState);
 
 		returnNode.calls.add(newStackTop);
 		newStackTop.callers.add(returnNode);
+		
+		top.remove(returnState);
+		top.put(startState, newStackTop);
+		nodes.add(newStackTop);
 	}
 
 	public void returnFromCall(Integer state) {
@@ -64,6 +72,49 @@ public class GSS {
 		for (GSSNode caller : stackTop.callers)
 			caller.calls.remove(stackTop);
 
-		top.remove(stackTop);
+		for(GSSNode caller: stackTop.callers) {
+			top.put(caller.state, caller);
+		}
+		
+		top.remove(state);
+		nodes.remove(stackTop);
+	}
+	
+	public String toGraphviz() {
+		StringBuilder result = new StringBuilder();
+
+		result.append("digraph graph_structured_stack {\n");
+		result.append("  rankdir=S;\n");
+		result.append("  size=\"8,5\"\n");
+		result.append("  node [shape = square];\n");
+
+		for (GSSNode t : top.values()) {
+			result.append("  S" + t.state + "\n");
+		}
+
+		result.append(";\n");
+		
+		result.append("  node [shape = circle];\n");
+		for (GSSNode node : nodes) {
+			for( GSSNode call : node.calls)
+				result.append("  S" + node.state + " -> S" + call.state + ";\n");
+		}
+
+		result.append("}\n");
+
+		return result.toString();
+	}
+
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		
+		for( GSSNode topNode : this.top.values()) {
+			result.append(topNode.toString());
+			result.append("\r\n");
+		}
+		
+		return result.toString();
 	}
 }

@@ -38,4 +38,32 @@ class GSSNode {
 	Integer getState() {
 		return state;
 	}
+	
+	@Override
+	public int hashCode() {
+		return state;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof GSSNode)) return false;
+		return this.state == ((GSSNode)other).state;
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		
+		result.append("( " + this.state + " ");
+		
+		for(GSSNode caller : this.callers)
+			result.append(" <" + caller.state);
+		
+		for(GSSNode call : this.calls)
+			result.append(" >" + call.state);
+		
+		result.append(" )");
+		
+		return result.toString();
+	}
 }
