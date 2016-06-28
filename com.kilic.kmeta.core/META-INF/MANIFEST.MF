@@ -8,8 +8,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
-Export-Package: com.kilic.kmeta.core.automaton,
- com.kilic.kmeta.core.automaton.analysis,
+Export-Package: com.kilic.kmeta.core.analysis,
+ com.kilic.kmeta.core.dfa,
  com.kilic.kmeta.core.meta,
  com.kilic.kmeta.core.stream,
  com.kilic.kmeta.core.syntax,

@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.automaton;
+package com.kilic.kmeta.core.dfa;
 
 import com.kilic.kmeta.core.stream.IStream;
 

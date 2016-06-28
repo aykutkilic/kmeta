@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.automaton.Automaton;
-import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MFeature;
 import com.kilic.kmeta.core.meta.MReference;

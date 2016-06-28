@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.automaton.analysis;
+package com.kilic.kmeta.core.analysis;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,13 +7,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.kilic.kmeta.core.automaton.Automaton;
-import com.kilic.kmeta.core.automaton.AutomatonRunState;
-import com.kilic.kmeta.core.automaton.AutomatonState;
-import com.kilic.kmeta.core.automaton.CharSetMatcher;
-import com.kilic.kmeta.core.automaton.IAutomatonTransition;
-import com.kilic.kmeta.core.automaton.IMatcher;
-import com.kilic.kmeta.core.automaton.MatcherTransition;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonRunState;
+import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.CharSetMatcher;
+import com.kilic.kmeta.core.dfa.IAutomatonTransition;
+import com.kilic.kmeta.core.dfa.IMatcher;
+import com.kilic.kmeta.core.dfa.MatcherTransition;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class IntersectionComputer {

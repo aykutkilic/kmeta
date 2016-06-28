@@ -6,12 +6,12 @@ import java.util.HashSet;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kilic.kmeta.core.automaton.Automaton;
-import com.kilic.kmeta.core.automaton.AutomatonState;
-import com.kilic.kmeta.core.automaton.CharSetMatcher;
-import com.kilic.kmeta.core.automaton.StringMatcher;
-import com.kilic.kmeta.core.automaton.analysis.DiscriminationAutomatonComputer;
-import com.kilic.kmeta.core.automaton.analysis.IntersectionComputer;
+import com.kilic.kmeta.core.analysis.DiscriminationAutomatonComputer;
+import com.kilic.kmeta.core.analysis.IntersectionComputer;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.CharSetMatcher;
+import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;

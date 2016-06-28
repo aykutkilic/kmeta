@@ -3,8 +3,8 @@ package com.kilic.kmeta.core.syntax;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.kilic.kmeta.core.automaton.Automaton;
-import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 
 public class SequenceExpr implements ISyntaxExpr {
 	List<ISyntaxExpr> seq = new ArrayList<>();

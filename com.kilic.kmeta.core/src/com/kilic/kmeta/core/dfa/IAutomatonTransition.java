@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.automaton;
+package com.kilic.kmeta.core.dfa;
 
 public interface IAutomatonTransition extends IAttachable {
 	AutomatonState getFromState();

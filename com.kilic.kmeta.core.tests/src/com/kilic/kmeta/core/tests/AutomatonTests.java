@@ -5,9 +5,9 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kilic.kmeta.core.automaton.Automaton;
-import com.kilic.kmeta.core.automaton.AutomatonState;
-import com.kilic.kmeta.core.automaton.StringMatcher;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.stream.StringStream;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;

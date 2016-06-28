@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.automaton;
+package com.kilic.kmeta.core.dfa;
 
 public abstract class AutomatonTransitionBase implements IAutomatonTransition {
 	private AutomatonState fromState, toState;

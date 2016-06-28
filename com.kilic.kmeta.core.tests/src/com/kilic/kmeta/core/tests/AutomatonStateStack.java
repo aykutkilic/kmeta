@@ -2,7 +2,7 @@ package com.kilic.kmeta.core.tests;
 
 import java.util.Stack;
 
-import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 
 public class AutomatonStateStack {
 	Stack<AutomatonState> stack;

@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.automaton;
+package com.kilic.kmeta.core.atn;
 
 import java.util.HashMap;
 import java.util.HashSet;

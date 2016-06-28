@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.tests;
 
-import com.kilic.kmeta.core.automaton.Automaton;
-import com.kilic.kmeta.core.automaton.AutomatonState;
+import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 // for testing purposes.

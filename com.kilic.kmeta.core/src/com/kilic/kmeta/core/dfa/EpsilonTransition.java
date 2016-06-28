@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.automaton;
+package com.kilic.kmeta.core.dfa;
 
 public class EpsilonTransition extends AutomatonTransitionBase {
 	public EpsilonTransition(AutomatonState fromState, AutomatonState toState) {
