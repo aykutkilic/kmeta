@@ -1,10 +1,19 @@
 package com.kilic.kmeta.core.atn;
 
-import java.util.Set;
-
 public class ATNProduction {
 	ATNState startState;
 	ATNState finalState;
 
-	Set<ATNState> states;
+	ATN container;
+
+	public ATNProduction(ATN container) {
+		startState = new ATNState();
+		finalState = new ATNState();
+	}
+
+	String toGraphviz() {
+		StringBuilder result = new StringBuilder();
+
+		return result.toString();
+	}
 }
