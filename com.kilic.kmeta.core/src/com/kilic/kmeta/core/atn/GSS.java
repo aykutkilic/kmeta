@@ -1,5 +1,6 @@
 package com.kilic.kmeta.core.atn;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -19,6 +20,10 @@ public class GSS {
 	public GSS(GSS other) {
 		top = new HashMap<>(other.top);
 		nodes = new HashSet<>(other.nodes);
+	}
+	
+	public Collection<GSSNode> getStackTops() {
+		return top.values();
 	}
 
 	public void init(Integer state) {

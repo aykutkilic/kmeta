@@ -1,6 +1,8 @@
-package com.kilic.kmeta.core.atn;
+ package com.kilic.kmeta.core.atn;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class ATN {
 	ATN container;
@@ -11,7 +13,7 @@ public class ATN {
 
 	String label = "";
 
-	public ATN(ATN container) {
+	public ATN(ATN container) { 
 		this.container = container;
 		startState = new ATNState();
 		finalState = new ATNState();
@@ -31,6 +33,15 @@ public class ATN {
 		return this.label;
 	}
 
+	public Set<ATNConfig> getMovedConfigSet() {
+	}
+	
+	public Set<ATNConfig> getClosure(ATNConfig config) {
+		Set<ATNConfig> result = new HashSet<>();
+		
+		return result;
+	}
+	
 	public String toGraphviz() {
 		StringBuilder result = new StringBuilder();
 
