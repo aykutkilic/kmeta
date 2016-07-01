@@ -1,8 +1,5 @@
 package com.kilic.kmeta.core.atn;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.kilic.kmeta.core.atn.ATNState.AtnStateType;
 import com.kilic.kmeta.core.util.CharSet;
 
@@ -54,8 +51,20 @@ public class ATN {
 		return edge;
 	}
 
-	public ATNCallEdge createATNCallEdge(ATNState from, ATNState to, ATN atn) {
+	public ATNCallEdge createCallEdge(ATNState from, ATNState to, ATN atn) {
 		ATNCallEdge edge = new ATNCallEdge(atn);
+		connectEdge(from, to, edge);
+		return edge;
+	}
+	
+	public ATNPredicateEdge createPredicateEdge(ATNState from, ATNState to ) {
+		ATNPredicateEdge edge = new ATNPredicateEdge();
+		connectEdge(from, to, edge);
+		return edge;
+	}
+	
+	public ATNMutatorEdge createMutatorEdge(ATNState from, ATNState to) {
+		ATNMutatorEdge edge = new ATNMutatorEdge();
 		connectEdge(from, to, edge);
 		return edge;
 	}

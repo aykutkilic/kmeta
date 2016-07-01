@@ -3,6 +3,8 @@ package com.kilic.kmeta.core.atn;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.kilic.kmeta.core.dfa.DFA;
+
 public class ATNState {
 	static int stateIndexCounter = 0;
 
@@ -16,6 +18,7 @@ public class ATNState {
 	int stateIndex;
 	AtnStateType stateType;
 	Set<IATNEdge> in, out;
+	DFA predictionDFA;
 	
 	ATNState() {
 		this(AtnStateType.REGULAR);
@@ -28,13 +31,23 @@ public class ATNState {
 		in = new HashSet<>();
 		out = new HashSet<>();
 	}
-
+	
 	public int getStateIndex() {
 		return stateIndex;
 	}
 	
 	public AtnStateType getType() {
 		return stateType;
+	}
+	
+	void setPredictionDFA(DFA dfa) {
+		assert(stateType == AtnStateType.DECISION);
+		predictionDFA = dfa; 
+	}
+	
+	DFA getPredictionDFA() {
+		assert(stateType == AtnStateType.DECISION);
+		return predictionDFA; 
 	}
 
 	@Override
