@@ -1,8 +1,10 @@
- package com.kilic.kmeta.core.atn;
+package com.kilic.kmeta.core.atn;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN {
 	ATN container;
@@ -13,10 +15,46 @@ public class ATN {
 
 	String label = "";
 
-	public ATN(ATN container) { 
+	public ATN(ATN container) {
 		this.container = container;
 		startState = new ATNState();
 		finalState = new ATNState();
+	}
+
+	public ATNState createState() {
+		return new ATNState();
+	}
+
+	public EpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
+		EpsilonEdge edge = new EpsilonEdge();
+		connectEdge(from, to, edge);
+		return edge;
+	}
+
+	public CharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
+		CharSetEdge edge = new CharSetEdge(charSet);
+		connectEdge(from, to, edge);
+		return edge;
+	}
+
+	public StringEdge createStringEdge(ATNState from, ATNState to, String string) {
+		StringEdge edge = new StringEdge(string);
+		connectEdge(from, to, edge);
+		return edge;
+	}
+
+	public ATNCallEdge createATNCallEdge(ATNState from, ATNState to, ATN atn) {
+		ATNCallEdge edge = new ATNCallEdge(atn);
+		connectEdge(from, to, edge);
+		return edge;
+	}
+
+	void connectEdge(ATNState from, ATNState to, ATNEdgeBase edge) {
+		edge.from = from;
+		edge.to = to;
+
+		from.out.add(edge);
+		to.in.add(edge);
 	}
 
 	public ATN createProduction() {
@@ -35,13 +73,13 @@ public class ATN {
 
 	public Set<ATNConfig> getMovedConfigSet() {
 	}
-	
+
 	public Set<ATNConfig> getClosure(ATNConfig config) {
 		Set<ATNConfig> result = new HashSet<>();
-		
+
 		return result;
 	}
-	
+
 	public String toGraphviz() {
 		StringBuilder result = new StringBuilder();
 

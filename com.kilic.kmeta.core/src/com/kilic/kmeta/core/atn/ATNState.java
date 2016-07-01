@@ -1,12 +1,19 @@
 package com.kilic.kmeta.core.atn;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class ATNState {
 	private static int stateIndexCounter = 0;
 
 	int stateIndex;
+	Set<IATNEdge> in, out;
 
-	public ATNState() {
+	ATNState() {
 		this.stateIndex = stateIndexCounter++;
+
+		in = new HashSet<>();
+		out = new HashSet<>();
 	}
 
 	public int getStateIndex() {
