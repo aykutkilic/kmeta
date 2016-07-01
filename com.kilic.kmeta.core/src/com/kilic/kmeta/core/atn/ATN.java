@@ -1,14 +1,13 @@
 package com.kilic.kmeta.core.atn;
 
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
+import com.kilic.kmeta.core.atn.ATNState.AtnStateType;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN {
 	ATN container;
-	List<ATN> productions;
 
 	ATNState startState;
 	ATNState finalState;
@@ -17,12 +16,24 @@ public class ATN {
 
 	public ATN(ATN container) {
 		this.container = container;
-		startState = new ATNState();
-		finalState = new ATNState();
+		startState = createStartState();
+		finalState = createFinalState();
 	}
 
 	public ATNState createState() {
 		return new ATNState();
+	}
+	
+	public ATNState createStartState() {
+		return new ATNState(AtnStateType.START);
+	}
+
+	public ATNState createFinalState() {
+		return new ATNState(AtnStateType.FINAL);
+	}
+	
+	public ATNState createDecisionState() {
+		return new ATNState(AtnStateType.DECISION);
 	}
 
 	public EpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
@@ -57,12 +68,6 @@ public class ATN {
 		to.in.add(edge);
 	}
 
-	public ATN createProduction() {
-		ATN result = new ATN(this);
-
-		return result;
-	}
-
 	public void setLabel(String label) {
 		this.label = label;
 	}
@@ -93,16 +98,6 @@ public class ATN {
 
 		result.append(";\n");
 		result.append("node [shape = circle];");
-		for (ATN production : productions) {
-			result.append(production.toGraphviz());
-
-			/*
-			 * for (IAutomatonTransition trans : state.out) { result.append("S"
-			 * + state.stateIndex + " -> S" + trans.getToState().stateIndex +
-			 * " [ label = \"" + trans.getLabel() + "\" ];\n"); }
-			 */
-		}
-
 		result.append("}\n");
 
 		return result.toString();
