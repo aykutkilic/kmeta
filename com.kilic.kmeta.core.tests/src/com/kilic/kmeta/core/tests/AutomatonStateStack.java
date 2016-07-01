@@ -2,19 +2,19 @@ package com.kilic.kmeta.core.tests;
 
 import java.util.Stack;
 
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.DFAState;
 
 public class AutomatonStateStack {
-	Stack<AutomatonState> stack;
+	Stack<DFAState> stack;
 
-	public AutomatonStateStack(AutomatonState... states) {
+	public AutomatonStateStack(DFAState... states) {
 		stack = new Stack<>();
-		for (AutomatonState state : states) {
+		for (DFAState state : states) {
 			stack.push(state);
 		}
 	}
 
-	public Stack<AutomatonState> getStack() {
+	public Stack<DFAState> getStack() {
 		return stack;
 	}
 }

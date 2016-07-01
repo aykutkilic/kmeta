@@ -3,15 +3,15 @@ package com.kilic.kmeta.core.tests;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.kilic.kmeta.core.dfa.Automaton;
+import com.kilic.kmeta.core.dfa.DFA;
 import com.kilic.kmeta.core.dfa.IMatcher;
 import com.kilic.kmeta.core.stream.IStream;
 
 // for testing purposes.
 public class AutomatonSetMatcher implements IMatcher {
-	Set<Automaton> automatonSet = new HashSet<>();
+	Set<DFA> automatonSet = new HashSet<>();
 
-	void addAutomaton(Automaton a) {
+	void addAutomaton(DFA a) {
 		automatonSet.add(a);
 	}
 
@@ -25,7 +25,7 @@ public class AutomatonSetMatcher implements IMatcher {
 		StringBuilder result = new StringBuilder();
 		result.append("[ ");
 
-		for (Automaton automaton : automatonSet) {
+		for (DFA automaton : automatonSet) {
 			String label = automaton.getLabel();
 			if (label != null)
 				result.append(label + " ");

@@ -76,15 +76,6 @@ public class ATN {
 		return this.label;
 	}
 
-	public Set<ATNConfig> getMovedConfigSet() {
-	}
-
-	public Set<ATNConfig> getClosure(ATNConfig config) {
-		Set<ATNConfig> result = new HashSet<>();
-
-		return result;
-	}
-
 	public String toGraphviz() {
 		StringBuilder result = new StringBuilder();
 

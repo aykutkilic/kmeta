@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.util;
 
 public class Tuple<A, B> {
 	final A a;

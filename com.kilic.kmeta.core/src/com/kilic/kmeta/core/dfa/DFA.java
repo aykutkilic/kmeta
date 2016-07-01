@@ -7,14 +7,14 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.util.CharSet;
 
-public class Automaton {
+public class DFA {
 	String label;
-	Map<Integer, AutomatonState> states;
-	AutomatonState startState;
+	Map<Integer, DFAState> states;
+	DFAState startState;
 
-	AutomatonState currentState;
+	DFAState currentState;
 
-	public Automaton() {
+	public DFA() {
 		states = new HashMap<>();
 	}
 
@@ -26,22 +26,22 @@ public class Automaton {
 		return label;
 	}
 
-	public AutomatonState createState() {
-		AutomatonState newState = new AutomatonState(this);
+	public DFAState createState() {
+		DFAState newState = new DFAState(this);
 		states.put(newState.stateIndex, newState);
 		return newState;
 	}
 
-	public AutomatonState getStartState() {
+	public DFAState getStartState() {
 		return startState;
 	}
 
-	public void setStartState(AutomatonState newStartState) {
+	public void setStartState(DFAState newStartState) {
 		startState = newStartState;
 	}
 
-	public AutomatonState findStateByAttachedObject(Object o) {
-		for (AutomatonState state : states.values()) {
+	public DFAState findStateByAttachedObject(Object o) {
+		for (DFAState state : states.values()) {
 			if (state.attachedObject == o)
 				return state;
 		}
@@ -49,31 +49,20 @@ public class Automaton {
 		return null;
 	}
 
-	public IAutomatonTransition findTransitionByAttachedObject(Object o) {
-		for (AutomatonState state : states.values()) {
-			for (IAutomatonTransition trans : state.getOutgoingTransitions()) {
-				if (trans.getAttachedObject() == o)
-					return trans;
-			}
-		}
-
-		return null;
-	}
-
-	public void removeState(AutomatonState state) {
+	public void removeState(DFAState state) {
 		states.remove(state);
 	}
 
-	public void createMatcherTransition(AutomatonState from, AutomatonState to, IMatcher matcher) {
+	public void createMatcherTransition(DFAState from, DFAState to, IMatcher matcher) {
 		// string matchers are substitutes with charset matchers until
 		// intersection analysis is completed
 		// sequence of singleton charsets can be shrinked afterwards for
 		// performance improvements
 		if (matcher instanceof StringMatcher) {
 			String string = ((StringMatcher) matcher).getString();
-			AutomatonState newFrom = from;
+			DFAState newFrom = from;
 			for (int i = 0; i < string.length(); i++) {
-				AutomatonState newTo = i == string.length() - 1 ? to : createState();
+				DFAState newTo = i == string.length() - 1 ? to : createState();
 
 				CharSet charSet = new CharSet();
 				charSet.addSingleton(string.charAt(i));
@@ -89,7 +78,7 @@ public class Automaton {
 		}
 	}
 
-	public void createEpsilonTransition(AutomatonState from, AutomatonState to) {
+	public void createEpsilonTransition(DFAState from, DFAState to) {
 		// ignore epsilon transitions to self.
 		if (from == to)
 			return;
@@ -100,14 +89,14 @@ public class Automaton {
 		to.addIncomingTransition(t);
 	}
 
-	public void createCallTransition(AutomatonState from, AutomatonState to, Automaton callee) {
+	public void createCallTransition(DFAState from, DFAState to, DFA callee) {
 		CallAutomatonTransition t = new CallAutomatonTransition(from, to, callee);
 
 		from.addOutgoingTransition(t);
 		to.addIncomingTransition(t);
 	}
 
-	public void createEquivalentTransition(AutomatonState from, AutomatonState to, IAutomatonTransition t) {
+	public void createEquivalentTransition(DFAState from, DFAState to, IAutomatonTransition t) {
 		IAutomatonTransition newTransition = null;
 
 		if (t instanceof MatcherTransition) {
@@ -124,10 +113,10 @@ public class Automaton {
 		to.addIncomingTransition(newTransition);
 	}
 
-	public Set<AutomatonState> getFinalStates() {
-		Set<AutomatonState> result = new HashSet<>();
+	public Set<DFAState> getFinalStates() {
+		Set<DFAState> result = new HashSet<>();
 
-		for (AutomatonState state : states.values()) {
+		for (DFAState state : states.values()) {
 			if (state.isFinalState)
 				result.add(state);
 		}
@@ -135,16 +124,16 @@ public class Automaton {
 		return result;
 	}
 
-	public Automaton convertNFAToDFA() {
-		Automaton result = new Automaton();
+	public DFA convertNFAToDFA() {
+		DFA result = new DFA();
 
-		Map<AutomatonStateSet, AutomatonState> nfaClosureToDfaState = new HashMap<>();
+		Map<AutomatonStateSet, DFAState> nfaClosureToDfaState = new HashMap<>();
 
 		if (startState == null)
 			return result;
 
 		AutomatonStateSet startNFAClosure = AutomatonStateSet.createEpsilonClosure(startState, null);
-		AutomatonState startDFAState = result.createState();
+		DFAState startDFAState = result.createState();
 		result.setStartState(startDFAState);
 		startDFAState.setFinal(startNFAClosure.containsFinalState());
 
@@ -155,17 +144,17 @@ public class Automaton {
 
 		while (!incompleteClosures.isEmpty()) {
 			AutomatonStateSet currentNFAClosure = incompleteClosures.iterator().next();
-			AutomatonState currentDFAState = nfaClosureToDfaState.get(currentNFAClosure);
+			DFAState currentDFAState = nfaClosureToDfaState.get(currentNFAClosure);
 
 			for (IAutomatonTransition t : currentNFAClosure.getAllTransitions()) {
 				AutomatonStateSet newNFAClosure = currentNFAClosure.move(t);
 				if (newNFAClosure.isEmpty())
 					continue;
 
-				AutomatonState toState;
+				DFAState toState;
 
 				if (!nfaClosureToDfaState.containsKey(newNFAClosure)) {
-					AutomatonState newDFAState = result.createState();
+					DFAState newDFAState = result.createState();
 					newDFAState.setFinal(newNFAClosure.containsFinalState());
 
 					nfaClosureToDfaState.put(newNFAClosure, newDFAState);
@@ -194,7 +183,7 @@ public class Automaton {
 		if (label != null)
 			result.append(label + " : ");
 
-		for (AutomatonState state : states.values()) {
+		for (DFAState state : states.values()) {
 			if (state == startState)
 				result.append("->");
 			result.append(state.toString() + "\n");
@@ -215,13 +204,13 @@ public class Automaton {
 		result.append("S" + startState.stateIndex + ";\n");
 		result.append("node [shape = doublecircle];\n ");
 
-		for (AutomatonState finalState : getFinalStates()) {
+		for (DFAState finalState : getFinalStates()) {
 			result.append("S" + finalState.stateIndex + " ");
 		}
 
 		result.append(";\n");
 		result.append("node [shape = circle];");
-		for (AutomatonState state : states.values()) {
+		for (DFAState state : states.values()) {
 			for (IAutomatonTransition trans : state.out) {
 				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \""
 						+ trans.getLabel() + "\" ];\n");

@@ -1,19 +1,19 @@
 package com.kilic.kmeta.core.tests;
 
-import com.kilic.kmeta.core.dfa.Automaton;
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 // for testing purposes.
 public class AutomatonCallSynExpr implements ISyntaxExpr {
-	Automaton callee;
+	DFA callee;
 	
-	AutomatonCallSynExpr(Automaton callee) {
+	AutomatonCallSynExpr(DFA callee) {
 		this.callee = callee;
 	}
 	
 	@Override
-	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
+	public DFAState appendToNFA(DFA nfa, DFAState sourceState, DFAState targetState) {
 		if (targetState == null)
 			targetState = nfa.createState();
 		

@@ -5,8 +5,8 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kilic.kmeta.core.dfa.Automaton;
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.stream.StringStream;
@@ -28,11 +28,11 @@ public class AutomatonTests {
 
 	@Test
 	public void testNFADFAConversion() {
-		Automaton nfa;
+		DFA nfa;
 		// example in
 		// http://web.cecs.pdx.edu/~harry/compilers/slides/LexicalPart3.pdf
-		nfa = new Automaton();
-		AutomatonState[] s = new AutomatonState[11];
+		nfa = new DFA();
+		DFAState[] s = new DFAState[11];
 		for (int i = 0; i <= 10; i++)
 			s[i] = nfa.createState();
 
@@ -55,7 +55,7 @@ public class AutomatonTests {
 
 		System.out.println(nfa.toString());
 
-		Automaton dfa = nfa.convertNFAToDFA();
+		DFA dfa = nfa.convertNFAToDFA();
 		System.out.println(dfa.toString());
 	}
 
@@ -71,8 +71,8 @@ public class AutomatonTests {
 			new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.HEX))
 		);
 		
-		Automaton DecLDFA = Utils.createNFAFromSyntax(DecL).convertNFAToDFA();
-		Automaton HexLDFA = Utils.createNFAFromSyntax(HexL).convertNFAToDFA();
+		DFA DecLDFA = Utils.createNFAFromSyntax(DecL).convertNFAToDFA();
+		DFA HexLDFA = Utils.createNFAFromSyntax(HexL).convertNFAToDFA();
 		
 		ISyntaxExpr LetterList = new SequenceExpr(
 			new StringExpr("["),
@@ -100,11 +100,11 @@ public class AutomatonTests {
 		);
 		// @formatter:on
 
-		Automaton enfa = Utils.createNFAFromSyntax(LetterList);
+		DFA enfa = Utils.createNFAFromSyntax(LetterList);
 
 		System.out.println(enfa.toString());
 		System.out.println("DFA:");
-		Automaton dfa = enfa.convertNFAToDFA();
+		DFA dfa = enfa.convertNFAToDFA();
 		System.out.println(dfa.toString());
 
 		StringStream stream = new StringStream("[A,null,null,B,C,D]");
@@ -156,9 +156,9 @@ public class AutomatonTests {
 		// @formatter:on
 
 		try {
-			Automaton nfa = Utils.createNFAFromSyntax(RealL);
+			DFA nfa = Utils.createNFAFromSyntax(RealL);
 			Utils.dumpAutomatonToFile(nfa, desktopPath + "RealLNFA.graphviz");
-			Automaton dfa = nfa.convertNFAToDFA();
+			DFA dfa = nfa.convertNFAToDFA();
 			Utils.dumpAutomatonToFile(dfa, desktopPath + "RealL.graphviz");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();

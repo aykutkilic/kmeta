@@ -1,7 +1,9 @@
 package com.kilic.kmeta.core.syntax;
 
-import com.kilic.kmeta.core.dfa.Automaton;
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.atn.ATN;
+import com.kilic.kmeta.core.atn.ATNState;
+import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MFeature;
 import com.kilic.kmeta.core.meta.MReference;
@@ -19,15 +21,6 @@ public class FeatureRef implements ISyntaxExpr {
 
 	public void setAttribute(MFeature feature) {
 		this.feature = feature;
-	}
-
-	@Override
-	public AutomatonState appendToNFA(Automaton nfa, AutomatonState sourceState, AutomatonState targetState) {
-		if (targetState == null)
-			targetState = nfa.createState();
-		//nfa.createCallTransition(from, to, callee);
-
-		return targetState;
 	}
 
 	@Override

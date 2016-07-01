@@ -1,9 +1,9 @@
 package com.kilic.kmeta.core.atn;
 
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.DFAState;
 
 public class ATNConfig {
-	AutomatonState state;
+	DFAState state;
 	int alternative;
 	GSSNode callStack;
 }

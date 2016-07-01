@@ -3,16 +3,16 @@ package com.kilic.kmeta.core.dfa;
 import java.util.HashSet;
 import java.util.Set;
 
-public class AutomatonState implements IAttachable {
+public class DFAState implements IAttachable {
 	private static int stateIndexCounter = 0;
 
 	Set<IAutomatonTransition> in, out;
 	boolean isFinalState;
 	int stateIndex;
 	Object attachedObject;
-	Automaton container;
+	DFA container;
 
-	protected AutomatonState(Automaton container) {
+	protected DFAState(DFA container) {
 		stateIndex = stateIndexCounter++;
 
 		in = new HashSet<>();
@@ -57,7 +57,7 @@ public class AutomatonState implements IAttachable {
 		return out;
 	}
 
-	public AutomatonState move(IAutomatonTransition transition) {
+	public DFAState move(IAutomatonTransition transition) {
 		for (IAutomatonTransition t : out) {
 			if (t instanceof EpsilonTransition)
 				continue;
@@ -69,7 +69,7 @@ public class AutomatonState implements IAttachable {
 		return null;
 	}
 
-	public Automaton getContainer() {
+	public DFA getContainer() {
 		return container;
 	}
 
@@ -88,10 +88,10 @@ public class AutomatonState implements IAttachable {
 
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof AutomatonState))
+		if (!(other instanceof DFAState))
 			return false;
 
-		return stateIndex == ((AutomatonState) other).getStateIndex();
+		return stateIndex == ((DFAState) other).getStateIndex();
 	}
 
 	@Override

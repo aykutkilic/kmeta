@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.analysis.DiscriminationAutomatonComputer;
 import com.kilic.kmeta.core.analysis.IntersectionComputer;
-import com.kilic.kmeta.core.dfa.Automaton;
-import com.kilic.kmeta.core.dfa.AutomatonState;
+import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.dfa.CharSetMatcher;
 import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -24,15 +24,15 @@ import com.kilic.kmeta.core.util.CharSet;
 import static org.junit.Assert.assertEquals;
 
 public class AutomatonIntersectionTests {
-	Automaton DecL;
-	Automaton HexL;
-	Automaton RealL;
-	Automaton IncrE;
-	Automaton AddE;
-	Automaton MulE;
-	Automaton ParenE;
-	Automaton NegE;
-	Automaton TerroristE;
+	DFA DecL;
+	DFA HexL;
+	DFA RealL;
+	DFA IncrE;
+	DFA AddE;
+	DFA MulE;
+	DFA ParenE;
+	DFA NegE;
+	DFA TerroristE;
 
 	String desktopPath;
 
@@ -109,7 +109,7 @@ public class AutomatonIntersectionTests {
 
 		// @formatter:on
 
-		Automaton RealLNFA = Utils.createNFAFromSyntax(RealLSyn);
+		DFA RealLNFA = Utils.createNFAFromSyntax(RealLSyn);
 
 		try {
 			Utils.dumpAutomatonToFile(RealLNFA, desktopPath + "RealLNFA.graphviz");
@@ -122,12 +122,12 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createNegE() {
-		NegE = new Automaton();
+		NegE = new DFA();
 		NegE.setLabel("NegE");
 
-		AutomatonState startState = NegE.createState();
-		AutomatonState midState = NegE.createState();
-		AutomatonState finalState = NegE.createState();
+		DFAState startState = NegE.createState();
+		DFAState midState = NegE.createState();
+		DFAState finalState = NegE.createState();
 
 		NegE.setStartState(startState);
 		finalState.setFinal(true);
@@ -139,12 +139,12 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createIncrE() {
-		IncrE = new Automaton();
+		IncrE = new DFA();
 		IncrE.setLabel("IncrE");
 
-		AutomatonState startState = IncrE.createState();
-		AutomatonState midState = IncrE.createState();
-		AutomatonState finalState = IncrE.createState();
+		DFAState startState = IncrE.createState();
+		DFAState midState = IncrE.createState();
+		DFAState finalState = IncrE.createState();
 
 		IncrE.setStartState(startState);
 		finalState.setFinal(true);
@@ -158,12 +158,12 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createAddE() {
-		AddE = new Automaton();
+		AddE = new DFA();
 
-		AutomatonState s0 = AddE.createState();
-		AutomatonState s1 = AddE.createState();
-		AutomatonState s2 = AddE.createState();
-		AutomatonState s3 = AddE.createState();
+		DFAState s0 = AddE.createState();
+		DFAState s1 = AddE.createState();
+		DFAState s2 = AddE.createState();
+		DFAState s3 = AddE.createState();
 
 		AddE.setStartState(s0);
 		s3.setFinal(true);
@@ -188,12 +188,12 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createMulE() {
-		MulE = new Automaton();
+		MulE = new DFA();
 
-		AutomatonState s0 = MulE.createState();
-		AutomatonState s1 = MulE.createState();
-		AutomatonState s2 = MulE.createState();
-		AutomatonState s3 = MulE.createState();
+		DFAState s0 = MulE.createState();
+		DFAState s1 = MulE.createState();
+		DFAState s2 = MulE.createState();
+		DFAState s3 = MulE.createState();
 
 		MulE.setStartState(s0);
 		s3.setFinal(true);
@@ -216,12 +216,12 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createParenE() {
-		ParenE = new Automaton();
+		ParenE = new DFA();
 
-		AutomatonState s0 = ParenE.createState();
-		AutomatonState s1 = ParenE.createState();
-		AutomatonState s2 = ParenE.createState();
-		AutomatonState s3 = ParenE.createState();
+		DFAState s0 = ParenE.createState();
+		DFAState s1 = ParenE.createState();
+		DFAState s2 = ParenE.createState();
+		DFAState s3 = ParenE.createState();
 
 		ParenE.setStartState(s0);
 		s3.setFinal(true);
@@ -242,7 +242,7 @@ public class AutomatonIntersectionTests {
 
 	@Test
 	public void findIntersectionTest() {
-		HashSet<Automaton> automatons = new HashSet<Automaton>();
+		HashSet<DFA> automatons = new HashSet<DFA>();
 
 		// automatons.add(IncrE);
 		automatons.add(DecL);
@@ -283,14 +283,14 @@ public class AutomatonIntersectionTests {
 	@Test
 	public void intersectionTest1() {
 		// @formatter:off
-		Automaton a = Utils.createNFAFromSyntax(
+		DFA a = Utils.createNFAFromSyntax(
 			new MultiplicityExpr(Multiplicity.ONEORMORE, 
 				new CharSetExpr(CharSet.DEC)
 			)
 		).convertNFAToDFA();
 		a.setLabel("a");
 		
-		Automaton b = Utils.createNFAFromSyntax(
+		DFA b = Utils.createNFAFromSyntax(
 			new SequenceExpr(
 				new StringExpr("0x"),
 				new MultiplicityExpr(Multiplicity.ONEORMORE, 
@@ -300,7 +300,7 @@ public class AutomatonIntersectionTests {
 		).convertNFAToDFA();
 		b.setLabel("b");
 		
-		Automaton c = Utils.createNFAFromSyntax(
+		DFA c = Utils.createNFAFromSyntax(
 			new SequenceExpr(
 				new StringExpr("0234238468273684726837462873647634"),
 				new MultiplicityExpr(Multiplicity.ONEORMORE, 
@@ -311,7 +311,7 @@ public class AutomatonIntersectionTests {
 		c.setLabel("c");
 		// @formatter:off
 		
-		HashSet<Automaton> automatons = new HashSet<Automaton>();
+		HashSet<DFA> automatons = new HashSet<DFA>();
 		
 		automatons.add(a);
 		automatons.add(b);
