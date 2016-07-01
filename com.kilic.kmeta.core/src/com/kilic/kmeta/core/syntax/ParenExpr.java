@@ -1,5 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
+import com.kilic.kmeta.core.atn.ATN;
+import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.dfa.Automaton;
 import com.kilic.kmeta.core.dfa.AutomatonState;
 
@@ -20,6 +22,16 @@ public class ParenExpr implements ISyntaxExpr {
 			targetState = nfa.createState();
 
 		expr.appendToNFA(nfa, sourceState, targetState);
+
+		return targetState;
+	}
+
+	@Override
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+		if (targetState == null)
+			targetState = atn.createState();
+
+		expr.appendToATN(atn, sourceState, targetState);
 
 		return targetState;
 	}

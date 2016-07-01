@@ -1,5 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
+import com.kilic.kmeta.core.atn.ATN;
+import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.dfa.Automaton;
 import com.kilic.kmeta.core.dfa.AutomatonState;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -56,6 +58,39 @@ public class MultiplicityExpr implements ISyntaxExpr {
 
 		case ONEORMORE:
 			nfa.createEpsilonTransition(exprEndState, exprStartState);
+			break;
+		}
+
+		return targetState;
+	}
+
+	@Override
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+		if (targetState == null)
+			targetState = atn.createState();
+
+		ATNState exprStartState = sourceState;
+		ATNState exprEndState = atn.createState();
+
+		atn.createEpsilonEdge(exprEndState, targetState);
+
+		expr.appendToATN(atn, exprStartState, exprEndState);
+
+		switch (multiplicity) {
+		case ONE:
+			break;
+
+		case OPTIONAL:
+			atn.createEpsilonEdge(exprStartState, exprEndState);
+			break;
+
+		case ANY:
+			atn.createEpsilonEdge(exprStartState, exprEndState);
+			atn.createEpsilonEdge(exprEndState, exprStartState);
+			break;
+
+		case ONEORMORE:
+			atn.createEpsilonEdge(exprEndState, exprStartState);
 			break;
 		}
 
