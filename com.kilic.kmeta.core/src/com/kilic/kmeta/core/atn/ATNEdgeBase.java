@@ -1,15 +1,15 @@
 package com.kilic.kmeta.core.atn;
 
 public abstract class ATNEdgeBase implements IATNEdge {
-	ATNState from, to;
+	IATNState from, to;
 	
 	@Override
-	public ATNState getFrom() {
+	public IATNState getFrom() {
 		return from;
 	}
 	
 	@Override
-	public ATNState getTo() {
+	public IATNState getTo() {
 		return to;
 	}
 }

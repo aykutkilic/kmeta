@@ -1,6 +1,6 @@
 grammar Deneme;
 
-A : 'a' | (B (C|D)*)+;
-B : 'b';
-C : 'c';
-D : 'd'; 
+a : 'a'* | (b (c|d)*)+ | 'e'+;
+b : 'b';
+c : 'c';
+d : 'd'; 
