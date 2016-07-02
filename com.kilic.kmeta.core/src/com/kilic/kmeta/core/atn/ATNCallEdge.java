@@ -6,4 +6,8 @@ public class ATNCallEdge extends ATNEdgeBase {
 	ATNCallEdge(ATN atn) {
 		this.atn = atn;
 	}
+	
+	public ATN getATN() {
+		return atn;
+	}
 }

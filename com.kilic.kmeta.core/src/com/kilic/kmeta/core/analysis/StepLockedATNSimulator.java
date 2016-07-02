@@ -1,8 +1,7 @@
 package com.kilic.kmeta.core.analysis;
 
-import java.util.Set;
-
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.atn.ATNState;
+import com.kilic.kmeta.core.atn.GSS;
 
 /**
  * Algorithm from:
@@ -11,15 +10,17 @@ import com.kilic.kmeta.core.dfa.DFAState;
  * Adaptive LL(*) Parsing: The Power of Dynamic Analysis
  */
 public class StepLockedATNSimulator {
-	public StepLockedATNSimulator(Set<DFAState> startStates) {
+	public StepLockedATNSimulator(ATNState startState, GSS gss) {
 	}
 
+	// returns the start state of the predicted alternative
+	public ATNState adaptivePredict() {
+		return null;
+	}
+	
 	void step() {
 	}
 
-	void adaptivePredict() {
-	}
-	
 	void closure() {
 	}
 	
