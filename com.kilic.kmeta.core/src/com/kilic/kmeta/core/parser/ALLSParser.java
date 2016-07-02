@@ -3,6 +3,7 @@ package com.kilic.kmeta.core.parser;
 import com.kilic.kmeta.core.analysis.StepLockedATNSimulator;
 import com.kilic.kmeta.core.atn.ATN;
 import com.kilic.kmeta.core.atn.ATNCallEdge;
+import com.kilic.kmeta.core.atn.ATNMutatorEdge;
 import com.kilic.kmeta.core.atn.ATNPredicateEdge;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.CharSetEdge;
@@ -22,6 +23,7 @@ public class ALLSParser {
 	void parse(ATN atn, IStream input ) {
 		GSS gss = new GSS();
 		ATNState p = atn.getStartState();
+		ATNState oldp = p;
 		while(true) {
 			if( p == atn.getFinalState() )
 				return;
@@ -36,6 +38,9 @@ public class ALLSParser {
 					ATNCallEdge ace = (ATNCallEdge)e;
 					// push q
 					p = ace.getATN().getStartState();
+				} else if(e instanceof ATNMutatorEdge) {
+					ATNMutatorEdge ame = (ATNMutatorEdge)e;
+					p = ame.getTo();
 				} else if(e instanceof ATNPredicateEdge) {
 					ATNPredicateEdge ape = (ATNPredicateEdge)e;
 					//error if !ape.evaluatePredicate();
@@ -56,6 +61,9 @@ public class ALLSParser {
 				// error.
 				return;
 			}
+			
+			assert(p!=oldp);
+			oldp = p;
 		}
 	}
 }

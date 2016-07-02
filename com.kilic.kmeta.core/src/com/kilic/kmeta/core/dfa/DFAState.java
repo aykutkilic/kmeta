@@ -1,36 +1,27 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.dfa;	
 
 import java.util.HashSet;
 import java.util.Set;
 
-public class DFAState implements IAttachable {
-	private static int stateIndexCounter = 0;
+import com.kilic.kmeta.core.atn.ATNConfig;
+import com.kilic.kmeta.core.atn.ATNConfigSet;
 
-	Set<IAutomatonTransition> in, out;
+public class DFAState {
+	ATNConfigSet configSet;
+	Set<IDFAEdge> in, out;
+	
 	boolean isFinalState;
-	int stateIndex;
-	Object attachedObject;
 	DFA container;
 
 	protected DFAState(DFA container) {
-		stateIndex = stateIndexCounter++;
-
 		in = new HashSet<>();
 		out = new HashSet<>();
-
+		
 		this.container = container;
 	}
-
-	public void attachObject(Object o) {
-		attachedObject = o;
-	}
-
-	public Object getAttachedObject() {
-		return attachedObject;
-	}
-
-	public int getStateIndex() {
-		return stateIndex;
+	
+	public DFA getContainer() {
+		return container;
 	}
 
 	public void setFinal(boolean isFinalState) {
@@ -41,38 +32,14 @@ public class DFAState implements IAttachable {
 		return isFinalState;
 	}
 
-	public void addIncomingTransition(IAutomatonTransition trans) {
-		in.add(trans);
+	public void addIn(IDFAEdge edge) {
+		in.add(edge);
 	}
 
-	public void addOutgoingTransition(IAutomatonTransition trans) {
-		out.add(trans);
+	public void addOut(IDFAEdge edge) {
+		out.add(edge);
 	}
-
-	public Set<IAutomatonTransition> getIncomingTransitions() {
-		return in;
-	}
-
-	public Set<IAutomatonTransition> getOutgoingTransitions() {
-		return out;
-	}
-
-	public DFAState move(IAutomatonTransition transition) {
-		for (IAutomatonTransition t : out) {
-			if (t instanceof EpsilonTransition)
-				continue;
-
-			if (transition.equals(t))
-				return t.getToState();
-		}
-
-		return null;
-	}
-
-	public DFA getContainer() {
-		return container;
-	}
-
+	
 	@Override
 	public String toString() {
 		StringBuilder str = new StringBuilder();
@@ -88,14 +55,17 @@ public class DFAState implements IAttachable {
 
 	@Override
 	public boolean equals(Object other) {
-		if (!(other instanceof DFAState))
+		if(this == other) 
+			return true;
+		
+		if(!(other instanceof DFAState))
 			return false;
 
-		return stateIndex == ((DFAState) other).getStateIndex();
+		return configSet.equals(((DFAState)other).configSet);
 	}
 
 	@Override
 	public int hashCode() {
-		return stateIndex;
+		return configSet.hashCode();
 	}
 }
