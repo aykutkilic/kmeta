@@ -4,11 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.atn.DecisionState;
-import com.kilic.kmeta.core.atn.IATNState;
-import com.kilic.kmeta.core.atn.RegularATNState;
-import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.atn.ATNState;
 
 public class AlternativeExpr implements ISyntaxExpr {
 	List<ISyntaxExpr> alternatives = new ArrayList<>();
@@ -27,17 +23,17 @@ public class AlternativeExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public IATNState appendToATN(ATN atn, IATNState sourceState, IATNState targetState) {
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
 		if(targetState == null)
-			targetState = atn.createRegularState();
+			targetState = atn.createState();
 		
-		DecisionState decisionState = atn.createDecisionState();
+		ATNState decisionState = atn.createState();
 		atn.createEpsilonEdge(sourceState, decisionState);
 		
 		for(ISyntaxExpr alternative : alternatives) {
-			RegularATNState altStartState = atn.createRegularState();
+			ATNState altStartState = atn.createState();
 			atn.createEpsilonEdge(decisionState, altStartState);
-			IATNState altFinalState = alternative.appendToATN(atn, altStartState, null);
+			ATNState altFinalState = alternative.appendToATN(atn, altStartState, null);
 			atn.createEpsilonEdge(altFinalState, targetState);
 		}
 		

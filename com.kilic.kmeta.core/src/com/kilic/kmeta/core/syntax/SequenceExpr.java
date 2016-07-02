@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.atn.IATNState;
+import com.kilic.kmeta.core.atn.ATNState;
 
 public class SequenceExpr implements ISyntaxExpr {
 	List<ISyntaxExpr> seq = new ArrayList<>();
@@ -23,14 +23,14 @@ public class SequenceExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public IATNState appendToATN(ATN atn, IATNState sourceState, IATNState targetState) {
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
-			targetState = atn.createRegularState();
+			targetState = atn.createState();
 
 		if (seq.size() == 0)
 			return sourceState;
 
-		IATNState currentSourceState = sourceState;
+		ATNState currentSourceState = sourceState;
 		for (int i = 0; i < seq.size() - 1; i++) {
 			currentSourceState = seq.get(i).appendToATN(atn, currentSourceState, null);
 		}

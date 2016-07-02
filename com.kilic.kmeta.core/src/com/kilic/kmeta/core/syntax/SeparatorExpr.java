@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.atn.IATNState;
+import com.kilic.kmeta.core.atn.ATNState;
 
 public class SeparatorExpr implements ISyntaxExpr {
 	String separator;
@@ -29,13 +29,13 @@ public class SeparatorExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public IATNState appendToATN(ATN atn, IATNState sourceState, IATNState targetState) {
-		IATNState preSepState = atn.createDecisionState();
-		IATNState secondEState = atn.createRegularState();
-		IATNState preTargetState = atn.createDecisionState();
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+		ATNState preSepState = atn.createState();
+		ATNState secondEState = atn.createState();
+		ATNState preTargetState = atn.createState();
 
 		if (targetState == null)
-			targetState = atn.createRegularState();
+			targetState = atn.createState();
 
 		expr.appendToATN(atn, sourceState, preSepState);
 		expr.appendToATN(atn, secondEState, preTargetState);

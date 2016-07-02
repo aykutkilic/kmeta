@@ -5,16 +5,16 @@ import com.kilic.kmeta.core.util.CharSet;
 public class ATN {
 	ATN container;
 
-	IATNState startState;
-	IATNState finalState;
+	ATNState startState;
+	ATNState finalState;
 
 	String label = "";
 
 	public ATN(ATN container) {
 		this.container = container;
 		
-		startState = createRegularState();
-		finalState = createFinalState();
+		startState = createState();
+		finalState = createState();
 	}
 	
 	public void setLabel(String label) {
@@ -25,63 +25,55 @@ public class ATN {
 		return this.label;
 	}
 	
-	public IATNState getStartState() {
+	public ATNState getStartState() {
 		return startState;
 	}
 	
-	public IATNState getFinalState() {
+	public ATNState getFinalState() {
 		return finalState;
 	}
 
-	public RegularATNState createRegularState() {
-		return new RegularATNState(false);
+	public ATNState createState() {
+		return new ATNState();
 	}
 	
-	public RegularATNState createFinalState() {
-		return new RegularATNState(true);
-	}
-
-	public DecisionState createDecisionState() {
-		return new DecisionState();
-	}
-	
-	public EpsilonEdge createEpsilonEdge(IATNState from, IATNState to) {
+	public EpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
 		EpsilonEdge edge = new EpsilonEdge();
 		connectEdge(from, to, edge);
 		return edge;
 	}
 
-	public CharSetEdge createCharSetEdge(IATNState from, IATNState to, CharSet charSet) {
+	public CharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
 		CharSetEdge edge = new CharSetEdge(charSet);
 		connectEdge(from, to, edge);
 		return edge;
 	}
 
-	public StringEdge createStringEdge(IATNState from, IATNState to, String string) {
+	public StringEdge createStringEdge(ATNState from, ATNState to, String string) {
 		StringEdge edge = new StringEdge(string);
 		connectEdge(from, to, edge);
 		return edge;
 	}
 
-	public ATNCallEdge createCallEdge(IATNState from, IATNState to, ATN atn) {
+	public ATNCallEdge createCallEdge(ATNState from, ATNState to, ATN atn) {
 		ATNCallEdge edge = new ATNCallEdge(atn);
 		connectEdge(from, to, edge);
 		return edge;
 	}
 	
-	public ATNPredicateEdge createPredicateEdge(IATNState from, IATNState to ) {
+	public ATNPredicateEdge createPredicateEdge(ATNState from, ATNState to ) {
 		ATNPredicateEdge edge = new ATNPredicateEdge();
 		connectEdge(from, to, edge);
 		return edge;
 	}
 	
-	public ATNMutatorEdge createMutatorEdge(IATNState from, IATNState to) {
+	public ATNMutatorEdge createMutatorEdge(ATNState from, ATNState to) {
 		ATNMutatorEdge edge = new ATNMutatorEdge();
 		connectEdge(from, to, edge);
 		return edge;
 	}
 
-	void connectEdge(IATNState from, IATNState to, ATNEdgeBase edge) {
+	void connectEdge(ATNState from, ATNState to, ATNEdgeBase edge) {
 		edge.from = from;
 		edge.to = to;
 		from.addOut(edge);

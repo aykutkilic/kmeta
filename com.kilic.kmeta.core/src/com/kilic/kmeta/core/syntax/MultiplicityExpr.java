@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.atn.IATNState;
+import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.dfa.DFA;
 import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -32,12 +32,12 @@ public class MultiplicityExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public IATNState appendToATN(ATN atn, IATNState sourceState, IATNState targetState) {
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
-			targetState = atn.createRegularState();
+			targetState = atn.createState();
 
-		IATNState exprStartState = null;
-		IATNState exprEndState = atn.createRegularState();
+		ATNState exprStartState = null;
+		ATNState exprEndState = atn.createState();
 
 		switch (multiplicity) {
 		case ONE:
@@ -46,21 +46,21 @@ public class MultiplicityExpr implements ISyntaxExpr {
 			break;
 
 		case OPTIONAL:
-			exprStartState = atn.createDecisionState();
+			exprStartState = atn.createState();
 			atn.createEpsilonEdge(sourceState, exprStartState);
 			atn.createEpsilonEdge(exprStartState, exprEndState);
 			atn.createEpsilonEdge(exprEndState, targetState);
 			break;
 
 		case ANY:
-			exprStartState = atn.createDecisionState();
+			exprStartState = atn.createState();
 			atn.createEpsilonEdge(sourceState, exprStartState);
 			atn.createEpsilonEdge(exprStartState, exprEndState);
 			atn.createEpsilonEdge(exprEndState, exprStartState);
 			break;
 
 		case ONEORMORE:
-			exprStartState = atn.createDecisionState();
+			exprStartState = atn.createState();
 			atn.createEpsilonEdge(sourceState, exprStartState);
 			atn.createEpsilonEdge(exprEndState, exprStartState);
 			break;
