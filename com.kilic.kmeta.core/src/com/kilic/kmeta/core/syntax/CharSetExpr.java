@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.syntax;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.atn.ATNState;
+import com.kilic.kmeta.core.atn.IATNState;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class CharSetExpr implements ISyntaxExpr {
@@ -16,9 +16,9 @@ public class CharSetExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public IATNState appendToATN(ATN atn, IATNState sourceState, IATNState targetState) {
 		if (targetState == null)
-			targetState = atn.createState();
+			targetState = atn.createRegularState();
 
 		atn.createCharSetEdge(sourceState, targetState, charSet);
 
