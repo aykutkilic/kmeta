@@ -1,5 +1,8 @@
 package com.kilic.kmeta.core.atn;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN {
@@ -7,11 +10,13 @@ public class ATN {
 
 	ATNState startState;
 	ATNState finalState;
-
+	Set<ATNCallEdge> callers;
+	
 	String label = "";
 
 	public ATN(ATN container) {
 		this.container = container;
+		callers = new HashSet<>();
 		
 		startState = createState();
 		finalState = createState();
@@ -34,23 +39,23 @@ public class ATN {
 	}
 
 	public ATNState createState() {
-		return new ATNState();
+		return new ATNState(this);
 	}
 	
-	public EpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
-		EpsilonEdge edge = new EpsilonEdge();
+	public ATNEpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
+		ATNEpsilonEdge edge = new ATNEpsilonEdge();
 		connectEdge(from, to, edge);
 		return edge;
 	}
 
-	public CharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
-		CharSetEdge edge = new CharSetEdge(charSet);
+	public ATNCharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
+		ATNCharSetEdge edge = new ATNCharSetEdge(charSet);
 		connectEdge(from, to, edge);
 		return edge;
 	}
 
-	public StringEdge createStringEdge(ATNState from, ATNState to, String string) {
-		StringEdge edge = new StringEdge(string);
+	public ATNStringEdge createStringEdge(ATNState from, ATNState to, String string) {
+		ATNStringEdge edge = new ATNStringEdge(string);
 		connectEdge(from, to, edge);
 		return edge;
 	}
@@ -96,5 +101,13 @@ public class ATN {
 		result.append("}\n");
 
 		return result.toString();
+	}
+
+	public void addCaller(ATNCallEdge edge) {
+		callers.add(edge);
+	}
+	
+	public Set<ATNCallEdge> getAllCallers() {
+		return callers;
 	}
 }

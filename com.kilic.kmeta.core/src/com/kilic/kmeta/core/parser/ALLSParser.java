@@ -6,11 +6,11 @@ import com.kilic.kmeta.core.atn.ATNCallEdge;
 import com.kilic.kmeta.core.atn.ATNMutatorEdge;
 import com.kilic.kmeta.core.atn.ATNPredicateEdge;
 import com.kilic.kmeta.core.atn.ATNState;
-import com.kilic.kmeta.core.atn.CharSetEdge;
-import com.kilic.kmeta.core.atn.EpsilonEdge;
+import com.kilic.kmeta.core.atn.ATNCharSetEdge;
+import com.kilic.kmeta.core.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.atn.GSS;
 import com.kilic.kmeta.core.atn.IATNEdge;
-import com.kilic.kmeta.core.atn.StringEdge;
+import com.kilic.kmeta.core.atn.ATNStringEdge;
 import com.kilic.kmeta.core.stream.IStream;
 
 /**
@@ -32,7 +32,7 @@ public class ALLSParser {
 			if( p.hasNext() ) {
 				IATNEdge e = p.nextEdge();
 				
-				if(e instanceof EpsilonEdge) {
+				if(e instanceof ATNEpsilonEdge) {
 					p = e.getTo();
 				} else if(e instanceof ATNCallEdge) {
 					ATNCallEdge ace = (ATNCallEdge)e;
@@ -45,12 +45,12 @@ public class ALLSParser {
 					ATNPredicateEdge ape = (ATNPredicateEdge)e;
 					//error if !ape.evaluatePredicate();
 					p = ape.getTo();
-				} else if(e instanceof CharSetEdge) {
-					CharSetEdge cse = (CharSetEdge)e;
+				} else if(e instanceof ATNCharSetEdge) {
+					ATNCharSetEdge cse = (ATNCharSetEdge)e;
 					// if not match error
 					p = cse.getTo();
-				} else if(e instanceof StringEdge) {
-					StringEdge se = (StringEdge)e;
+				} else if(e instanceof ATNStringEdge) {
+					ATNStringEdge se = (ATNStringEdge)e;
 					// if not match error
 					p = se.getTo();
 				}

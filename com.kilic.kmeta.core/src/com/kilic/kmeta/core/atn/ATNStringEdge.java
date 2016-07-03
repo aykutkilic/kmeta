@@ -1,9 +1,9 @@
 package com.kilic.kmeta.core.atn;
 
-public class StringEdge extends ATNEdgeBase {
+public class ATNStringEdge extends ATNEdgeBase {
 	String string;
 
-	StringEdge(String string) {
+	ATNStringEdge(String string) {
 		this.string = string;
 	}
 }

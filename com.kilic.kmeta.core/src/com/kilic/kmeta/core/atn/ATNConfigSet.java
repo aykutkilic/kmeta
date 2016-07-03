@@ -1,13 +1,15 @@
 package com.kilic.kmeta.core.atn;
 
 import java.util.HashSet;
-import java.util.Set;
+import com.kilic.kmeta.core.stream.IStream;
 
-public class ATNConfigSet {
-	Set<ATNConfig> configs;
+public class ATNConfigSet extends HashSet<ATNConfig> {
+	private static final long serialVersionUID = -4055740663032286654L;
+
+	public ATNConfigSet() {}
 	
-	public ATNConfigSet() {
-		configs = new HashSet<>();
+	public ATNConfigSet move(IStream input) {
+		return null;
 	}
 	
 	@Override
@@ -18,7 +20,7 @@ public class ATNConfigSet {
 	@Override
 	public boolean equals(Object obj) {
 		return super.equals(obj);
-	}
+	} 
 	
 	@Override
 	public String toString() {

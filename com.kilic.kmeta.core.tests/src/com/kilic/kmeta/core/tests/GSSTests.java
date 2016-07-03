@@ -10,7 +10,7 @@ public class GSSTests {
 		GSS gss = new GSS();
 		
 		for(int i=1; i<=5; i++)
-			gss.init(i);
+			gss.merge(i);
 		
 		String v = gss.toGraphviz();
 		gss.move(1, 11);

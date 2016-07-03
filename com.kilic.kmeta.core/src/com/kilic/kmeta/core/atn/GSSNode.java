@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.atn;
 import java.util.HashSet;
 import java.util.Set;
 
-class GSSNode {
+public class GSSNode {
 	Integer state;
 	Set<GSSNode> callers, calls;
 
@@ -13,6 +13,10 @@ class GSSNode {
 		calls = new HashSet<>();
 	}
 
+	public boolean isAny() {
+		return state == GSS.ANY_STACK;
+	}
+	
 	GSSNode cloneMoved(Integer toState) {
 		GSSNode result = new GSSNode(toState);
 		result.callers = new HashSet<>(callers);

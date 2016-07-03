@@ -2,10 +2,10 @@ package com.kilic.kmeta.core.atn;
 
 import com.kilic.kmeta.core.util.CharSet;
 
-public class CharSetEdge extends ATNEdgeBase {
+public class ATNCharSetEdge extends ATNEdgeBase {
 	CharSet charSet;
 
-	CharSetEdge(CharSet charSet) {
+	ATNCharSetEdge(CharSet charSet) {
 		this.charSet = charSet;
 	}
 }

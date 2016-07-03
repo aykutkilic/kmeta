@@ -9,9 +9,11 @@ import java.util.Set;
 // Graph Structured Stack
 // Used for step locked execution of ATNs or DFA.
 public class GSS {
+	public static final int ANY_STACK = -1;
+	
 	Map<Integer, GSSNode> top;
 	Set<GSSNode> nodes;
-
+	
 	public GSS() {
 		top = new HashMap<>();
 		nodes = new HashSet<>();
@@ -26,12 +28,22 @@ public class GSS {
 		return top.values();
 	}
 
-	public void init(Integer state) {
+	public void merge(Integer state) {
+		if(state == ANY_STACK) {
+			nodes.clear();
+			top.clear();
+		}
+		
 		if (top.containsKey(state))
 			return;
 
 		GSSNode newNode = new GSSNode(state);
 		addToNodesAndTop(state, newNode);
+	}
+	
+	public boolean isAny() {
+		if(nodes.size() != 1) return false;
+		return nodes.iterator().next().isAny();
 	}
 
 	public GSSNode move(Integer from, Integer to) {

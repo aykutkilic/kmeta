@@ -11,14 +11,28 @@ public class ATNState {
 	Set<IATNEdge> in;
 	Set<IATNEdge> out;
 	boolean isFinal;
+	ATN atn;
 	DFA predictionDFA;
 
-	ATNState() {
+	ATNState(ATN atn) {
+		this.atn = atn;
 		this.stateIndex = stateIndexCounter++;
 	}
 
+	public ATN getATN() {
+		return atn;
+	}
+	
 	public int getStateIndex() {
 		return stateIndex;
+	}
+
+	public boolean isFinal() {
+		return isFinal;
+	}
+	
+	public void setIsFinal(boolean isFinal) {
+		this.isFinal = isFinal;
 	}
 	
 	public void addIn(IATNEdge edge) {
