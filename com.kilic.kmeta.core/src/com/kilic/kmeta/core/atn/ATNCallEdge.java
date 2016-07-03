@@ -11,4 +11,12 @@ public class ATNCallEdge extends ATNEdgeBase {
 	public ATN getATN() {
 		return atn;
 	}
+
+	@Override
+	public String getLabel() {
+		if(atn.getLabel()!=null)
+			return "[" + atn.getLabel() + "]";
+		
+		return "[??]"; 
+	}
 }

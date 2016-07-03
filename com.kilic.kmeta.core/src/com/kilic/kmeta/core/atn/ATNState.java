@@ -1,5 +1,6 @@
 package com.kilic.kmeta.core.atn;
 
+import java.util.HashSet;
 import java.util.Set;
 
 import com.kilic.kmeta.core.dfa.DFA;
@@ -17,6 +18,9 @@ public class ATNState {
 	ATNState(ATN atn) {
 		this.atn = atn;
 		this.stateIndex = stateIndexCounter++;
+		
+		in = new HashSet<>();
+		out = new HashSet<>();
 	}
 
 	public ATN getATN() {

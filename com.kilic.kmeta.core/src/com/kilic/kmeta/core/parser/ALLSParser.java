@@ -20,7 +20,7 @@ import com.kilic.kmeta.core.stream.IStream;
  * Adaptive LL(*) Parsing: The Power of Dynamic Analysis
  */
 public class ALLSParser {
-	void parse(ATN atn, IStream input ) {
+	void parse( ATN atn, IStream input ) {
 		GSS gss = new GSS();
 		ATNState p = atn.getStartState();
 		ATNState oldp = p;

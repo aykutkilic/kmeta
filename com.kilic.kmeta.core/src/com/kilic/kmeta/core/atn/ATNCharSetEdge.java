@@ -8,4 +8,9 @@ public class ATNCharSetEdge extends ATNEdgeBase {
 	ATNCharSetEdge(CharSet charSet) {
 		this.charSet = charSet;
 	}
+
+	@Override
+	public String getLabel() {
+		return charSet.toString();
+	}
 }

@@ -1,22 +1,24 @@
 package com.kilic.kmeta.core.atn;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN {
-	ATN container;
-
 	ATNState startState;
 	ATNState finalState;
 	Set<ATNCallEdge> callers;
 	
+	Map<Integer, ATNState> states;
+	
 	String label = "";
 
-	public ATN(ATN container) {
-		this.container = container;
+	public ATN() {
 		callers = new HashSet<>();
+		states = new HashMap<>();
 		
 		startState = createState();
 		finalState = createState();
@@ -39,7 +41,9 @@ public class ATN {
 	}
 
 	public ATNState createState() {
-		return new ATNState(this);
+		ATNState newState = new ATNState(this);
+		states.put(newState.stateIndex, newState);
+		return newState;
 	}
 	
 	public ATNEpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
@@ -92,12 +96,17 @@ public class ATN {
 		result.append("  rankdir=S;\n");
 		result.append("  size=\"8,5\"\n");
 		result.append("node [shape = square];\n");
-		result.append("S" + startState.getStateIndex() + ";\n");
+		result.append("S" + startState.stateIndex + ";\n");
 		result.append("node [shape = doublecircle];\n ");
-		result.append("S" + finalState.getStateIndex() + " ");
-
-		result.append(";\n");
+		result.append("S" + finalState.stateIndex + ";\n");
 		result.append("node [shape = circle];");
+		
+		for(ATNState state : states.values()) {
+			for(IATNEdge edge : state.out) {
+				result.append("S" + state.stateIndex + " -> S" + edge.getTo().stateIndex + " [ label = \""
+						+ edge.getLabel() + "\" ];\n");
+			}
+		}
 		result.append("}\n");
 
 		return result.toString();

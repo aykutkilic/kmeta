@@ -27,8 +27,10 @@ public class SequenceExpr implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = atn.createState();
 
-		if (seq.size() == 0)
-			return sourceState;
+		if (seq.size() == 0) {
+			atn.createEpsilonEdge(sourceState, targetState);
+			return targetState;
+		}
 
 		ATNState currentSourceState = sourceState;
 		for (int i = 0; i < seq.size() - 1; i++) {

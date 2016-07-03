@@ -6,4 +6,9 @@ public class ATNStringEdge extends ATNEdgeBase {
 	ATNStringEdge(String string) {
 		this.string = string;
 	}
+
+	@Override
+	public String getLabel() {
+		return "'" + string +  "'";
+	}
 }
