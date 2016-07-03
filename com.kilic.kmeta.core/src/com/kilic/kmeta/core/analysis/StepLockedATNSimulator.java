@@ -10,6 +10,7 @@ import com.kilic.kmeta.core.atn.ATNConfigSet;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.GSS;
 import com.kilic.kmeta.core.atn.GSSNode;
+import com.kilic.kmeta.core.dfa.DFA;
 import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.stream.IStream;
 
@@ -84,12 +85,37 @@ public class StepLockedATNSimulator {
 	}
 	
 	DFAState target(DFAState d) {
-		return null;
+		DFA dfa = d.getDFA();
+		
+		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getConfigSet());
+		if(newConfigSet.isEmpty()) {
+			// connect transition to error
+			// but how? there's no tokenization :/
+			// maybe I create a charset and add the char as a singleton
+			// but that'd also be computationally expensive
+			return null;
+		}
+		
+		int j = -1;
+		boolean predictionDone = true;
+		for(ATNConfig config : newConfigSet) {
+			if(j == -1) {
+				j = config.getAlternative();
+				continue;
+			}
+			
+			if(j!=config.getAlternative()) {
+				predictionDone = false;
+				break;
+			}
+		}
+		
+		if(predictionDone) {
+			// connect token to FinalState i;
+			return null;
+		}
 	}
 	
-	void move() {
-	}
-
 	int sllPredict(ATNState atnState, DFAState d0, GSSNode g, int offset) {
 		DFAState d = d0;
 		while(true) {
@@ -110,14 +136,9 @@ public class StepLockedATNSimulator {
 	}
 	
 	int llPredict(ATNState atnState, GSSNode g, int offset) {
-		ATNConfigSet d = startState(atnState, g);
+		ATNConfigSet acs = startState(atnState, g);
 		while(true) {
-			ATNConfigSet mv = d.move(input);
-			
-			Set<ATNConfig> newConfigSet = new HashSet<>();
-			
-			for( ATNConfig config : mv )
-				newConfigSet.addAll( closure(config,null) );
+			Set<ATNConfig> newConfigSet = getAllClosuresOfMove(acs);
 			
 			if(newConfigSet.isEmpty())
 				return -1;
@@ -125,6 +146,14 @@ public class StepLockedATNSimulator {
 			Set<Set<Integer>> altSets = getConflictSetsPerLoc(newConfigSet);
 			// if ambiguity report return min(x)
 		}
+	}
+
+	private Set<ATNConfig> getAllClosuresOfMove(ATNConfigSet d) {
+		ATNConfigSet mv = d.move(input);
+		Set<ATNConfig> newConfigSet = new HashSet<>();
+		for( ATNConfig config : mv )
+			newConfigSet.addAll( closure(config,null) );
+		return newConfigSet;
 	}
 	
 	Set<Set<Integer>> getConflictSetsPerLoc(Set<ATNConfig> configSet) {
