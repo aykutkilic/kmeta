@@ -27,6 +27,14 @@ public class ATNState {
 		return atn;
 	}
 	
+	public DFA getPredictionDFA() {
+		return predictionDFA;
+	}
+	
+	public void setPredictionDFA(DFA predictionDFA) {
+		this.predictionDFA = predictionDFA;
+	}
+	
 	public int getStateIndex() {
 		return stateIndex;
 	}
@@ -63,6 +71,10 @@ public class ATNState {
 	public ATNState nextState() {
 		assert(out.size() == 1);
 		return nextEdge().getTo();
+	}
+	
+	public Set<IATNEdge> getOutEdges() {
+		return out;
 	}
 	
 	@Override

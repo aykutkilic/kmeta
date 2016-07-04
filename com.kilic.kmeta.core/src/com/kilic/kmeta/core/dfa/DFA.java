@@ -18,7 +18,7 @@ public class DFA {
 	public DFA() {
 		states = new HashMap<>();
 		
-		errorState = new DFAState(this);
+		errorState = new DFAState(this, null);
 		errorState.setErrorState(true);
 	}
 
@@ -34,8 +34,8 @@ public class DFA {
 		return errorState;
 	}
 
-	public DFAState createState() {
-		DFAState newState = new DFAState(this);
+	public DFAState createState(ATNConfigSet configSet) {
+		DFAState newState = new DFAState(this, configSet);
 		states.put(newState.configSet, newState);
 		return newState;
 	}

@@ -19,11 +19,11 @@ public class DFAState {
 	DFA container;
 	StateType stateType;
 
-	protected DFAState(DFA container) {
+	protected DFAState(DFA container, ATNConfigSet configSet) {
 		in = new HashSet<>();
 		out = new HashSet<>();
 		
-		configSet = new ATNConfigSet();
+		this.configSet = configSet;
 		
 		stateType = StateType.REGULAR;
 		this.container = container;

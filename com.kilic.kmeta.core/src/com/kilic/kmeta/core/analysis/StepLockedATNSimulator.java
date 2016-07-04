@@ -10,6 +10,7 @@ import com.kilic.kmeta.core.atn.ATNConfigSet;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.GSS;
 import com.kilic.kmeta.core.atn.GSSNode;
+import com.kilic.kmeta.core.atn.IATNEdge;
 import com.kilic.kmeta.core.dfa.DFA;
 import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.stream.IStream;
@@ -26,15 +27,41 @@ public class StepLockedATNSimulator {
 	IStream input;
 	
 	public StepLockedATNSimulator(ATNState startState, GSS gss, IStream input) {
+		this.startState = startState;
+		this.gss = gss;
+		this.input = input;
 	}
 
 	// returns the start state of the predicted alternative
-	public ATNState adaptivePredict() {
+	public ATNState adaptivePredict(ATNState atnState, GSSNode g ) {
+		int pos = input.getPosition();
+		
+		if(atnState.getPredictionDFA()==null) {
+			DFA predictionDFA = new DFA();
+			atnState.setPredictionDFA(predictionDFA);
+
+			ATNConfigSet configSet = startState(atnState, g);
+			predictionDFA.createState(configSet);
+		}
+		
+		DFA dfa = atnState.getPredictionDFA();
+		int result = sllPredict(atnState, dfa.getStartState(), g, pos);
+		
+		input.seek(pos);
 		return null;
 	}
 	
-	void step() {
+
+	ATNConfigSet startState(ATNState atnState, GSSNode g) {
+		ATNConfigSet d0 = new ATNConfigSet();
+		
+		for( IATNEdge out : atnState.getOutEdges()) {
+			
+		}
+		
+		return d0;
 	}
+	
 
 	Set<ATNConfig> closure(ATNConfig config, Set<ATNConfig> history) {
 		if(history == null)
@@ -159,10 +186,4 @@ public class StepLockedATNSimulator {
 	Set<Set<Integer>> getConflictSetsPerLoc(Set<ATNConfig> configSet) {
 		return null;
 	}
-	
-
-	ATNConfigSet startState(ATNState atnState, GSSNode g) {
-		return null;
-	}
-	
 }

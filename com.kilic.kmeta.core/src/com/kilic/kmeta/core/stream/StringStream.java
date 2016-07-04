@@ -45,4 +45,15 @@ public class StringStream implements IStream {
 	public boolean hasEnded() {
 		return pos >= string.length();
 	}
+
+	@Override
+	public int getPosition() {
+		return pos;
+	}
+
+	@Override
+	public void seek(int pos) {
+		assert( pos<string.length() );
+		this.pos = pos;
+	}
 }
