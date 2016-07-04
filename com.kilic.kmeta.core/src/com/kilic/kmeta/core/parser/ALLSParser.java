@@ -20,7 +20,7 @@ import com.kilic.kmeta.core.stream.IStream;
  * Adaptive LL(*) Parsing: The Power of Dynamic Analysis
  */
 public class ALLSParser {
-	void parse( ATN atn, IStream input ) {
+	public void parse( ATN atn, IStream input ) {
 		GSS gss = new GSS();
 		ATNState p = atn.getStartState();
 		ATNState oldp = p;
@@ -55,7 +55,7 @@ public class ALLSParser {
 					p = se.getTo();
 				}
 			} else if( p.isDecisionState() ) {
-				StepLockedATNSimulator slas = new StepLockedATNSimulator(p, gss);
+				StepLockedATNSimulator slas = new StepLockedATNSimulator(p, gss, input);
 				p = slas.adaptivePredict();
 			} else {
 				// error.

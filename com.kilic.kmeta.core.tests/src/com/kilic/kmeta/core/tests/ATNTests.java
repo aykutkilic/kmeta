@@ -7,6 +7,9 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.atn.ATN;
 import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.parser.ALLSParser;
+import com.kilic.kmeta.core.stream.IStream;
+import com.kilic.kmeta.core.stream.StringStream;
 import com.kilic.kmeta.core.syntax.ATNCallExpr;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
@@ -108,5 +111,9 @@ public class ATNTests {
 		Utils.dumpATNToFile(ParenE, desktopPath + "ParenE.graphviz");
 		Utils.dumpATNToFile(HexL, desktopPath + "HexL.graphviz");
 		Utils.dumpATNToFile(DecL, desktopPath + "DecL.graphviz");
+		
+		ALLSParser parser = new ALLSParser();
+		IStream input = new StringStream("1+2*3*(4+5)");
+		parser.parse(E, input);
 	}
 }
