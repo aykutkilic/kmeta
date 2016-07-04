@@ -30,22 +30,21 @@ public class SeparatorExpr implements ISyntaxExpr {
 
 	@Override
 	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
-		ATNState preSepState = atn.createState();
-		ATNState secondEState = atn.createState();
-		ATNState preTargetState = atn.createState();
-
 		if (targetState == null)
 			targetState = atn.createState();
 
-		expr.appendToATN(atn, sourceState, preSepState);
-		expr.appendToATN(atn, secondEState, preTargetState);
+		ATNState exprStartState = atn.createState();
+		ATNState exprEndState = atn.createState();
+		ATNState afterSepState = atn.createState();
 
-		atn.createStringEdge(preSepState, secondEState, separator);
+		atn.createEpsilonEdge(sourceState, exprStartState);
+		atn.createEpsilonEdge(exprEndState, targetState);
 
-		atn.createEpsilonEdge(sourceState, targetState);
-		atn.createEpsilonEdge(preSepState, targetState);
-		atn.createEpsilonEdge(preTargetState, preSepState);
-		atn.createEpsilonEdge(preTargetState, targetState);
+		atn.createEpsilonEdge(exprStartState, targetState);
+
+		expr.appendToATN(atn, exprStartState, exprEndState);
+		atn.createStringEdge(exprEndState, afterSepState, separator);
+		expr.appendToATN(atn, afterSepState, exprEndState);
 
 		return targetState;
 	}
