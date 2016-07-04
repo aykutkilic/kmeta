@@ -17,20 +17,20 @@ import com.kilic.kmeta.core.util.CharSet;
 
 public class ATNTests {
 	String desktopPath;
-	
+
 	ATN DecL = new ATN();
 	ATN HexL = new ATN();
 	ATN ParenE = new ATN();
 	ATN PrimE = new ATN();
-	
+
 	ATN MulE = new ATN();
 	ATN AddE = new ATN();
 	ATN E = new ATN();
-	
+
 	@Before
 	public void init() {
-		desktopPath = System.getProperty("user.home") + "\\Desktop\\";
-		
+		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
+
 		// @formatter:off
 		Utils.createATNFromSyntax( 
 			DecL,
@@ -99,7 +99,7 @@ public class ATNTests {
 		).setLabel("E");
 		// @formatter:on
 	}
-	
+
 	@Test
 	public void atnTest() throws FileNotFoundException {
 		Utils.dumpATNToFile(E, desktopPath + "E.graphviz");
