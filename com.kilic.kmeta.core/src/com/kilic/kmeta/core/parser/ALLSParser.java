@@ -24,6 +24,7 @@ public class ALLSParser {
 		GSS gss = new GSS();
 		ATNState p = atn.getStartState();
 		ATNState oldp = p;
+		
 		while(true) {
 			if( p == atn.getFinalState() )
 				return;
@@ -56,7 +57,7 @@ public class ALLSParser {
 				}
 			} else if( p.isDecisionState() ) {
 				StepLockedATNSimulator slas = new StepLockedATNSimulator(p, gss, input);
-				p = slas.adaptivePredict();
+				p = slas.adaptivePredict(p, null);
 			} else {
 				// error.
 				return;

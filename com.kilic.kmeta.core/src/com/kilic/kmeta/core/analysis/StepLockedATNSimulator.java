@@ -7,6 +7,7 @@ import com.kilic.kmeta.core.atn.ATN;
 import com.kilic.kmeta.core.atn.ATNCallEdge;
 import com.kilic.kmeta.core.atn.ATNConfig;
 import com.kilic.kmeta.core.atn.ATNConfigSet;
+import com.kilic.kmeta.core.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.GSS;
 import com.kilic.kmeta.core.atn.GSSNode;
@@ -54,15 +55,10 @@ public class StepLockedATNSimulator {
 
 	ATNConfigSet startState(ATNState atnState, GSSNode g) {
 		ATNConfigSet d0 = new ATNConfigSet();
-		
-		for( IATNEdge out : atnState.getOutEdges()) {
-			
-		}
-		
+		d0.addAll(closure(new ATNConfig(atnState,1,g),null));
 		return d0;
 	}
 	
-
 	Set<ATNConfig> closure(ATNConfig config, Set<ATNConfig> history) {
 		if(history == null)
 			history = new HashSet<>();
@@ -106,6 +102,30 @@ public class StepLockedATNSimulator {
 			}
 			
 			return result;
+		} else {
+			for( IATNEdge out : config.getState().getOutEdges()) {
+				if(out instanceof ATNCallEdge) {
+					ATNCallEdge callEdge = (ATNCallEdge)out;
+					result.addAll(
+						closure(
+							new ATNConfig(
+								callEdge.getATN().getStartState(),
+								config.getAlternative(),
+								null
+							),
+							history
+						)
+					);
+				} else if(out instanceof ATNEpsilonEdge){
+					result.addAll(
+						closure(
+							new ATNConfig(
+								out.getTo(),
+								config.getAlternative(),
+								null), 
+							history));
+				}
+			}
 		}
 		
 		return result;
