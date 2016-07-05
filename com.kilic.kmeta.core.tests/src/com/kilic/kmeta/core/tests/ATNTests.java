@@ -108,6 +108,7 @@ public class ATNTests {
 		Utils.dumpATNToFile(E, desktopPath + "E.graphviz");
 		Utils.dumpATNToFile(AddE, desktopPath + "AddE.graphviz");
 		Utils.dumpATNToFile(MulE, desktopPath + "MulE.graphviz");
+		Utils.dumpATNToFile(PrimE, desktopPath + "PrimE.graphviz");
 		Utils.dumpATNToFile(ParenE, desktopPath + "ParenE.graphviz");
 		Utils.dumpATNToFile(HexL, desktopPath + "HexL.graphviz");
 		Utils.dumpATNToFile(DecL, desktopPath + "DecL.graphviz");

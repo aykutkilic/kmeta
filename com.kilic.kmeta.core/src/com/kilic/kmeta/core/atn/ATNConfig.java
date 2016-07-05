@@ -14,4 +14,19 @@ public class ATNConfig {
 	public ATNState getState() { return state; }
 	public int getAlternative() { return alternative; }
 	public GSSNode getCallStack() { return callStack; }
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+		
+		result.append("[ ");
+		result.append(state);
+		result.append(", ");
+		result.append(alternative);
+		result.append(", ");
+		result.append(callStack);
+		result.append(" ]");
+		
+		return result.toString();
+	}
 }
