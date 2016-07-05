@@ -9,6 +9,12 @@ public class RegularCallStack {
 	public static final int ANY_STACK = -1;
 	Stack<Integer> callStack;
 	Map<Integer, ATNState> states;
+
+	public static RegularCallStack newAnyStack() {
+		RegularCallStack result = new RegularCallStack();
+		result.pushAny();
+		return result;
+	}
 	
 	public RegularCallStack() {
 		callStack = new Stack<>();
@@ -52,15 +58,15 @@ public class RegularCallStack {
 	public String toString() {
 		StringBuilder result = new StringBuilder();
 		
-		result.append('<');
+		result.append("<");
 		Iterator<Integer> i = callStack.iterator();
 		while(i.hasNext()) {
 			Integer index = i.next();
-			result.append( index!=ANY_STACK ? index : '#' );
+			result.append( index!=ANY_STACK ? index : "#" );
 			if(i.hasNext())
-				result.append(',');
+				result.append(",");
 		}
-		result.append('>');
+		result.append(">");
 		
 		return result.toString();
 	}

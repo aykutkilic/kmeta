@@ -10,6 +10,7 @@ import com.kilic.kmeta.core.atn.ATNCharSetEdge;
 import com.kilic.kmeta.core.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.atn.GSS;
 import com.kilic.kmeta.core.atn.IATNEdge;
+import com.kilic.kmeta.core.atn.RegularCallStack;
 import com.kilic.kmeta.core.atn.ATNStringEdge;
 import com.kilic.kmeta.core.stream.IStream;
 
@@ -56,7 +57,7 @@ public class ALLSParser {
 				}
 			} else if( p.isDecisionState() ) {
 				StepLockedATNSimulator slas = new StepLockedATNSimulator(input);
-				p = slas.adaptivePredict(p, null);
+				p = slas.adaptivePredict(p, new RegularCallStack());
 			} else {
 				// error.
 				return;

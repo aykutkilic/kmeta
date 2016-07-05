@@ -38,7 +38,7 @@ public class StepLockedATNSimulator {
 			DFA predictionDFA = new DFA();
 			atnState.setPredictionDFA(predictionDFA);
 
-			ATNConfigSet configSet = startState(atnState, g);
+			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
 			predictionDFA.createState(configSet);
 		}
 		
@@ -52,7 +52,17 @@ public class StepLockedATNSimulator {
 
 	ATNConfigSet startState(ATNState atnState, RegularCallStack g) {
 		ATNConfigSet d0 = new ATNConfigSet();
-		d0.addAll(closure(new ATNConfig(atnState,1,g),null));
+		int i = 0;
+		for(IATNEdge edge : atnState.getOutEdges()) {
+			if( edge instanceof ATNCallEdge ) {
+				ATNCallEdge callEdge = (ATNCallEdge)edge;
+				RegularCallStack pushedStack = new RegularCallStack(g);
+				pushedStack.push(edge.getTo());
+				d0.addAll(closure(new ATNConfig(callEdge.getATN().getStartState(),i++,pushedStack),null));
+			} else if( edge instanceof ATNEpsilonEdge ) {
+				d0.addAll(closure(new ATNConfig(edge.getTo(),i++,g),null));
+			}
+		}
 		return d0;
 	}
 	
