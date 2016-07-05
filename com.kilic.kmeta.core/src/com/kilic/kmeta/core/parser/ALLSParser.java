@@ -21,7 +21,6 @@ import com.kilic.kmeta.core.stream.IStream;
  */
 public class ALLSParser {
 	public void parse( ATN atn, IStream input ) {
-		GSS gss = new GSS();
 		ATNState p = atn.getStartState();
 		ATNState oldp = p;
 		
@@ -56,7 +55,7 @@ public class ALLSParser {
 					p = se.getTo();
 				}
 			} else if( p.isDecisionState() ) {
-				StepLockedATNSimulator slas = new StepLockedATNSimulator(p, gss, input);
+				StepLockedATNSimulator slas = new StepLockedATNSimulator(input);
 				p = slas.adaptivePredict(p, null);
 			} else {
 				// error.

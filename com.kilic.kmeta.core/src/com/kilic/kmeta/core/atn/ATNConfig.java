@@ -3,9 +3,9 @@ package com.kilic.kmeta.core.atn;
 public class ATNConfig {
 	ATNState state;
 	int alternative;
-	GSSNode callStack;
+	RegularCallStack callStack;
 	
-	public ATNConfig(ATNState state, int alternative, GSSNode callStack) {
+	public ATNConfig(ATNState state, int alternative, RegularCallStack callStack) {
 		this.state = state;
 		this.alternative = alternative;
 		this.callStack = callStack;
@@ -13,7 +13,7 @@ public class ATNConfig {
 	
 	public ATNState getState() { return state; }
 	public int getAlternative() { return alternative; }
-	public GSSNode getCallStack() { return callStack; }
+	public RegularCallStack getCallStack() { return callStack; }
 	
 	@Override
 	public String toString() {

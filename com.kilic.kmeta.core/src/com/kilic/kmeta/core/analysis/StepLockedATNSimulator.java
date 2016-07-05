@@ -12,6 +12,7 @@ import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.GSS;
 import com.kilic.kmeta.core.atn.GSSNode;
 import com.kilic.kmeta.core.atn.IATNEdge;
+import com.kilic.kmeta.core.atn.RegularCallStack;
 import com.kilic.kmeta.core.dfa.DFA;
 import com.kilic.kmeta.core.dfa.DFAState;
 import com.kilic.kmeta.core.stream.IStream;
@@ -23,18 +24,14 @@ import com.kilic.kmeta.core.stream.IStream;
  * Adaptive LL(*) Parsing: The Power of Dynamic Analysis
  */
 public class StepLockedATNSimulator {
-	ATNState startState;
-	GSS gss;
 	IStream input;
 	
-	public StepLockedATNSimulator(ATNState startState, GSS gss, IStream input) {
-		this.startState = startState;
-		this.gss = gss;
+	public StepLockedATNSimulator(IStream input) {
 		this.input = input;
 	}
 
 	// returns the start state of the predicted alternative
-	public ATNState adaptivePredict(ATNState atnState, GSSNode g ) {
+	public ATNState adaptivePredict(ATNState atnState, RegularCallStack g ) {
 		int pos = input.getPosition();
 		
 		if(atnState.getPredictionDFA()==null) {
@@ -53,7 +50,7 @@ public class StepLockedATNSimulator {
 	}
 	
 
-	ATNConfigSet startState(ATNState atnState, GSSNode g) {
+	ATNConfigSet startState(ATNState atnState, RegularCallStack g) {
 		ATNConfigSet d0 = new ATNConfigSet();
 		d0.addAll(closure(new ATNConfig(atnState,1,g),null));
 		return d0;
@@ -86,8 +83,8 @@ public class StepLockedATNSimulator {
 				}
 			} else {
 				// nonempty SLL or LL stack
-				ATNState popped = null;
-				GSSNode poppedStack = null;
+				RegularCallStack poppedStack = new RegularCallStack(config.getCallStack());
+				ATNState popped = poppedStack.pop();
 				
 				result.addAll(
 					closure(
@@ -106,12 +103,16 @@ public class StepLockedATNSimulator {
 			for( IATNEdge out : config.getState().getOutEdges()) {
 				if(out instanceof ATNCallEdge) {
 					ATNCallEdge callEdge = (ATNCallEdge)out;
+					
+					RegularCallStack pushedStack = new RegularCallStack(config.getCallStack());
+					pushedStack.push(out.getTo());
+					
 					result.addAll(
 						closure(
 							new ATNConfig(
 								callEdge.getATN().getStartState(),
 								config.getAlternative(),
-								null
+								pushedStack
 							),
 							history
 						)
@@ -122,7 +123,7 @@ public class StepLockedATNSimulator {
 							new ATNConfig(
 								out.getTo(),
 								config.getAlternative(),
-								null), 
+								config.getCallStack()), 
 							history));
 				}
 			}
@@ -163,7 +164,7 @@ public class StepLockedATNSimulator {
 		}
 	}
 	
-	int sllPredict(ATNState atnState, DFAState d0, GSSNode g, int offset) {
+	int sllPredict(ATNState atnState, DFAState d0, RegularCallStack g, int offset) {
 		DFAState d = d0;
 		while(true) {
 			DFAState next = d.move(input);
@@ -182,7 +183,7 @@ public class StepLockedATNSimulator {
 		}
 	}
 	
-	int llPredict(ATNState atnState, GSSNode g, int offset) {
+	int llPredict(ATNState atnState, RegularCallStack g, int offset) {
 		ATNConfigSet acs = startState(atnState, g);
 		while(true) {
 			Set<ATNConfig> newConfigSet = getAllClosuresOfMove(acs);
