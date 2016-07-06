@@ -40,7 +40,7 @@ public class DFAState {
 				return edge.getTo();
 		}
 
-		return container.errorState;
+		return null;
 	}
 
 	public ATNConfigSet getConfigSet() {

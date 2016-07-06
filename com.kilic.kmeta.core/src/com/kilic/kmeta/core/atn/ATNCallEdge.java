@@ -1,5 +1,7 @@
 package com.kilic.kmeta.core.atn;
 
+import com.kilic.kmeta.core.stream.IStream;
+
 public class ATNCallEdge extends ATNEdgeBase {
 	ATN atn;
 
@@ -18,5 +20,10 @@ public class ATNCallEdge extends ATNEdgeBase {
 			return "[" + atn.getLabel() + "]";
 		
 		return "[??]"; 
+	}
+
+	@Override
+	public boolean move(IStream input) {
+		return false;
 	}
 }

@@ -1,6 +1,8 @@
 package com.kilic.kmeta.core.atn;
 
 import java.util.HashSet;
+import java.util.Iterator;
+
 import com.kilic.kmeta.core.stream.IStream;
 
 public class ATNConfigSet extends HashSet<ATNConfig> {
@@ -9,7 +11,23 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 	public ATNConfigSet() {}
 	
 	public ATNConfigSet move(IStream input) {
-		return null;
+		ATNConfigSet result = new ATNConfigSet();
+		
+		Iterator<ATNConfig> i = iterator();
+		while(i.hasNext()) {
+			ATNConfig c = i.next();
+
+			for(ATNState next : c.getState().move(input) ) {
+				result.add(
+					new ATNConfig(
+						next,
+						c.getAlternative(),
+						c.getCallStack()
+					));
+			}
+		}
+		
+		return result;
 	}
 	
 	@Override

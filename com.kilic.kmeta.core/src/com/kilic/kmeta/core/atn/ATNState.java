@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.stream.IStream;
 
 public class ATNState {
 	static int stateIndexCounter = 0;
@@ -75,6 +76,18 @@ public class ATNState {
 	
 	public Set<IATNEdge> getOutEdges() {
 		return out;
+	}
+	
+	public Set<ATNState> move(IStream input) {
+		Set<ATNState> result = new HashSet<>();
+		
+		for(IATNEdge edge : out) {
+			if(edge.move(input))
+				result.add(edge.getTo());
+				
+		}
+		
+		return result;
 	}
 	
 	@Override

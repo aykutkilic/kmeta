@@ -1,5 +1,6 @@
 package com.kilic.kmeta.core.atn;
 
+import com.kilic.kmeta.core.stream.IStream;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATNCharSetEdge extends ATNEdgeBase {
@@ -12,5 +13,11 @@ public class ATNCharSetEdge extends ATNEdgeBase {
 	@Override
 	public String getLabel() {
 		return charSet.toString();
+	}
+
+	@Override
+	public boolean move(IStream input) {
+		char c = input.lookAheadChar(0);
+		return charSet.containsSingleton(c);
 	}
 }

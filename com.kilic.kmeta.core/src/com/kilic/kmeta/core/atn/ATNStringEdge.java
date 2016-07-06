@@ -1,5 +1,7 @@
 package com.kilic.kmeta.core.atn;
 
+import com.kilic.kmeta.core.stream.IStream;
+
 public class ATNStringEdge extends ATNEdgeBase {
 	String string;
 
@@ -10,5 +12,11 @@ public class ATNStringEdge extends ATNEdgeBase {
 	@Override
 	public String getLabel() {
 		return "'" + string +  "'";
+	}
+
+	@Override
+	public boolean move(IStream input) {
+		String s = input.lookAheadString(0, string.length());
+		return string.equals(s);
 	}
 }

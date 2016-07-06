@@ -40,7 +40,8 @@ public class BasicATNSimulator {
 			atnState.setPredictionDFA(predictionDFA);
 
 			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
-			predictionDFA.createState(configSet);
+			DFAState startState = predictionDFA.createState(configSet);
+			predictionDFA.setStartState(startState);
 		}
 
 		DFA dfa = atnState.getPredictionDFA();
@@ -122,18 +123,18 @@ public class BasicATNSimulator {
 			// but how? there's no tokenization :/
 			// maybe I create a charset and add the char as a singleton
 			// but that'd also be computationally expensive
-			return null;
+			return d.getDFA().getErrorState();
 		}
 
-		int j = -1;
+		IATNEdge predictedEdge = null;
 		boolean predictionDone = true;
 		for (ATNConfig config : newConfigSet) {
-			if (j == -1) {
-				j = config.getAlternative();
+			if (predictedEdge == null) {
+				predictedEdge = config.getAlternative();
 				continue;
 			}
 
-			if (j != config.getAlternative()) {
+			if (predictedEdge != config.getAlternative()) {
 				predictionDone = false;
 				break;
 			}
@@ -143,6 +144,8 @@ public class BasicATNSimulator {
 			// connect token to FinalState i;
 			return null;
 		}
+		
+		return null;
 	}
 
 	IATNEdge sllPredict(ATNState atnState, DFAState d0, RegularCallStack g, int offset) {
