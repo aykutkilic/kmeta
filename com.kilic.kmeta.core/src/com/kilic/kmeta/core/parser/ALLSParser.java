@@ -1,6 +1,6 @@
 package com.kilic.kmeta.core.parser;
 
-import com.kilic.kmeta.core.analysis.StepLockedATNSimulator;
+import com.kilic.kmeta.core.analysis.BasicATNSimulator;
 import com.kilic.kmeta.core.atn.ATN;
 import com.kilic.kmeta.core.atn.ATNCallEdge;
 import com.kilic.kmeta.core.atn.ATNMutatorEdge;
@@ -56,7 +56,7 @@ public class ALLSParser {
 					p = se.getTo();
 				}
 			} else if( p.isDecisionState() ) {
-				StepLockedATNSimulator slas = new StepLockedATNSimulator(input);
+				BasicATNSimulator slas = new BasicATNSimulator(input);
 				p = slas.adaptivePredict(p, new RegularCallStack());
 			} else {
 				// error.
