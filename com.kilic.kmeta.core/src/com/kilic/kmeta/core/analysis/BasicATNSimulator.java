@@ -119,6 +119,10 @@ public class BasicATNSimulator {
 		return result;
 	}
 
+	// critic decision is the definition of deterministic edges
+	// ATN edges are in form charset and string.
+	// I'm planning to add regex edges and a class that will compute
+	// the intersections of those so determinism is always preserved.
 	DFAState target(DFAState d) {
 		DFA dfa = d.getDFA();
 
