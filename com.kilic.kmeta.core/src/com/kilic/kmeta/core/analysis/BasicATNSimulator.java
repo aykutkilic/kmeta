@@ -38,6 +38,9 @@ public class BasicATNSimulator {
 		if (atnState.getPredictionDFA() == null) {
 			DFA predictionDFA = new DFA();
 			atnState.setPredictionDFA(predictionDFA);
+			
+			for(IATNEdge edge : atnState.getOutEdges())
+				predictionDFA.createFinalState(edge);
 
 			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
 			DFAState startState = predictionDFA.createState(configSet);
@@ -53,6 +56,7 @@ public class BasicATNSimulator {
 
 	ATNConfigSet startState(ATNState atnState, RegularCallStack g) {
 		ATNConfigSet d0 = new ATNConfigSet();
+		
 		for (IATNEdge edge : atnState.getOutEdges()) {
 			if (edge instanceof ATNCallEdge) {
 				ATNCallEdge callEdge = (ATNCallEdge) edge;
@@ -63,6 +67,7 @@ public class BasicATNSimulator {
 				d0.addAll(closure(new ATNConfig(edge.getTo(), edge, g), null));
 			}
 		}
+		
 		return d0;
 	}
 
@@ -141,7 +146,7 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			// connect token to FinalState i;
+			DFAState finalState = dfa.getFinalState(predictedEdge);
 			return null;
 		}
 		

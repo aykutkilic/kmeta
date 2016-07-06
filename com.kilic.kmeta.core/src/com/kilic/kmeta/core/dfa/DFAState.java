@@ -20,6 +20,11 @@ public class DFAState {
 
 	IATNEdge decisionEdge;
 
+	protected DFAState( DFA container ) {
+		in = new HashSet<>();
+		out = new HashSet<>();
+	}
+	
 	protected DFAState(DFA container, ATNConfigSet configSet) {
 		in = new HashSet<>();
 		out = new HashSet<>();
@@ -29,7 +34,7 @@ public class DFAState {
 		stateType = StateType.REGULAR;
 		this.container = container;
 	}
-
+	
 	public DFA getDFA() {
 		return container;
 	}
