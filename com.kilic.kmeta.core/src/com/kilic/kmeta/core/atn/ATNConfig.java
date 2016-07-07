@@ -29,6 +29,10 @@ public class ATNConfig {
 
 		result.append("[ ");
 		result.append(state);
+		
+		if (!state.isDecisionState() && state.hasNext())
+			result.append("->" + state.nextEdge().getLabel());
+
 		result.append(", ");
 		result.append(alternative);
 		result.append(", ");
