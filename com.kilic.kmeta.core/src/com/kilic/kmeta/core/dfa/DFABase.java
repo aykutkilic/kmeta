@@ -6,10 +6,10 @@ import java.util.Map;
 public abstract class DFABase<SK> implements IDFA {
 	String label;
 	
-	IDFAState startState;
-	IDFAState errorState;
+	IDFAState<SK> startState;
+	IDFAState<SK> errorState;
 	
-	Map<SK, IDFAState> states;
+	Map<SK, IDFAState<SK>> states;
 	
 	protected DFABase() {
 		states = new HashMap<>();
@@ -37,5 +37,51 @@ public abstract class DFABase<SK> implements IDFA {
 	
 	public IDFAState getState(SK key) {
 		return states.get(key);
+	}
+	
+	@Override
+	public String toString() {
+		StringBuilder result = new StringBuilder();
+
+		if (label != null)
+			result.append(label + " : ");
+
+		for (IDFAState<SK> state : states.values()) {
+			if (state == startState)
+				result.append("->");
+			result.append(state.toString() + "\n");
+			for (IDFAEdge<SK> edge : state.getOut() )
+				result.append("    " + edge.toString() + "\n");
+		}
+
+		return result.toString();
+	}
+
+	public String toGraphviz() {
+		StringBuilder result = new StringBuilder();
+
+		result.append("digraph finite_state_machine {\n");
+		result.append("  rankdir=S;\n");
+		result.append("  size=\"8,5\"\n");
+		result.append("node [shape = square];\n");
+		result.append("S" + startState.getStateKey().toString() + ";\n");
+		result.append("node [shape = doublecircle];\n ");
+
+		for (IDFAState<SK> finalState : getFinalStates()) {
+			result.append("S" + finalState.decisionEdge.toString() + " ");
+		}
+
+		result.append(";\n");
+		result.append("node [shape = circle];");
+		for (IDFAState<SK> state : states.values()) {
+			for ( IDFAEdge<SK> edge : state.getOut() ) {
+				result.append("S" + state.getStateKey() + " -> S" + edge.getTo().getStateKey() + " [ label = \""
+						+ edge.getLabel() + "\" ];\n");
+			}
+		}
+
+		result.append("}\n");
+
+		return result.toString();
 	}
 }

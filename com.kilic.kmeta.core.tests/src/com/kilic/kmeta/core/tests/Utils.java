@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.PredictionDFA;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 public class Utils {
@@ -22,7 +22,7 @@ public class Utils {
 		out.close();
 	}
 	
-	public static void dumpAutomatonToFile(DFA a, String filePath) throws FileNotFoundException {
+	public static void dumpAutomatonToFile(PredictionDFA a, String filePath) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(filePath);
 		out.append(a.toGraphviz());
 		out.close();

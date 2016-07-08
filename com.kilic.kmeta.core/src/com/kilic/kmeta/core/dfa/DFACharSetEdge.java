@@ -14,5 +14,4 @@ public class DFACharSetEdge extends DFAEdgeBase {
 	public boolean move(IStream input) {
 		return false;
 	}
-
 }

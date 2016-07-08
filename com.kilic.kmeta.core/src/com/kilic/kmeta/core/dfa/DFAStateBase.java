@@ -5,7 +5,7 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.atn.ATNConfigSet;
 
-public class DFAStateBase<SK> implements IDFAState {
+public class DFAStateBase<SK> implements IDFAState<SK> {
 	enum StateType {
 		REGULAR, FINAL, ERROR
 	}
@@ -13,10 +13,10 @@ public class DFAStateBase<SK> implements IDFAState {
 	SK stateKey;
 	Set<IDFAEdge> in, out;
 
-	DFA container;
+	PredictionDFA container;
 	StateType stateType;
 
-	protected DFAStateBase( DFA container, SK stateKey ) {
+	protected DFAStateBase( PredictionDFA container, SK stateKey ) {
 		in = new HashSet<>();
 		out = new HashSet<>();
 		
@@ -24,7 +24,7 @@ public class DFAStateBase<SK> implements IDFAState {
 		this.stateKey = stateKey;
 	}
 	
-	public DFA getDFA() {
+	public PredictionDFA getDFA() {
 		return container;
 	}
 

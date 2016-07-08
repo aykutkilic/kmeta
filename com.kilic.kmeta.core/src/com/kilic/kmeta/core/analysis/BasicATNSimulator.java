@@ -11,7 +11,7 @@ import com.kilic.kmeta.core.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.IATNEdge;
 import com.kilic.kmeta.core.atn.RegularCallStack;
-import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.PredictionDFA;
 import com.kilic.kmeta.core.dfa.PredictionDFAState;
 import com.kilic.kmeta.core.stream.IStream;
 
@@ -36,7 +36,7 @@ public class BasicATNSimulator {
 		int pos = input.getPosition();
 
 		if (atnState.getPredictionDFA() == null) {
-			DFA predictionDFA = new DFA();
+			PredictionDFA predictionDFA = new PredictionDFA();
 			atnState.setPredictionDFA(predictionDFA);
 			
 			for(IATNEdge edge : atnState.getOutEdges())
@@ -47,7 +47,7 @@ public class BasicATNSimulator {
 			predictionDFA.setStartState(startState);
 		}
 
-		DFA dfa = atnState.getPredictionDFA();
+		PredictionDFA dfa = atnState.getPredictionDFA();
 		IATNEdge result = sllPredict(atnState, dfa.getStartState(), g, pos);
 
 		input.seek(pos);
@@ -124,7 +124,7 @@ public class BasicATNSimulator {
 	// I'm planning to add regex edges and a class that will compute
 	// the intersections of those so determinism is always preserved.
 	PredictionDFAState target(PredictionDFAState d) {
-		DFA dfa = d.getDFA();
+		PredictionDFA dfa = d.getDFA();
 
 		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getConfigSet());
 		if (newConfigSet.isEmpty()) {

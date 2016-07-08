@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.analysis.DiscriminationAutomatonComputer;
 import com.kilic.kmeta.core.analysis.IntersectionComputer;
-import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.PredictionDFA;
 import com.kilic.kmeta.core.dfa.PredictionDFAState;
 import com.kilic.kmeta.core.dfa.CharSetMatcher;
 import com.kilic.kmeta.core.dfa.StringMatcher;
@@ -24,15 +24,15 @@ import com.kilic.kmeta.core.util.CharSet;
 import static org.junit.Assert.assertEquals;
 
 public class AutomatonIntersectionTests {
-	DFA DecL;
-	DFA HexL;
-	DFA RealL;
-	DFA IncrE;
-	DFA AddE;
-	DFA MulE;
-	DFA ParenE;
-	DFA NegE;
-	DFA TerroristE;
+	PredictionDFA DecL;
+	PredictionDFA HexL;
+	PredictionDFA RealL;
+	PredictionDFA IncrE;
+	PredictionDFA AddE;
+	PredictionDFA MulE;
+	PredictionDFA ParenE;
+	PredictionDFA NegE;
+	PredictionDFA TerroristE;
 
 	String desktopPath;
 
@@ -109,7 +109,7 @@ public class AutomatonIntersectionTests {
 
 		// @formatter:on
 
-		DFA RealLNFA = Utils.createNFAFromSyntax(RealLSyn);
+		PredictionDFA RealLNFA = Utils.createNFAFromSyntax(RealLSyn);
 
 		try {
 			Utils.dumpAutomatonToFile(RealLNFA, desktopPath + "RealLNFA.graphviz");
@@ -122,7 +122,7 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createNegE() {
-		NegE = new DFA();
+		NegE = new PredictionDFA();
 		NegE.setLabel("NegE");
 
 		PredictionDFAState startState = NegE.createState();
@@ -139,7 +139,7 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createIncrE() {
-		IncrE = new DFA();
+		IncrE = new PredictionDFA();
 		IncrE.setLabel("IncrE");
 
 		PredictionDFAState startState = IncrE.createState();
@@ -158,7 +158,7 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createAddE() {
-		AddE = new DFA();
+		AddE = new PredictionDFA();
 
 		PredictionDFAState s0 = AddE.createState();
 		PredictionDFAState s1 = AddE.createState();
@@ -188,7 +188,7 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createMulE() {
-		MulE = new DFA();
+		MulE = new PredictionDFA();
 
 		PredictionDFAState s0 = MulE.createState();
 		PredictionDFAState s1 = MulE.createState();
@@ -216,7 +216,7 @@ public class AutomatonIntersectionTests {
 	}
 
 	private void createParenE() {
-		ParenE = new DFA();
+		ParenE = new PredictionDFA();
 
 		PredictionDFAState s0 = ParenE.createState();
 		PredictionDFAState s1 = ParenE.createState();
@@ -242,7 +242,7 @@ public class AutomatonIntersectionTests {
 
 	@Test
 	public void findIntersectionTest() {
-		HashSet<DFA> automatons = new HashSet<DFA>();
+		HashSet<PredictionDFA> automatons = new HashSet<PredictionDFA>();
 
 		// automatons.add(IncrE);
 		automatons.add(DecL);
@@ -283,14 +283,14 @@ public class AutomatonIntersectionTests {
 	@Test
 	public void intersectionTest1() {
 		// @formatter:off
-		DFA a = Utils.createNFAFromSyntax(
+		PredictionDFA a = Utils.createNFAFromSyntax(
 			new MultiplicityExpr(Multiplicity.ONEORMORE, 
 				new CharSetExpr(CharSet.DEC)
 			)
 		).convertNFAToDFA();
 		a.setLabel("a");
 		
-		DFA b = Utils.createNFAFromSyntax(
+		PredictionDFA b = Utils.createNFAFromSyntax(
 			new SequenceExpr(
 				new StringExpr("0x"),
 				new MultiplicityExpr(Multiplicity.ONEORMORE, 
@@ -300,7 +300,7 @@ public class AutomatonIntersectionTests {
 		).convertNFAToDFA();
 		b.setLabel("b");
 		
-		DFA c = Utils.createNFAFromSyntax(
+		PredictionDFA c = Utils.createNFAFromSyntax(
 			new SequenceExpr(
 				new StringExpr("0234238468273684726837462873647634"),
 				new MultiplicityExpr(Multiplicity.ONEORMORE, 
@@ -311,7 +311,7 @@ public class AutomatonIntersectionTests {
 		c.setLabel("c");
 		// @formatter:off
 		
-		HashSet<DFA> automatons = new HashSet<DFA>();
+		HashSet<PredictionDFA> automatons = new HashSet<PredictionDFA>();
 		
 		automatons.add(a);
 		automatons.add(b);

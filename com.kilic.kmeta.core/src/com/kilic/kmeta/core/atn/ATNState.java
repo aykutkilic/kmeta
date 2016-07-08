@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.atn;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.kilic.kmeta.core.dfa.DFA;
+import com.kilic.kmeta.core.dfa.PredictionDFA;
 import com.kilic.kmeta.core.stream.IStream;
 
 public class ATNState {
@@ -14,7 +14,7 @@ public class ATNState {
 	Set<IATNEdge> out;
 	boolean isFinal;
 	ATN atn;
-	DFA predictionDFA;
+	PredictionDFA predictionDFA;
 
 	ATNState(ATN atn) {
 		this.atn = atn;
@@ -28,11 +28,11 @@ public class ATNState {
 		return atn;
 	}
 	
-	public DFA getPredictionDFA() {
+	public PredictionDFA getPredictionDFA() {
 		return predictionDFA;
 	}
 	
-	public void setPredictionDFA(DFA predictionDFA) {
+	public void setPredictionDFA(PredictionDFA predictionDFA) {
 		this.predictionDFA = predictionDFA;
 	}
 	
