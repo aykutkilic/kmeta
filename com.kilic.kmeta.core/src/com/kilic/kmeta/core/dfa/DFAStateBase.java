@@ -11,7 +11,7 @@ public class DFAStateBase<SK> implements IDFAState<SK> {
 	}
 
 	SK stateKey;
-	Set<IDFAEdge> in, out;
+	Set<IDFAEdge<SK>> in, out;
 
 	PredictionDFA container;
 	StateType stateType;
@@ -28,14 +28,26 @@ public class DFAStateBase<SK> implements IDFAState<SK> {
 		return container;
 	}
 
-	public void setFinal(boolean isFinal) {
-		stateType = isFinal ? StateType.FINAL : stateType;
+	@Override
+	public Set<IDFAEdge<SK>> getIn() {
+		return in;
 	}
 
-	public boolean isFinalState() {
+	@Override
+	public Set<IDFAEdge<SK>> getOut() {
+		return out;
+	}
+
+	@Override
+	public boolean isFinal() {
 		return stateType == StateType.FINAL;
 	}
 
+	@Override
+	public void setFinalState(boolean isFinal) {
+		stateType = isFinal ? StateType.FINAL : stateType;
+	}
+	
 	public SK getKey() {
 		return stateKey;
 	}
@@ -48,11 +60,11 @@ public class DFAStateBase<SK> implements IDFAState<SK> {
 		return stateType == StateType.ERROR;
 	}
 
-	public void addIn(IDFAEdge edge) {
+	public void addIn(IDFAEdge<SK> edge) {
 		in.add(edge);
 	}
 
-	public void addOut(IDFAEdge edge) {
+	public void addOut(IDFAEdge<SK> edge) {
 		out.add(edge);
 	}
 

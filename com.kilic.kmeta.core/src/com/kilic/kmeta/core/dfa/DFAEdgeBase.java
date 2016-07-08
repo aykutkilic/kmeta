@@ -1,15 +1,15 @@
 package com.kilic.kmeta.core.dfa;
 
-public abstract class DFAEdgeBase implements IDFAEdge {
-	PredictionDFAState from, to;
+public abstract class DFAEdgeBase<SK> implements IDFAEdge<SK> {
+	IDFAState<SK> from, to;
 	
 	@Override
-	public PredictionDFAState getFrom() {
+	public IDFAState<SK> getFrom() {
 		return from;
 	}
 	
 	@Override
-	public PredictionDFAState getTo() {
+	public IDFAState<SK> getTo() {
 		return to;
 	}
 }

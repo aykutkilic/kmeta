@@ -64,18 +64,19 @@ public abstract class DFABase<SK> implements IDFA {
 		result.append("  rankdir=S;\n");
 		result.append("  size=\"8,5\"\n");
 		result.append("node [shape = square];\n");
-		result.append("S" + startState.getStateKey().toString() + ";\n");
+		result.append("S" + startState.getKey().toString() + ";\n"); 
 		result.append("node [shape = doublecircle];\n ");
 
-		for (IDFAState<SK> finalState : getFinalStates()) {
-			result.append("S" + finalState.decisionEdge.toString() + " ");
+		for ( IDFAState<SK> s : states.values() ) {
+			if(s.isFinal()) 
+				result.append("S" + s.getKey() + " ");
 		}
 
 		result.append(";\n");
 		result.append("node [shape = circle];");
 		for (IDFAState<SK> state : states.values()) {
 			for ( IDFAEdge<SK> edge : state.getOut() ) {
-				result.append("S" + state.getStateKey() + " -> S" + edge.getTo().getStateKey() + " [ label = \""
+				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
 						+ edge.getLabel() + "\" ];\n");
 			}
 		}
