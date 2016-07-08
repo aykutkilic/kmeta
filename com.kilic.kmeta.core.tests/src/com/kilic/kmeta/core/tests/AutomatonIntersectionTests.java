@@ -9,7 +9,7 @@ import org.junit.Test;
 import com.kilic.kmeta.core.analysis.DiscriminationAutomatonComputer;
 import com.kilic.kmeta.core.analysis.IntersectionComputer;
 import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.PredictionDFAState;
 import com.kilic.kmeta.core.dfa.CharSetMatcher;
 import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -125,9 +125,9 @@ public class AutomatonIntersectionTests {
 		NegE = new DFA();
 		NegE.setLabel("NegE");
 
-		DFAState startState = NegE.createState();
-		DFAState midState = NegE.createState();
-		DFAState finalState = NegE.createState();
+		PredictionDFAState startState = NegE.createState();
+		PredictionDFAState midState = NegE.createState();
+		PredictionDFAState finalState = NegE.createState();
 
 		NegE.setStartState(startState);
 		finalState.setFinal(true);
@@ -142,9 +142,9 @@ public class AutomatonIntersectionTests {
 		IncrE = new DFA();
 		IncrE.setLabel("IncrE");
 
-		DFAState startState = IncrE.createState();
-		DFAState midState = IncrE.createState();
-		DFAState finalState = IncrE.createState();
+		PredictionDFAState startState = IncrE.createState();
+		PredictionDFAState midState = IncrE.createState();
+		PredictionDFAState finalState = IncrE.createState();
 
 		IncrE.setStartState(startState);
 		finalState.setFinal(true);
@@ -160,10 +160,10 @@ public class AutomatonIntersectionTests {
 	private void createAddE() {
 		AddE = new DFA();
 
-		DFAState s0 = AddE.createState();
-		DFAState s1 = AddE.createState();
-		DFAState s2 = AddE.createState();
-		DFAState s3 = AddE.createState();
+		PredictionDFAState s0 = AddE.createState();
+		PredictionDFAState s1 = AddE.createState();
+		PredictionDFAState s2 = AddE.createState();
+		PredictionDFAState s3 = AddE.createState();
 
 		AddE.setStartState(s0);
 		s3.setFinal(true);
@@ -190,10 +190,10 @@ public class AutomatonIntersectionTests {
 	private void createMulE() {
 		MulE = new DFA();
 
-		DFAState s0 = MulE.createState();
-		DFAState s1 = MulE.createState();
-		DFAState s2 = MulE.createState();
-		DFAState s3 = MulE.createState();
+		PredictionDFAState s0 = MulE.createState();
+		PredictionDFAState s1 = MulE.createState();
+		PredictionDFAState s2 = MulE.createState();
+		PredictionDFAState s3 = MulE.createState();
 
 		MulE.setStartState(s0);
 		s3.setFinal(true);
@@ -218,10 +218,10 @@ public class AutomatonIntersectionTests {
 	private void createParenE() {
 		ParenE = new DFA();
 
-		DFAState s0 = ParenE.createState();
-		DFAState s1 = ParenE.createState();
-		DFAState s2 = ParenE.createState();
-		DFAState s3 = ParenE.createState();
+		PredictionDFAState s0 = ParenE.createState();
+		PredictionDFAState s1 = ParenE.createState();
+		PredictionDFAState s2 = ParenE.createState();
+		PredictionDFAState s3 = ParenE.createState();
 
 		ParenE.setStartState(s0);
 		s3.setFinal(true);

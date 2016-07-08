@@ -76,8 +76,12 @@ public class ATNTests {
 			MulE,
 			new SequenceExpr(
 				new ATNCallExpr(PrimE),
-				new StringExpr("*"),
-				new ATNCallExpr(MulE)
+				new MultiplicityExpr(Multiplicity.ANY,
+					new SequenceExpr(
+						new StringExpr("*"),
+						new ATNCallExpr(MulE)
+					)
+				)
 			)
 		).setLabel("MulE");
 		
@@ -85,8 +89,12 @@ public class ATNTests {
 			AddE,
 			new SequenceExpr(
 				new ATNCallExpr(MulE),
-				new StringExpr("+"),
-				new ATNCallExpr(AddE)
+				new MultiplicityExpr(Multiplicity.ANY,
+					new SequenceExpr(
+						new StringExpr("+"),
+						new ATNCallExpr(AddE)
+					)
+				)
 			)
 		).setLabel("AddE");
 		
@@ -105,13 +113,13 @@ public class ATNTests {
 
 	@Test
 	public void atnTest() throws FileNotFoundException {
-		Utils.dumpATNToFile(E, desktopPath + "E.graphviz");
-		Utils.dumpATNToFile(AddE, desktopPath + "AddE.graphviz");
-		Utils.dumpATNToFile(MulE, desktopPath + "MulE.graphviz");
-		Utils.dumpATNToFile(PrimE, desktopPath + "PrimE.graphviz");
-		Utils.dumpATNToFile(ParenE, desktopPath + "ParenE.graphviz");
-		Utils.dumpATNToFile(HexL, desktopPath + "HexL.graphviz");
-		Utils.dumpATNToFile(DecL, desktopPath + "DecL.graphviz");
+		Utils.dumpATNToFile(E, 		desktopPath + "E.graphviz"		);
+		Utils.dumpATNToFile(AddE, 	desktopPath + "AddE.graphviz"	);
+		Utils.dumpATNToFile(MulE, 	desktopPath + "MulE.graphviz"	);
+		Utils.dumpATNToFile(PrimE, 	desktopPath + "PrimE.graphviz"	);
+		Utils.dumpATNToFile(ParenE, desktopPath + "ParenE.graphviz"	);
+		Utils.dumpATNToFile(HexL, 	desktopPath + "HexL.graphviz"	);
+		Utils.dumpATNToFile(DecL, 	desktopPath + "DecL.graphviz"	);
 		
 		ALLSParser parser = new ALLSParser();
 		IStream input = new StringStream("1+2*3*(4+5)");

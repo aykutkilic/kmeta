@@ -10,48 +10,35 @@ import com.kilic.kmeta.core.atn.ATNConfigSet;
 import com.kilic.kmeta.core.atn.IATNEdge;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class DFA {
-	String label;
-	Map<ATNConfigSet, DFAState> states;
-	Map<IATNEdge, DFAState> finalStates;
+public class DFA extends DFABase<ATNConfigSet> {	
+	Map<IATNEdge, IDFAState> finalStates;
 	
-	DFAState startState;
-	DFAState errorState;
-
+	IDFAState errorState;
+	
 	public DFA() {
+		super();
+		
 		states = new HashMap<>();
 		finalStates = new HashMap<>();
 		
-		errorState = new DFAState(this, null);
+		errorState = new PredictionDFAState(this, null);
 		errorState.setErrorState(true);
 	}
-
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public String getLabel() {
-		return label;
-	}
 	
-	public DFAState getErrorState() {
-		return errorState;
-	}
-
-	public DFAState createFinalState(IATNEdge decisionEdge) {
-		DFAState newState = new DFAState(this);
+	public PredictionDFAState createFinalState(IATNEdge decisionEdge) {
+		PredictionDFAState newState = new PredictionDFAState(this);
 		newState.setFinal(decisionEdge);
 		finalStates.put(decisionEdge, newState);
 		return newState;
 	}
 	
-	public DFAState createState(ATNConfigSet configSet) {
-		DFAState newState = new DFAState(this, configSet);
+	public PredictionDFAState createState(ATNConfigSet configSet) {
+		PredictionDFAState newState = new PredictionDFAState(this, configSet);
 		states.put(newState.configSet, newState);
 		return newState;
 	}
 
-	public void createCharSetEdge(DFAState from, DFAState to, CharSet charSet) {
+	public void createCharSetEdge(PredictionDFAState from, PredictionDFAState to, CharSet charSet) {
 		DFACharSetEdge newEdge = new DFACharSetEdge(charSet);
 		newEdge.from = from;
 		newEdge.to = to;
@@ -59,7 +46,7 @@ public class DFA {
 		to.in.add(newEdge);
 	}
 	
-	public void createStringEdge(DFAState from, DFAState to, String string) {
+	public void createStringEdge(PredictionDFAState from, PredictionDFAState to, String string) {
 		DFAStringEdge newEdge = new DFAStringEdge(string);
 		newEdge.from = from;
 		newEdge.to = to;
@@ -67,26 +54,18 @@ public class DFA {
 		to.in.add(newEdge);
 	}
 
-	public DFAState getStartState() {
-		return startState;
-	}
-
-	public void setStartState(DFAState newStartState) {
-		startState = newStartState;
-	}
-
-	public DFAState getState(ATNConfigSet configSet) {
+	public PredictionDFAState getState(ATNConfigSet configSet) {
 		if(states.containsKey(configSet))
 			return states.get(configSet);
 		
 		return null;
 	}
 	
-	public DFAState getFinalState(IATNEdge decisionEdge) {
+	public PredictionDFAState getFinalState(IATNEdge decisionEdge) {
 		return finalStates.get(decisionEdge);
 	}
 	
-	public Collection<DFAState> getFinalStates() {
+	public Collection<IDFAState> getFinalStates() {
 		return finalStates.values();
 	}
 
@@ -97,7 +76,7 @@ public class DFA {
 		if (label != null)
 			result.append(label + " : ");
 
-		for (DFAState state : states.values()) {
+		for (PredictionDFAState state : states.values()) {
 			if (state == startState)
 				result.append("->");
 			result.append(state.toString() + "\n");
@@ -118,13 +97,13 @@ public class DFA {
 		result.append("S" + startState.configSet.toString() + ";\n");
 		result.append("node [shape = doublecircle];\n ");
 
-		for (DFAState finalState : getFinalStates()) {
+		for (PredictionDFAState finalState : getFinalStates()) {
 			result.append("S" + finalState.decisionEdge.toString() + " ");
 		}
 
 		result.append(";\n");
 		result.append("node [shape = circle];");
-		for (DFAState state : states.values()) {
+		for (PredictionDFAState state : states.values()) {
 			for (IAutomatonTransition trans : state.out) {
 				result.append("S" + state.stateIndex + " -> S" + trans.getToState().stateIndex + " [ label = \""
 						+ trans.getLabel() + "\" ];\n");

@@ -12,7 +12,7 @@ import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.IATNEdge;
 import com.kilic.kmeta.core.atn.RegularCallStack;
 import com.kilic.kmeta.core.dfa.DFA;
-import com.kilic.kmeta.core.dfa.DFAState;
+import com.kilic.kmeta.core.dfa.PredictionDFAState;
 import com.kilic.kmeta.core.stream.IStream;
 
 /**
@@ -43,7 +43,7 @@ public class BasicATNSimulator {
 				predictionDFA.createFinalState(edge);
 
 			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
-			DFAState startState = predictionDFA.createState(configSet);
+			PredictionDFAState startState = predictionDFA.createState(configSet);
 			predictionDFA.setStartState(startState);
 		}
 
@@ -123,7 +123,7 @@ public class BasicATNSimulator {
 	// ATN edges are in form charset and string.
 	// I'm planning to add regex edges and a class that will compute
 	// the intersections of those so determinism is always preserved.
-	DFAState target(DFAState d) {
+	PredictionDFAState target(PredictionDFAState d) {
 		DFA dfa = d.getDFA();
 
 		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getConfigSet());
@@ -150,17 +150,17 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			DFAState finalState = dfa.getFinalState(predictedEdge);
+			PredictionDFAState finalState = dfa.getFinalState(predictedEdge);
 			return null;
 		}
 		
 		return null;
 	}
 
-	IATNEdge sllPredict(ATNState atnState, DFAState d0, RegularCallStack g, int offset) {
-		DFAState d = d0;
+	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
+		PredictionDFAState d = d0;
 		while (true) {
-			DFAState next = d.move(input);
+			PredictionDFAState next = d.move(input);
 			if (next == null)
 				next = target(d);
 			if (next.isErrorState())
