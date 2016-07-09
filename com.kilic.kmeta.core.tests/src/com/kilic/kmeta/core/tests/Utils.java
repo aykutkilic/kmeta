@@ -3,9 +3,9 @@ package com.kilic.kmeta.core.tests;
 import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
-import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
-import com.kilic.kmeta.core.syntax.ISyntaxExpr;
+import com.kilic.kmeta.core.alls.atn.ATN;
+import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
+import com.kilic.kmeta.core.alls.syntax.ISyntaxExpr;
 
 public class Utils {
 	public static ATN createATNFromSyntax(ATN atn, ISyntaxExpr e) {

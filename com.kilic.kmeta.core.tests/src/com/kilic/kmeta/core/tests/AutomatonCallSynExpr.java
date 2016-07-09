@@ -1,8 +1,8 @@
 package com.kilic.kmeta.core.tests;
 
-import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
-import com.kilic.kmeta.core.predictiondfa.PredictionDFAState;
-import com.kilic.kmeta.core.syntax.ISyntaxExpr;
+import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
+import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
+import com.kilic.kmeta.core.alls.syntax.ISyntaxExpr;
 
 // for testing purposes.
 public class AutomatonCallSynExpr implements ISyntaxExpr {

@@ -1,6 +1,6 @@
 package com.kilic.kmeta.core.tests;
 
-import com.kilic.kmeta.core.stream.IStream;
+import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.util.CharSet;
 
 /*

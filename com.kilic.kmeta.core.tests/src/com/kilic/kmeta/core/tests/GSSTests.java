@@ -2,7 +2,7 @@ package com.kilic.kmeta.core.tests;
 
 import org.junit.Test;
 
-import com.kilic.kmeta.core.analysis.GSS;
+import com.kilic.kmeta.core.alls.analysis.GSS;
 
 public class GSSTests {
 	@Test

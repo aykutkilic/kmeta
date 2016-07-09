@@ -2,8 +2,8 @@ package com.kilic.kmeta.core.tests;
 
 import org.junit.Test;
 
-import com.kilic.kmeta.core.stream.IStream;
-import com.kilic.kmeta.core.stream.StringStream;
+import com.kilic.kmeta.core.alls.stream.IStream;
+import com.kilic.kmeta.core.alls.stream.StringStream;
 
 public class HandWrittenParserTests {
 	@Test

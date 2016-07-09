@@ -3,17 +3,17 @@ package com.kilic.kmeta.core.tests;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
+import com.kilic.kmeta.core.alls.syntax.FeatureRef;
+import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
+import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
+import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MClass;
 import com.kilic.kmeta.core.meta.MModel;
 import com.kilic.kmeta.core.meta.MPackage;
 import com.kilic.kmeta.core.meta.MReference;
 import com.kilic.kmeta.core.meta.Multiplicity;
-import com.kilic.kmeta.core.syntax.CharSetExpr;
-import com.kilic.kmeta.core.syntax.FeatureRef;
-import com.kilic.kmeta.core.syntax.MultiplicityExpr;
-import com.kilic.kmeta.core.syntax.SequenceExpr;
-import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class CoreTests {

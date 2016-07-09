@@ -5,17 +5,17 @@ import java.io.FileNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.kilic.kmeta.core.atn.ATN;
+import com.kilic.kmeta.core.alls.atn.ATN;
+import com.kilic.kmeta.core.alls.parser.ALLSParser;
+import com.kilic.kmeta.core.alls.stream.IStream;
+import com.kilic.kmeta.core.alls.stream.StringStream;
+import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
+import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
+import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
+import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
+import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
+import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
-import com.kilic.kmeta.core.parser.ALLSParser;
-import com.kilic.kmeta.core.stream.IStream;
-import com.kilic.kmeta.core.stream.StringStream;
-import com.kilic.kmeta.core.syntax.ATNCallExpr;
-import com.kilic.kmeta.core.syntax.AlternativeExpr;
-import com.kilic.kmeta.core.syntax.CharSetExpr;
-import com.kilic.kmeta.core.syntax.MultiplicityExpr;
-import com.kilic.kmeta.core.syntax.SequenceExpr;
-import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATNTests {
