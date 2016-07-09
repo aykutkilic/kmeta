@@ -1,18 +1,13 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.predictiondfa;
 
 import com.kilic.kmeta.core.stream.IStream;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class DFACharSetEdge<SK> extends DFAEdgeBase<SK> {
+public class DFACharSetEdge<K> extends DFAEdgeBase<K> {
 	CharSet charSet;
 	
 	DFACharSetEdge(CharSet charSet) {
 		this.charSet = charSet;
-	}
-	
-	@Override
-	public boolean move(IStream input) {
-		return false;
 	}
 
 	@Override

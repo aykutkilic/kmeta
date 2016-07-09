@@ -1,8 +1,9 @@
-package com.kilic.kmeta.core.atn;
+package com.kilic.kmeta.core.analysis;
 
 import java.util.HashSet;
 import java.util.Iterator;
 
+import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.stream.IStream;
 
 public class ATNConfigSet extends HashSet<ATNConfig> {

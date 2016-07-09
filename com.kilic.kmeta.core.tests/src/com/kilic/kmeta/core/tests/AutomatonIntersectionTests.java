@@ -8,11 +8,11 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.analysis.DiscriminationAutomatonComputer;
 import com.kilic.kmeta.core.analysis.IntersectionComputer;
-import com.kilic.kmeta.core.dfa.PredictionDFA;
-import com.kilic.kmeta.core.dfa.PredictionDFAState;
-import com.kilic.kmeta.core.dfa.CharSetMatcher;
-import com.kilic.kmeta.core.dfa.StringMatcher;
 import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.predictiondfa.CharSetMatcher;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFAState;
+import com.kilic.kmeta.core.predictiondfa.StringMatcher;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;

@@ -5,14 +5,11 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.atn.ATN;
 import com.kilic.kmeta.core.atn.ATNCallEdge;
-import com.kilic.kmeta.core.atn.ATNConfig;
-import com.kilic.kmeta.core.atn.ATNConfigSet;
 import com.kilic.kmeta.core.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.IATNEdge;
-import com.kilic.kmeta.core.atn.RegularCallStack;
-import com.kilic.kmeta.core.dfa.PredictionDFA;
-import com.kilic.kmeta.core.dfa.PredictionDFAState;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.stream.IStream;
 
 /**

@@ -1,42 +1,28 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.predictiondfa;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.kilic.kmeta.core.tn.IEdge;
+import com.kilic.kmeta.core.tn.IState;
+import com.kilic.kmeta.core.tn.IState.StateType;
+import com.kilic.kmeta.core.tn.TransitionNetworkBase;
 
-public abstract class DFABase<SK> implements IDFA {
-	String label;
-	
-	IDFAState<SK> startState;
-	IDFAState<SK> errorState;
-	
-	Map<SK, IDFAState<SK>> states;
+public abstract class DFABase<K> extends TransitionNetworkBase<K> {
+	IState<K> startState;
+	IState<K> errorState;
 	
 	protected DFABase() {
-		states = new HashMap<>();
+		super();
 	}
 	
-	public void setLabel(String label) {
-		this.label = label;
-	}
-
-	public String getLabel() {
-		return label;
-	}
-	
-	public IDFAState getStartState() {
+	public IState<K> getStartState() {
 		return startState;
 	}
 
-	public void setStartState(IDFAState newStartState) {
+	public void setStartState(IState<K> newStartState) {
 		startState = newStartState;
 	}
 	
-	public IDFAState getErrorState() {
+	public IState<K> getErrorState() {
 		return errorState;
-	}
-	
-	public IDFAState getState(SK key) {
-		return states.get(key);
 	}
 	
 	@Override
@@ -46,11 +32,11 @@ public abstract class DFABase<SK> implements IDFA {
 		if (label != null)
 			result.append(label + " : ");
 
-		for (IDFAState<SK> state : states.values()) {
+		for (IState<K> state : states.values()) {
 			if (state == startState)
 				result.append("->");
 			result.append(state.toString() + "\n");
-			for (IDFAEdge<SK> edge : state.getOut() )
+			for (IEdge<K> edge : state.getOut() )
 				result.append("    " + edge.toString() + "\n");
 		}
 
@@ -67,15 +53,15 @@ public abstract class DFABase<SK> implements IDFA {
 		result.append("S" + startState.getKey().toString() + ";\n"); 
 		result.append("node [shape = doublecircle];\n ");
 
-		for ( IDFAState<SK> s : states.values() ) {
-			if(s.isFinal()) 
+		for ( IState<K> s : states.values() ) {
+			if(s.getType() == StateType.FINAL) 
 				result.append("S" + s.getKey() + " ");
 		}
 
 		result.append(";\n");
 		result.append("node [shape = circle];");
-		for (IDFAState<SK> state : states.values()) {
-			for ( IDFAEdge<SK> edge : state.getOut() ) {
+		for (IState<K> state : states.values()) {
+			for ( IEdge<K> edge : state.getOut() ) {
 				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
 						+ edge.getLabel() + "\" ];\n");
 			}

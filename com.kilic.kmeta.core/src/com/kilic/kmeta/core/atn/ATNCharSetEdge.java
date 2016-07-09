@@ -16,7 +16,7 @@ public class ATNCharSetEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public boolean move(IStream input) {
+	public boolean moves(IStream input) {
 		char c = input.lookAheadChar(0);
 		return charSet.containsSingleton(c);
 	}

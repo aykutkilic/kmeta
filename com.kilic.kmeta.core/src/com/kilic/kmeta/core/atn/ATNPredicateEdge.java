@@ -12,7 +12,7 @@ public class ATNPredicateEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public boolean move(IStream input) {
+	public boolean moves(IStream input) {
 		return false;
 	}
 }

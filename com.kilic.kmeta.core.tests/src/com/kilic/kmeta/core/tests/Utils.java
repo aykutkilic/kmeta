@@ -4,7 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.dfa.PredictionDFA;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 public class Utils {

@@ -1,11 +1,11 @@
 package com.kilic.kmeta.core.syntax;
 
 import com.kilic.kmeta.core.atn.ATN;
-import com.kilic.kmeta.core.dfa.PredictionDFA;
-import com.kilic.kmeta.core.dfa.PredictionDFAState;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MFeature;
 import com.kilic.kmeta.core.meta.MReference;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFAState;
 
 public class FeatureRef implements ISyntaxExpr {
 	MFeature feature;

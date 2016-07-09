@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.atn;
+package com.kilic.kmeta.core.analysis;
 
 import java.util.Collection;
 import java.util.HashMap;

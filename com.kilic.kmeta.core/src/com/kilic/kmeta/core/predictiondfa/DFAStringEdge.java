@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.predictiondfa;
 
 import com.kilic.kmeta.core.stream.IStream;
 
@@ -7,11 +7,6 @@ public class DFAStringEdge<SK> extends DFAEdgeBase<SK> {
 	
 	DFAStringEdge(String string) {
 		this.string = string;
-	}
-	
-	@Override
-	public boolean move(IStream input) {
-		return false;
 	}
 
 	@Override

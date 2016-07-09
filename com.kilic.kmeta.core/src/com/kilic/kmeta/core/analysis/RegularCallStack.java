@@ -1,9 +1,11 @@
-package com.kilic.kmeta.core.atn;
+package com.kilic.kmeta.core.analysis;
 
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
+
+import com.kilic.kmeta.core.atn.ATNState;
 
 public class RegularCallStack {
 	public static final int ANY_STACK = -1;
@@ -36,8 +38,8 @@ public class RegularCallStack {
 	}
 	
 	public void push(ATNState state) {
-		callStack.push(state.stateIndex);
-		states.put(state.stateIndex, state);
+		callStack.push(state.getKey());
+		states.put(state.getKey(), state);
 	}
 	
 	public ATNState pop() {

@@ -1,35 +1,22 @@
 package com.kilic.kmeta.core.atn;
 
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 
+import com.kilic.kmeta.core.tn.IEdge;
+import com.kilic.kmeta.core.tn.IState;
+import com.kilic.kmeta.core.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class ATN {
+public class ATN extends TransitionNetworkBase<Integer> {
 	ATNState startState;
 	ATNState finalState;
 	Set<ATNCallEdge> callers;
 	
-	Map<Integer, ATNState> states;
-	
-	String label = "";
-
 	public ATN() {
 		callers = new HashSet<>();
-		states = new HashMap<>();
-		
 		startState = createState();
 		finalState = createState();
-	}
-	
-	public void setLabel(String label) {
-		this.label = label;
-	} 
-
-	public String getLabel() {
-		return this.label;
 	}
 	
 	public ATNState getStartState() {
@@ -42,7 +29,7 @@ public class ATN {
 
 	public ATNState createState() {
 		ATNState newState = new ATNState(this);
-		states.put(newState.stateIndex, newState);
+		states.put(newState.getKey(), newState);
 		return newState;
 	}
 	
@@ -81,12 +68,13 @@ public class ATN {
 		connectEdge(from, to, edge);
 		return edge;
 	}
-
-	void connectEdge(ATNState from, ATNState to, ATNEdgeBase edge) {
-		edge.from = from;
-		edge.to = to;
-		from.addOut(edge);
-		to.addIn(edge);
+	
+	public void addCaller(ATNCallEdge edge) {
+		callers.add(edge);
+	}
+	
+	public Set<ATNCallEdge> getAllCallers() {
+		return callers;
 	}
 
 	public String toGraphviz() {
@@ -96,27 +84,19 @@ public class ATN {
 		result.append("  rankdir=S;\n");
 		result.append("  size=\"8,5\"\n");
 		result.append("node [shape = square];\n");
-		result.append("S" + startState.stateIndex + ";\n");
+		result.append("S" + startState.getKey() + ";\n");
 		result.append("node [shape = doublecircle];\n ");
-		result.append("S" + finalState.stateIndex + ";\n");
+		result.append("S" + finalState.getKey() + ";\n");
 		result.append("node [shape = circle];");
 		
-		for(ATNState state : states.values()) {
-			for(IATNEdge edge : state.out) {
-				result.append("S" + state.stateIndex + " -> S" + edge.getTo().stateIndex + " [ label = \""
+		for(IState<Integer> state : states.values()) {
+			for(IEdge<Integer> edge : state.getOut()) {
+				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
 						+ edge.getLabel() + "\" ];\n");
 			}
 		}
 		result.append("}\n");
 
 		return result.toString();
-	}
-
-	public void addCaller(ATNCallEdge edge) {
-		callers.add(edge);
-	}
-	
-	public Set<ATNCallEdge> getAllCallers() {
-		return callers;
 	}
 }

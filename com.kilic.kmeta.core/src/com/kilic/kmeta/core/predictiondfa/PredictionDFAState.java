@@ -1,13 +1,14 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.predictiondfa;
 
 import java.util.Set;
 
-import com.kilic.kmeta.core.atn.ATNConfigSet;
+import com.kilic.kmeta.core.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.atn.IATNEdge;
 import com.kilic.kmeta.core.stream.IStream;
+import com.kilic.kmeta.core.tn.IEdge;
 
 public class PredictionDFAState extends DFAStateBase<ATNConfigSet> {
-	Set<IDFAEdge<ATNConfigSet>> in, out;
+	Set<IEdge<ATNConfigSet>> in, out;
 	IATNEdge decisionEdge;
 
 	protected PredictionDFAState(PredictionDFA container, ATNConfigSet configSet) {
@@ -16,7 +17,7 @@ public class PredictionDFAState extends DFAStateBase<ATNConfigSet> {
 	}
 	
 	public PredictionDFAState move(IStream input) {
-		for (IDFAEdge<ATNConfigSet> edge : out) {
+		for (IEdge<ATNConfigSet> edge : out) {
 			if (edge.move(input))
 				return (PredictionDFAState) edge.getTo();
 		}

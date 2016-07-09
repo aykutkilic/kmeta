@@ -15,7 +15,7 @@ public class ATNStringEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public boolean move(IStream input) {
+	public boolean moves(IStream input) {
 		String s = input.lookAheadString(0, string.length());
 		return string.equals(s);
 	}

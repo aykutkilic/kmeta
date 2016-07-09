@@ -1,7 +1,7 @@
 package com.kilic.kmeta.core.tests;
 
-import com.kilic.kmeta.core.dfa.PredictionDFA;
-import com.kilic.kmeta.core.dfa.PredictionDFAState;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFA;
+import com.kilic.kmeta.core.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 // for testing purposes.

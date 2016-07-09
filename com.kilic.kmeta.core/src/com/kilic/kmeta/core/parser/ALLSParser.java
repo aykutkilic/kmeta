@@ -1,6 +1,7 @@
 package com.kilic.kmeta.core.parser;
 
 import com.kilic.kmeta.core.analysis.BasicATNSimulator;
+import com.kilic.kmeta.core.analysis.RegularCallStack;
 import com.kilic.kmeta.core.atn.ATN;
 import com.kilic.kmeta.core.atn.ATNCallEdge;
 import com.kilic.kmeta.core.atn.ATNCharSetEdge;
@@ -10,7 +11,6 @@ import com.kilic.kmeta.core.atn.ATNPredicateEdge;
 import com.kilic.kmeta.core.atn.ATNState;
 import com.kilic.kmeta.core.atn.ATNStringEdge;
 import com.kilic.kmeta.core.atn.IATNEdge;
-import com.kilic.kmeta.core.atn.RegularCallStack;
 import com.kilic.kmeta.core.stream.IStream;
 
 /**

@@ -1,10 +1,10 @@
-package com.kilic.kmeta.core.dfa;
+package com.kilic.kmeta.core.predictiondfa;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kilic.kmeta.core.atn.ATNConfigSet;
+import com.kilic.kmeta.core.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.atn.IATNEdge;
 import com.kilic.kmeta.core.util.CharSet;
 
@@ -27,7 +27,7 @@ public class PredictionDFA extends DFABase<ATNConfigSet> {
 
 	public PredictionDFAState createState(ATNConfigSet configSet) {
 		PredictionDFAState newState = new PredictionDFAState(this, configSet);
-		states.put(newState.stateKey, newState);
+		states.put(newState.key, newState);
 		return newState;
 	}
 

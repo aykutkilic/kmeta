@@ -9,8 +9,8 @@ Require-Bundle: org.eclipse.ui,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Bundle-ActivationPolicy: lazy
 Export-Package: com.kilic.kmeta.core.analysis,
- com.kilic.kmeta.core.dfa,
  com.kilic.kmeta.core.meta,
+ com.kilic.kmeta.core.predictiondfa,
  com.kilic.kmeta.core.stream,
  com.kilic.kmeta.core.syntax,
  com.kilic.kmeta.core.util

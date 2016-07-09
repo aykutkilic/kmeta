@@ -1,4 +1,7 @@
-package com.kilic.kmeta.core.atn;
+package com.kilic.kmeta.core.analysis;
+
+import com.kilic.kmeta.core.atn.ATNState;
+import com.kilic.kmeta.core.atn.IATNEdge;
 
 public class ATNConfig {
 	ATNState state;
