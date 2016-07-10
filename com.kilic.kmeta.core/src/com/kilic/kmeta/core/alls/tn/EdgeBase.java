@@ -9,8 +9,18 @@ public abstract class EdgeBase <S extends IState<?,?>> implements IEdge<S> {
 	}
 	
 	@Override
+	public void setFrom(S state) {
+		from = state;
+	}
+	
+	@Override
 	public S getTo() {
 		return to;
+	}
+	
+	@Override
+	public void setTo(S state) {
+		to = state;
 	}
 	
 	@Override

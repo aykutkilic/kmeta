@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.alls.tn;
 import java.util.HashMap;
 import java.util.Map;
 
-public abstract class TransitionNetworkBase <K,E extends EdgeBase<S>, S extends IState<K,E>> implements ITransitionNetwork<K,S> {
+public abstract class TransitionNetworkBase <K,E extends IEdge<S>, S extends IState<K,E>> implements ITransitionNetwork<K,S> {
 	protected String label = "";
 	protected Map<K, S> states;
 	
@@ -28,8 +28,8 @@ public abstract class TransitionNetworkBase <K,E extends EdgeBase<S>, S extends 
 	}
 	
 	protected void connectEdge(S from, S to, E edge) {
-		edge.from = from;
-		edge.to = to;
+		edge.setFrom(from);
+		edge.setTo(to);
 		from.getOut().add(edge);
 		to.getIn().add(edge);
 	}

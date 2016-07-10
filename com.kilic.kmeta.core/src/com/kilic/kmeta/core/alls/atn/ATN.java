@@ -8,7 +8,7 @@ import com.kilic.kmeta.core.alls.tn.IState;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class ATN extends TransitionNetworkBase<Integer, ATNEdgeBase, ATNState> {
+public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	ATNState startState;
 	ATNState finalState;
 	Set<ATNCallEdge> callers;
@@ -95,7 +95,7 @@ public class ATN extends TransitionNetworkBase<Integer, ATNEdgeBase, ATNState> {
 		result.append("node [shape = circle];");
 		
 		for(ATNState state : states.values()) {
-			for(ATNEdgeBase edge : state.getOut()) {
+			for(IATNEdge edge : state.getOut()) {
 				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
 						+ edge.getLabel() + "\" ];\n");
 			}

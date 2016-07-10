@@ -9,7 +9,7 @@ import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.dfa.DFABase;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class PredictionDFA extends DFABase<ATNConfigSet, PredictionDFAEdge, PredictionDFAState> {
+public class PredictionDFA extends DFABase<ATNConfigSet, IPredictionDFAEdge, PredictionDFAState> {
 	Map<IATNEdge, PredictionDFAState> finalStates;
 
 	public PredictionDFA() {
@@ -28,24 +28,16 @@ public class PredictionDFA extends DFABase<ATNConfigSet, PredictionDFAEdge, Pred
 
 	public PredictionDFAState createState(ATNConfigSet configSet) {
 		PredictionDFAState newState = new PredictionDFAState(this, configSet);
-		states.put(newState.key, newState);
+		states.put(newState.getKey(), newState);
 		return newState;
 	}
 
 	public void createCharSetEdge(PredictionDFAState from, PredictionDFAState to, CharSet charSet) {
-		PredictionDFACharSetEdge<ATNConfigSet> newEdge = new PredictionDFACharSetEdge<>(charSet);
-		newEdge.from = from;
-		newEdge.to = to;
-		from.out.add(newEdge);
-		to.in.add(newEdge);
+		connectEdge(from, to, new PredictionDFACharSetEdge(charSet));
 	}
 
 	public void createStringEdge(PredictionDFAState from, PredictionDFAState to, String string) {
-		PredictionDFAStringEdge<ATNConfigSet> newEdge = new PredictionDFAStringEdge<>(string);
-		newEdge.from = from;
-		newEdge.to = to;
-		from.out.add(newEdge);
-		to.in.add(newEdge);
+		connectEdge(from, to, new PredictionDFAStringEdge(string));
 	}
 
 	public Collection<PredictionDFAState> getFinalStates() {

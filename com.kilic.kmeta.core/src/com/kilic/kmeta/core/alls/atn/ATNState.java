@@ -7,7 +7,7 @@ import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.IntegerKeyedState;
 
-public class ATNState extends IntegerKeyedState<ATNEdgeBase, ATNState> {
+public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
 	PredictionDFA predictionDFA;
 
 	ATNState(ATN atn) {

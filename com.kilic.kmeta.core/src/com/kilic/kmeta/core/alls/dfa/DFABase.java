@@ -1,11 +1,12 @@
 package com.kilic.kmeta.core.alls.dfa;
 
 import com.kilic.kmeta.core.alls.tn.EdgeBase;
+import com.kilic.kmeta.core.alls.tn.IEdge;
 import com.kilic.kmeta.core.alls.tn.IState;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 
-public abstract class DFABase<K,E extends EdgeBase<S>, S extends IState<K,E>> extends TransitionNetworkBase<K,E,S> {
+public abstract class DFABase<K,E extends IEdge<S>, S extends IState<K,E>> extends TransitionNetworkBase<K,E,S> {
 	S startState;
 	S errorState;
 	

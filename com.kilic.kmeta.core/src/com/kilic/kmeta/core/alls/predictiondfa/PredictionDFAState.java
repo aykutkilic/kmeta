@@ -5,7 +5,7 @@ import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.StateBase;
 
-public class PredictionDFAState extends StateBase<ATNConfigSet, PredictionDFAEdge, PredictionDFAState> {
+public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEdge, PredictionDFAState> {
 	IATNEdge decisionEdge;
 
 	protected PredictionDFAState(PredictionDFA container, ATNConfigSet configSet) {
@@ -14,7 +14,7 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, PredictionDFAEdg
 	}
 	
 	public PredictionDFAState move(IStream input) {
-		for (PredictionDFAEdge edge : out) {
+		for (IPredictionDFAEdge edge : out) {
 			if (edge.moves(input))
 				return edge.getTo();
 		}
