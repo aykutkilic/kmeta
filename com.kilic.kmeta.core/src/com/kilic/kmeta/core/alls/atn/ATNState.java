@@ -5,11 +5,9 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.stream.IStream;
-import com.kilic.kmeta.core.alls.tn.IEdge;
-import com.kilic.kmeta.core.alls.tn.IState;
 import com.kilic.kmeta.core.alls.tn.IntegerKeyedState;
 
-public class ATNState extends IntegerKeyedState {
+public class ATNState extends IntegerKeyedState<ATNEdgeBase, ATNState> {
 	PredictionDFA predictionDFA;
 
 	ATNState(ATN atn) {
@@ -32,12 +30,12 @@ public class ATNState extends IntegerKeyedState {
 		return out.size() == 1;
 	}
 	
-	public IEdge<Integer> nextEdge() {
+	public IATNEdge nextEdge() {
 		assert(out.size() == 1);
 		return out.iterator().next();
 	}
 	
-	public IState<Integer> nextState() {
+	public ATNState nextState() {
 		assert(out.size() == 1);
 		return nextEdge().getTo();
 	}
@@ -45,7 +43,7 @@ public class ATNState extends IntegerKeyedState {
 	public Set<ATNState> move(IStream input) {
 		Set<ATNState> result = new HashSet<>();
 		
-		for(IEdge<Integer> edge : out) {
+		for( IATNEdge edge : out) {
 			if(edge.moves(input))
 				result.add((ATNState) edge.getTo());
 		}

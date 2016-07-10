@@ -3,17 +3,15 @@ package com.kilic.kmeta.core.alls.tn;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.kilic.kmeta.core.alls.tn.IState.StateType;
-
-public class StateBase<K> implements IState<K> {
+public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements IState<K,E> {
 	protected K key;
-	protected ITransitionNetwork<K> container;
+	protected ITransitionNetwork<K, S> container;
 	protected StateType type;
 
-	protected Set<IEdge<K>> in, out;
+	protected Set<E> in, out;
 	protected String label = "";
 	
-	protected StateBase(ITransitionNetwork<K> container, K key) {
+	protected StateBase(ITransitionNetwork<K, S> container, K key) {
 		in = new HashSet<>();
 		out = new HashSet<>();
 
@@ -21,7 +19,7 @@ public class StateBase<K> implements IState<K> {
 		this.key = key;
 	}
 
-	public ITransitionNetwork<K> getContainer() {
+	public ITransitionNetwork<K,S> getContainer() {
 		return container;
 	}
 
@@ -35,12 +33,12 @@ public class StateBase<K> implements IState<K> {
 	}
 	
 	@Override
-	public Set<IEdge<K>> getIn() {
+	public Set<E> getIn() {
 		return in;
 	}
 
 	@Override
-	public Set<IEdge<K>> getOut() {
+	public Set<E> getOut() {
 		return out;
 	}
 
@@ -62,11 +60,11 @@ public class StateBase<K> implements IState<K> {
 		return key;
 	}
 
-	public void addIn(IEdge<K> edge) {
+	public void addIn(E edge) {
 		in.add(edge);
 	}
 
-	public void addOut(IEdge<K> edge) {
+	public void addOut(E edge) {
 		out.add(edge);
 	}
 
@@ -75,13 +73,13 @@ public class StateBase<K> implements IState<K> {
 		if (this == other)
 			return true;
 
-		if (!(other instanceof StateBase<?>))
+		if (!(other instanceof StateBase<?,?,?>))
 			return false;
 
-		if (type != ((StateBase<?>) other).type)
+		if (type != ((StateBase<?,?,?>) other).type)
 			return false;
 
-		return key.equals(((StateBase<?>) other).key);
+		return key.equals(((StateBase<?,?,?>) other).key);
 	}
 
 	@Override

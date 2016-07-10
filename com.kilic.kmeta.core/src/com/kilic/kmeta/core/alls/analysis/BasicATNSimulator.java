@@ -5,12 +5,15 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNCallEdge;
+import com.kilic.kmeta.core.alls.atn.ATNEdgeBase;
 import com.kilic.kmeta.core.alls.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.alls.stream.IStream;
+import com.kilic.kmeta.core.alls.tn.IEdge;
+import com.kilic.kmeta.core.alls.tn.IState.StateType;
 
 /**
  * Algorithm from:
@@ -35,8 +38,8 @@ public class BasicATNSimulator {
 		if (atnState.getPredictionDFA() == null) {
 			PredictionDFA predictionDFA = new PredictionDFA();
 			atnState.setPredictionDFA(predictionDFA);
-			
-			for(IATNEdge edge : atnState.getOutEdges())
+
+			for( IATNEdge edge : atnState.getOut())
 				predictionDFA.createFinalState(edge);
 
 			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
@@ -45,7 +48,7 @@ public class BasicATNSimulator {
 		}
 
 		PredictionDFA dfa = atnState.getPredictionDFA();
-		IATNEdge result = sllPredict(atnState, dfa.getStartState(), g, pos);
+		IATNEdge result = sllPredict(atnState, (PredictionDFAState) dfa.getStartState(), g, pos);
 
 		input.seek(pos);
 		return result;
@@ -54,14 +57,14 @@ public class BasicATNSimulator {
 	ATNConfigSet startState(ATNState atnState, RegularCallStack g) {
 		ATNConfigSet d0 = new ATNConfigSet();
 		
-		for (IATNEdge edge : atnState.getOutEdges()) {
+		for (IATNEdge edge : atnState.getOut()) {
 			if (edge instanceof ATNCallEdge) {
 				ATNCallEdge callEdge = (ATNCallEdge) edge;
 				RegularCallStack pushedStack = new RegularCallStack(g);
-				pushedStack.push(edge.getTo());
+				pushedStack.push((ATNState) edge.getTo());
 				d0.addAll(closure(new ATNConfig(callEdge.getATN().getStartState(), edge, pushedStack), null));
 			} else if (edge instanceof ATNEpsilonEdge) {
-				d0.addAll(closure(new ATNConfig(edge.getTo(), edge, g), null));
+				d0.addAll(closure(new ATNConfig((ATNState) edge.getTo(), edge, g), null));
 			}
 		}
 		
@@ -77,12 +80,13 @@ public class BasicATNSimulator {
 		Set<ATNConfig> result = new HashSet<>();
 		result.add(config);
 
-		if (config.getState().isFinal()) {
+		if (config.getState().getType() == StateType.FINAL) {
 			// stack is SLL wildcard
 			if (config.getCallStack().isAny()) {
 				// get all returns of call for this type
-				ATN atn = config.getState().getATN();
+				ATN atn = (ATN) config.getState().getContainer();
 				for (ATNCallEdge edge : atn.getAllCallers()) {
+					
 					result.addAll(closure(new ATNConfig(edge.getTo(), config.getAlternative(), config.getCallStack()),
 							history));
 				}

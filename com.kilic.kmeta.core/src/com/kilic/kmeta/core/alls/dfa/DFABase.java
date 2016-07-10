@@ -1,27 +1,27 @@
-package com.kilic.kmeta.core.alls.predictiondfa;
+package com.kilic.kmeta.core.alls.dfa;
 
-import com.kilic.kmeta.core.alls.tn.IEdge;
+import com.kilic.kmeta.core.alls.tn.EdgeBase;
 import com.kilic.kmeta.core.alls.tn.IState;
-import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
+import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 
-public abstract class DFABase<K> extends TransitionNetworkBase<K> {
-	IState<K> startState;
-	IState<K> errorState;
+public abstract class DFABase<K,E extends EdgeBase<S>, S extends IState<K,E>> extends TransitionNetworkBase<K,E,S> {
+	S startState;
+	S errorState;
 	
 	protected DFABase() {
 		super();
 	}
 	
-	public IState<K> getStartState() {
+	public S getStartState() {
 		return startState;
 	}
 
-	public void setStartState(IState<K> newStartState) {
+	public void setStartState(S newStartState) {
 		startState = newStartState;
 	}
 	
-	public IState<K> getErrorState() {
+	public S getErrorState() {
 		return errorState;
 	}
 	
@@ -32,11 +32,11 @@ public abstract class DFABase<K> extends TransitionNetworkBase<K> {
 		if (label != null)
 			result.append(label + " : ");
 
-		for (IState<K> state : states.values()) {
+		for (S state : states.values()) {
 			if (state == startState)
 				result.append("->");
 			result.append(state.toString() + "\n");
-			for (IEdge<K> edge : state.getOut() )
+			for (E edge : state.getOut() )
 				result.append("    " + edge.toString() + "\n");
 		}
 
@@ -53,15 +53,15 @@ public abstract class DFABase<K> extends TransitionNetworkBase<K> {
 		result.append("S" + startState.getKey().toString() + ";\n"); 
 		result.append("node [shape = doublecircle];\n ");
 
-		for ( IState<K> s : states.values() ) {
+		for ( S s : states.values() ) {
 			if(s.getType() == StateType.FINAL) 
 				result.append("S" + s.getKey() + " ");
 		}
 
 		result.append(";\n");
 		result.append("node [shape = circle];");
-		for (IState<K> state : states.values()) {
-			for ( IEdge<K> edge : state.getOut() ) {
+		for (S state : states.values()) {
+			for ( E edge : state.getOut() ) {
 				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
 						+ edge.getLabel() + "\" ];\n");
 			}

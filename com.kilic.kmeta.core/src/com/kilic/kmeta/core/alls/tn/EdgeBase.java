@@ -1,15 +1,15 @@
 package com.kilic.kmeta.core.alls.tn;
 
-public abstract class EdgeBase <K> implements IEdge<K> {
-	IState<K> from, to;
+public abstract class EdgeBase <S extends IState<?,?>> implements IEdge<S> {
+	S from, to;
 	
 	@Override
-	public IState<K> getFrom() {
+	public S getFrom() {
 		return from;
 	}
 	
 	@Override
-	public IState<K> getTo() {
+	public S getTo() {
 		return to;
 	}
 	

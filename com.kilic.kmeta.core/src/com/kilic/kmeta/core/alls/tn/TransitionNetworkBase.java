@@ -3,12 +3,9 @@ package com.kilic.kmeta.core.alls.tn;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.kilic.kmeta.core.alls.atn.ATNEdgeBase;
-import com.kilic.kmeta.core.alls.atn.ATNState;
-
-public abstract class TransitionNetworkBase <K> implements ITransitionNetwork<K> {
+public abstract class TransitionNetworkBase <K,E extends EdgeBase<S>, S extends IState<K,E>> implements ITransitionNetwork<K,S> {
 	protected String label = "";
-	protected Map<K, IState<K>> states;
+	protected Map<K, S> states;
 	
 	public TransitionNetworkBase() {
 		states = new HashMap<>();
@@ -26,14 +23,14 @@ public abstract class TransitionNetworkBase <K> implements ITransitionNetwork<K>
 		return states.containsKey(key);
 	}
 	
-	public IState<K> getState(K key) {
+	public S getState(K key) {
 		return states.get(key);
 	}
 	
-	protected void connectEdge(StateBase<K> from, StateBase<K> to, EdgeBase<K> edge) {
+	protected void connectEdge(S from, S to, E edge) {
 		edge.from = from;
 		edge.to = to;
-		from.addOut(edge);
-		to.addIn(edge);
+		from.getOut().add(edge);
+		to.getIn().add(edge);
 	}
 }

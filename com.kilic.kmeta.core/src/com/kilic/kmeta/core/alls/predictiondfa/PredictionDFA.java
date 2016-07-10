@@ -6,9 +6,10 @@ import java.util.Map;
 
 import com.kilic.kmeta.core.alls.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
+import com.kilic.kmeta.core.alls.dfa.DFABase;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class PredictionDFA extends DFABase<ATNConfigSet> {
+public class PredictionDFA extends DFABase<ATNConfigSet, PredictionDFAEdge, PredictionDFAState> {
 	Map<IATNEdge, PredictionDFAState> finalStates;
 
 	public PredictionDFA() {

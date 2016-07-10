@@ -1,11 +1,11 @@
 package com.kilic.kmeta.core.alls.tokendfa;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.predictiondfa.DFABase;
+import com.kilic.kmeta.core.alls.dfa.DFABase;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class TokenDFA extends DFABase<Integer> {
+public class TokenDFA extends DFABase<Integer,TokenDFAEdge,TokenDFAState> {
 	public static TokenDFA createFromATN(ATN atn) {
 		return null;
 	}
