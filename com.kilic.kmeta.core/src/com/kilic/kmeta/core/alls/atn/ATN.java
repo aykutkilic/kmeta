@@ -97,85 +97,11 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	public NFA convertToNFA() {
 		assert (canBeReducedToNFA());
 
-		HashMap<HashSet<ATNState>, NFAState> dfaStates = new HashMap<>();
+		HashMap<ATNState, NFAState> nfaStates = new HashMap<>();
 
 		NFA result = new NFA();
-		Set<Set<ATNState>> closuresToProcess = new HashSet<>();
-		closuresToProcess.add(getEpsilonClosure(getStartState()));
-
-		while (closuresToProcess.size() > 0) {
-			Set<ATNState> fromClosure = closuresToProcess.iterator().next();
-			NFAState fromState = null;
-			if (dfaStates.containsKey(fromClosure)) {
-				fromState = dfaStates.get(fromClosure);
-			} else
-				fromState = result.createState();
-
-			for (IATNEdge edge : getEdgesOfClosure(fromClosure)) {
-				Set<ATNState> toClosure = moveClosure(fromClosure, edge);
-				NFAState toState = null;
-				if (dfaStates.containsKey(toClosure)) {
-					toState = dfaStates.get(toClosure);
-				} else
-					toState = result.createState();
-
-				if (edge instanceof ATNStringEdge) {
-					for( char c : ((ATNStringEdge) edge).getString().toCharArray() ) {
-						
-					}
-				} else if (edge instanceof ATNCharSetEdge) {
-
-				}
-
-			}
-		}
-	}
-
-	Set<ATNState> getEpsilonClosure(ATNState state) {
-		Set<ATNState> result = new HashSet<>();
-		result.add(state);
-
-		for (IATNEdge out : state.getOut()) {
-			if (out instanceof ATNEpsilonEdge)
-				result.addAll(getEpsilonClosure(out.getTo()));
-		}
-
+		
 		return result;
-	}
-
-	Set<IATNEdge> getEdgesOfClosure(Set<ATNState> epsilonClosure) {
-		Set<IATNEdge> result = new HashSet<>();
-
-		for (ATNState state : epsilonClosure) {
-			for (IATNEdge out : state.getOut()) {
-				if (out instanceof ATNStringEdge || out instanceof ATNCharSetEdge) {
-					result.add(out);
-				}
-			}
-		}
-
-		return result;
-	}
-
-	Set<ATNState> moveClosure(Set<ATNState> epsilonClosure, IATNEdge edge) {
-		Set<ATNState> result = new HashSet<>();
-
-		for (ATNState state : epsilonClosure) {
-			ATNState toState = moveState(state, edge);
-			if (toState != null)
-				result.add(toState);
-		}
-
-		return result;
-	}
-
-	ATNState moveState(ATNState state, IATNEdge edge) {
-		for (IATNEdge out : state.getOut()) {
-			if (out.equals(edge))
-				return out.getTo();
-		}
-
-		return null;
 	}
 
 	public String toGraphviz() {

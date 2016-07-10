@@ -1,5 +1,6 @@
 package com.kilic.kmeta.core.alls.nfa;
 
-public class NFAEpsilonEdge {
+import com.kilic.kmeta.core.alls.tn.EpsilonEdgeBase;
 
+public class NFAEpsilonEdge extends EpsilonEdgeBase<NFAState> implements INFAEdge {
 }
