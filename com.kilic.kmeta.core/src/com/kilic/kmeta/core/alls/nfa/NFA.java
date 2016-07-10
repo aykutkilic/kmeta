@@ -38,18 +38,17 @@ public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
 			} else
 				fromState = result.createState();
 
-			for (INFAEdge edge : fromClosure.getEdges()) {
-				EpsilonClosure toClosure = fromClosure.move(edge);
+			Set<CharSet> distinctCharSets = CharSet.getDistinctCharSets(fromClosure.getCharSets());
+			
+			for (CharSet charSet : distinctCharSets) {
+				EpsilonClosure toClosure = fromClosure.moveByCharSet(charSet);
 				TokenDFAState toState = null;
 				if (dfaStates.containsKey(toClosure)) {
 					toState = dfaStates.get(toClosure);
 				} else
 					toState = result.createState();
-
-				if (edge instanceof NFACharSetEdge) {
-
-				}
-
+				
+				result.createCharSetEdge(fromState,toState,charSet);
 			}
 		}
 		

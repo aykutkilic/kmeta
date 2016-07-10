@@ -3,14 +3,16 @@ package com.kilic.kmeta.core.alls.nfa;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.kilic.kmeta.core.util.CharSet;
+
 public class EpsilonClosure extends HashSet<NFAState> {
 	private static final long serialVersionUID = -2035118906817429220L;
 	
-	EpsilonClosure move(INFAEdge edge) {
+	EpsilonClosure moveByCharSet(CharSet charSet) {
 		EpsilonClosure result = new EpsilonClosure();
 		
 		for (NFAState state : this) {
-			NFAState toState = state.move(edge);
+			NFAState toState = state.moveByCharSet(charSet);
 			if (toState != null)
 				result.add(toState);
 		}
@@ -31,4 +33,14 @@ public class EpsilonClosure extends HashSet<NFAState> {
 		return result;
 	}
 	
+	Set<CharSet> getCharSets() {
+		Set<CharSet> result = new HashSet<>();
+		
+		for(INFAEdge edge : getEdges()) {
+			if(edge instanceof NFACharSetEdge)
+				result.add(((NFACharSetEdge) edge).getCharSet());
+		}
+		
+		return result;
+	}
 }
