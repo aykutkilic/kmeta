@@ -1,7 +1,10 @@
 package com.kilic.kmeta.core.tests;
 
+import static org.junit.Assert.*;
+
 import java.io.FileNotFoundException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -109,6 +112,11 @@ public class ATNTests {
 			)
 		).setLabel("E");
 		// @formatter:on
+	}
+	
+	@Test
+	public void atnToNFATest() {
+		assertTrue(HexL.canBeReducedToNFA());
 	}
 
 	@Test

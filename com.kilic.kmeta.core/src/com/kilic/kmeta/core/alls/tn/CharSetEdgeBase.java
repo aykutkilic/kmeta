@@ -15,9 +15,29 @@ public abstract class CharSetEdgeBase <S extends IState<?,?>> extends EdgeBase<S
 		return charSet.toString();
 	}
 
+	public CharSet getCharSet() {
+		return charSet;
+	}
+	
 	@Override
 	public boolean moves(IStream input) {
 		char c = input.lookAheadChar(0);
 		return charSet.containsSingleton(c);
+	}
+
+	@Override
+	public int hashCode() {
+		return charSet.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if( this == other )
+			return true;
+		
+		if( !(other instanceof CharSetEdgeBase<?>))
+			return false;
+		
+		return charSet.equals(((CharSetEdgeBase<?>)other).charSet);
 	}
 }

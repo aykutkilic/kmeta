@@ -5,14 +5,12 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNCallEdge;
-import com.kilic.kmeta.core.alls.atn.ATNEdgeBase;
 import com.kilic.kmeta.core.alls.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.alls.stream.IStream;
-import com.kilic.kmeta.core.alls.tn.IEdge;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
 
 /**
@@ -100,7 +98,7 @@ public class BasicATNSimulator {
 
 			return result;
 		} else {
-			for (IATNEdge out : config.getState().getOutEdges()) {
+			for (IATNEdge out : config.getState().getOut()) {
 				if (out instanceof ATNCallEdge) {
 					ATNCallEdge callEdge = (ATNCallEdge) out;
 
@@ -125,15 +123,15 @@ public class BasicATNSimulator {
 	// I'm planning to add regex edges and a class that will compute
 	// the intersections of those so determinism is always preserved.
 	PredictionDFAState target(PredictionDFAState d) {
-		PredictionDFA dfa = d.getDFA();
+		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
-		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getConfigSet());
+		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getKey());
 		if (newConfigSet.isEmpty()) {
 			// connect transition to error
 			// but how? there's no tokenization :/
 			// maybe I create a charset and add the char as a singleton
 			// but that'd also be computationally expensive
-			return d.getDFA().getErrorState();
+			return dfa.getErrorState();
 		}
 
 		IATNEdge predictedEdge = null;
@@ -164,13 +162,13 @@ public class BasicATNSimulator {
 			PredictionDFAState next = d.move(input);
 			if (next == null)
 				next = target(d);
-			if (next.isErrorState())
+			if (next.getType()==StateType.ERROR)
 				return null; // error
 			boolean isStackSensitive = false;
 			if (isStackSensitive)
 				return llPredict(atnState, g, offset);
 
-			if (d.isFinalState())
+			if (d.getType() == StateType.FINAL)
 				return d.getDecisionEdge(); // i
 
 			d = next;

@@ -25,4 +25,9 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEd
 	public IATNEdge getDecisionEdge() {
 		return decisionEdge;
 	}
+
+	public void setFinal(IATNEdge decisionEdge) {
+		this.setType(StateType.FINAL);
+		this.decisionEdge = decisionEdge;
+	}
 }

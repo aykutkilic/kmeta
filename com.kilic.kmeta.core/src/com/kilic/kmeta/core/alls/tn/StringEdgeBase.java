@@ -13,9 +13,29 @@ public abstract class StringEdgeBase <S extends IState<?,?>> extends EdgeBase<S>
 	public String getLabel() {
 		return string;
 	}
+	
+	public String getString() {
+		return string;
+	}
 
 	@Override
 	public boolean moves(IStream input) {
 		return string.equals(input.lookAheadString(0, string.length()));
+	}
+	
+	@Override
+	public int hashCode() {
+		return string.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if( this == other )
+			return true;
+		
+		if( !(other instanceof StringEdgeBase<?>))
+			return false;
+		
+		return string.equals(((StringEdgeBase<?>)other).string);
 	}
 }
