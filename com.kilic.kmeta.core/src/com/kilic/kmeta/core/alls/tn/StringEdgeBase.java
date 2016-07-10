@@ -6,6 +6,7 @@ public abstract class StringEdgeBase <S extends IState<?,?>> extends EdgeBase<S>
 	String string;
 	
 	protected StringEdgeBase(String string) {
+		assert(string.length()>=1);
 		this.string = string;
 	}
 

@@ -97,10 +97,48 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	public NFA convertToNFA() {
 		assert (canBeReducedToNFA());
 
+		NFA result = new NFA();
 		HashMap<ATNState, NFAState> nfaStates = new HashMap<>();
 
-		NFA result = new NFA();
-		
+		for (ATNState state : states.values()) {
+			NFAState nfaFromState = null;
+			if (nfaStates.containsKey(state)) {
+				nfaFromState = nfaStates.get(state);
+			} else {
+				nfaFromState = result.createState();
+				nfaStates.put(state, nfaFromState);
+			}
+
+			for (IATNEdge edge : state.getOut()) {
+				ATNState toState = edge.getTo();
+
+				NFAState nfaToState = null;
+				if (nfaStates.containsKey(toState)) {
+					nfaToState = nfaStates.get(toState);
+				} else {
+					nfaToState = result.createState();
+					nfaStates.put(toState, nfaToState);
+				}
+
+				if (edge instanceof ATNEpsilonEdge) {
+					result.createEpsilonEdge(nfaFromState, nfaToState);
+				} else if (edge instanceof ATNCharSetEdge) {
+					result.createCharSetEdge(nfaFromState, nfaToState, ((ATNCharSetEdge) edge).getCharSet());
+				} else if (edge instanceof ATNStringEdge) {
+					String string = ((ATNStringEdge) edge).getString();
+
+					NFAState currentNFAFromState = nfaFromState;
+					for (int i = 0; i < string.length()-1; i++) {
+						NFAState currentNFAToSTate = result.createState();
+						result.createCharSetEdge(currentNFAFromState, currentNFAToSTate, new CharSet().addSingleton(string.charAt(i)));
+						currentNFAFromState = currentNFAToSTate;
+					}
+					
+					result.createCharSetEdge(currentNFAFromState, nfaToState, new CharSet().addSingleton(string.charAt(string.length()-1)));
+				}
+			}
+		}
+
 		return result;
 	}
 

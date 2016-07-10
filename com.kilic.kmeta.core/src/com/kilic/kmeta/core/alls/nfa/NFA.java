@@ -4,15 +4,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.kilic.kmeta.core.alls.atn.ATNCharSetEdge;
-import com.kilic.kmeta.core.alls.atn.ATNState;
-import com.kilic.kmeta.core.alls.atn.ATNStringEdge;
-import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.automaton.AutomatonBase;
 import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.alls.tokendfa.TokenDFAState;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
+	public NFAState createState() {
+		return new NFAState(this);
+	}
+	
+	public void createEpsilonEdge(NFAState from, NFAState to) {
+		connectEdge(from, to, new NFAEpsilonEdge());
+	}
+	
+	public void createCharSetEdge(NFAState from, NFAState to, CharSet charSet) {
+		connectEdge(from, to, new NFACharSetEdge(charSet));
+	}
+	
 	public TokenDFA convertToTokenDFA() {
 		HashMap<EpsilonClosure, TokenDFAState> dfaStates = new HashMap<>();
 
@@ -58,6 +67,4 @@ public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
 
 		return result;
 	}
-
-
 }
