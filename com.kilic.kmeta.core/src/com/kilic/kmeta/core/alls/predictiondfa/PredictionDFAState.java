@@ -1,11 +1,8 @@
 package com.kilic.kmeta.core.alls.predictiondfa;
 
-import java.util.Set;
-
 import com.kilic.kmeta.core.alls.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.stream.IStream;
-import com.kilic.kmeta.core.alls.tn.IEdge;
 import com.kilic.kmeta.core.alls.tn.StateBase;
 
 public class PredictionDFAState extends StateBase<ATNConfigSet, PredictionDFAEdge, PredictionDFAState> {

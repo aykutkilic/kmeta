@@ -1,7 +1,6 @@
 package com.kilic.kmeta.core.alls.tokendfa;
 
-import com.kilic.kmeta.core.alls.dfa.DFAEdgeBase;
-import com.kilic.kmeta.core.alls.stream.IStream;
+import com.kilic.kmeta.core.alls.tn.EdgeBase;
 
-public abstract class TokenDFAEdge extends DFAEdgeBase<TokenDFAState> {
+public abstract class TokenDFAEdge extends EdgeBase<TokenDFAState> {
 }

@@ -1,23 +1,10 @@
 package com.kilic.kmeta.core.alls.atn;
 
-import com.kilic.kmeta.core.alls.stream.IStream;
+import com.kilic.kmeta.core.alls.tn.CharSetEdgeBase;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class ATNCharSetEdge extends ATNEdgeBase {
-	CharSet charSet;
-
+public class ATNCharSetEdge extends CharSetEdgeBase<ATNState> {
 	ATNCharSetEdge(CharSet charSet) {
-		this.charSet = charSet;
-	}
-
-	@Override
-	public String getLabel() {
-		return charSet.toString();
-	}
-
-	@Override
-	public boolean moves(IStream input) {
-		char c = input.lookAheadChar(0);
-		return charSet.containsSingleton(c);
+		super(charSet);
 	}
 }

@@ -1,9 +1,9 @@
 package com.kilic.kmeta.core.alls.tokendfa;
 
-import com.kilic.kmeta.core.alls.tn.StateBase;
+import com.kilic.kmeta.core.alls.tn.IntegerKeyedState;
 
-public class TokenDFAState extends StateBase<Integer, TokenDFAEdge, TokenDFAState> {
-	protected TokenDFAState(TokenDFA container, Integer stateKey) {
-		super(container, stateKey);
+public class TokenDFAState extends IntegerKeyedState<TokenDFAEdge, TokenDFAState> {
+	protected TokenDFAState(TokenDFA container) {
+		super(container);
 	}
 }

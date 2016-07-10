@@ -33,7 +33,7 @@ public class PredictionDFA extends DFABase<ATNConfigSet, PredictionDFAEdge, Pred
 	}
 
 	public void createCharSetEdge(PredictionDFAState from, PredictionDFAState to, CharSet charSet) {
-		DFACharSetEdge<ATNConfigSet> newEdge = new DFACharSetEdge<>(charSet);
+		PredictionDFACharSetEdge<ATNConfigSet> newEdge = new PredictionDFACharSetEdge<>(charSet);
 		newEdge.from = from;
 		newEdge.to = to;
 		from.out.add(newEdge);
@@ -41,7 +41,7 @@ public class PredictionDFA extends DFABase<ATNConfigSet, PredictionDFAEdge, Pred
 	}
 
 	public void createStringEdge(PredictionDFAState from, PredictionDFAState to, String string) {
-		DFAStringEdge<ATNConfigSet> newEdge = new DFAStringEdge<>(string);
+		PredictionDFAStringEdge<ATNConfigSet> newEdge = new PredictionDFAStringEdge<>(string);
 		newEdge.from = from;
 		newEdge.to = to;
 		from.out.add(newEdge);
