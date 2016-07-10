@@ -6,7 +6,9 @@ import com.kilic.kmeta.core.util.CharSet;
 
 public class TokenDFA extends AutomatonBase<Integer, ITokenDFAEdge, TokenDFAState> {
 	public TokenDFAState createState() {
-		return new TokenDFAState(this);
+		TokenDFAState newState = new TokenDFAState(this);
+		states.put(newState.getKey(), newState);
+		return newState;
 	}
 	
 	public void createCharSetEdge(TokenDFAState from, TokenDFAState to, CharSet charSet) {

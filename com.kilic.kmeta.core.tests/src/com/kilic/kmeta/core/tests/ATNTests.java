@@ -1,14 +1,14 @@
 package com.kilic.kmeta.core.tests;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
+import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.stream.StringStream;
@@ -18,6 +18,7 @@ import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
 import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
+import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.util.CharSet;
 
@@ -115,19 +116,23 @@ public class ATNTests {
 	}
 	
 	@Test
-	public void atnToNFATest() {
-		assertTrue(HexL.canBeReducedToNFA());
+	public void atnToNFATest() throws FileNotFoundException {
+		assertTrue(HexL.hasEquivalentNFA());
+		NFA HexLNFA = HexL.getEquivalentNFA();
+		Utils.dumpTNToFile(HexLNFA, desktopPath + "HexLNFA.graphviz" );
+		TokenDFA HexLDFA = HexLNFA.getEquivalentDFA();
+		Utils.dumpTNToFile(HexLDFA, desktopPath + "HexLDFA.graphviz" );
 	}
 
 	@Test
 	public void atnTest() throws FileNotFoundException {
-		Utils.dumpATNToFile(E, 		desktopPath + "E.graphviz"		);
-		Utils.dumpATNToFile(AddE, 	desktopPath + "AddE.graphviz"	);
-		Utils.dumpATNToFile(MulE, 	desktopPath + "MulE.graphviz"	);
-		Utils.dumpATNToFile(PrimE, 	desktopPath + "PrimE.graphviz"	);
-		Utils.dumpATNToFile(ParenE, desktopPath + "ParenE.graphviz"	);
-		Utils.dumpATNToFile(HexL, 	desktopPath + "HexL.graphviz"	);
-		Utils.dumpATNToFile(DecL, 	desktopPath + "DecL.graphviz"	);
+		Utils.dumpTNToFile(E, 		desktopPath + "E.graphviz"		);
+		Utils.dumpTNToFile(AddE, 	desktopPath + "AddE.graphviz"	);
+		Utils.dumpTNToFile(MulE, 	desktopPath + "MulE.graphviz"	);
+		Utils.dumpTNToFile(PrimE, 	desktopPath + "PrimE.graphviz"	);
+		Utils.dumpTNToFile(ParenE, desktopPath + "ParenE.graphviz"	);
+		Utils.dumpTNToFile(HexL, 	desktopPath + "HexL.graphviz"	);
+		Utils.dumpTNToFile(DecL, 	desktopPath + "DecL.graphviz"	);
 		
 		ALLSParser parser = new ALLSParser();
 		IStream input = new StringStream("1+2*3*(4+5)");

@@ -6,4 +6,6 @@ public interface ITransitionNetwork <K, S extends IState<K,?>> extends ILabeled 
 	
 	boolean hasState(K key);
 	S getState(K key);
+	
+	String toGraphviz();
 }

@@ -2,13 +2,10 @@ package com.kilic.kmeta.core.alls.atn;
 
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Map;
 import java.util.Set;
 
 import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.nfa.NFAState;
-import com.kilic.kmeta.core.alls.tn.StringEdgeBase;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.util.CharSet;
 
@@ -82,7 +79,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	}
 
 	// returns true if the ATN only contains token and epsilon edges..
-	public boolean canBeReducedToNFA() {
+	public boolean hasEquivalentNFA() {
 		for (ATNState state : this.states.values()) {
 			for (IATNEdge edge : state.getOut()) {
 				// this can be improved to look for looping/recursive calls etc.
@@ -94,10 +91,12 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		return true;
 	}
 
-	public NFA convertToNFA() {
-		assert (canBeReducedToNFA());
+	public NFA getEquivalentNFA() {
+		assert (hasEquivalentNFA());
 
 		NFA result = new NFA();
+		result.setLabel( getLabel() + "NFA" );
+		
 		HashMap<ATNState, NFAState> nfaStates = new HashMap<>();
 
 		for (ATNState state : states.values()) {
@@ -106,9 +105,10 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 				nfaFromState = nfaStates.get(state);
 			} else {
 				nfaFromState = result.createState();
+				nfaFromState.setType(state.getType());
 				nfaStates.put(state, nfaFromState);
 			}
-
+			
 			for (IATNEdge edge : state.getOut()) {
 				ATNState toState = edge.getTo();
 
@@ -117,6 +117,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 					nfaToState = nfaStates.get(toState);
 				} else {
 					nfaToState = result.createState();
+					nfaToState.setType(state.getType());
 					nfaStates.put(toState, nfaToState);
 				}
 
@@ -138,6 +139,11 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 				}
 			}
 		}
+		
+		ATNState atnStartState = getStartState();
+		NFAState nfaStartState = nfaStates.get(atnStartState);
+		
+		result.setStartState(nfaStartState);
 
 		return result;
 	}

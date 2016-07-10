@@ -1,6 +1,5 @@
 package com.kilic.kmeta.core.alls.automaton;
 
-import com.kilic.kmeta.core.alls.tn.EdgeBase;
 import com.kilic.kmeta.core.alls.tn.IEdge;
 import com.kilic.kmeta.core.alls.tn.IState;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
@@ -51,15 +50,21 @@ public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>>
 		result.append("  rankdir=S;\n");
 		result.append("  size=\"8,5\"\n");
 		result.append("node [shape = square];\n");
-		result.append("S" + startState.getKey().toString() + ";\n"); 
+		if(startState!=null)
+			result.append("S" + startState.getKey().toString() + ";\n"); 
 		result.append("node [shape = doublecircle];\n ");
 
+		boolean hasFinalState = false;
 		for ( S s : states.values() ) {
-			if(s.getType() == StateType.FINAL) 
+			if(s.getType() == StateType.FINAL) { 
 				result.append("S" + s.getKey() + " ");
+				hasFinalState = true;
+			}
 		}
 
-		result.append(";\n");
+		if(hasFinalState)
+			result.append(";\n");
+		
 		result.append("node [shape = circle];");
 		for (S state : states.values()) {
 			for ( E edge : state.getOut() ) {

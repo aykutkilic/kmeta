@@ -4,8 +4,8 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.syntax.ISyntaxExpr;
+import com.kilic.kmeta.core.alls.tn.ITransitionNetwork;
 
 public class Utils {
 	public static ATN createATNFromSyntax(ATN atn, ISyntaxExpr e) {
@@ -16,15 +16,10 @@ public class Utils {
 		return atn;
 	}
 	
-	public static void dumpATNToFile(ATN a, String filePath) throws FileNotFoundException {
+	public static void dumpTNToFile(ITransitionNetwork<?,?> tn, String filePath) throws FileNotFoundException {
 		PrintWriter out = new PrintWriter(filePath);
-		out.append(a.toGraphviz());
+		out.append(tn.toGraphviz());
 		out.close();
 	}
 	
-	public static void dumpAutomatonToFile(PredictionDFA a, String filePath) throws FileNotFoundException {
-		PrintWriter out = new PrintWriter(filePath);
-		out.append(a.toGraphviz());
-		out.close();
-	}
 }

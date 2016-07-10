@@ -12,7 +12,7 @@ public class NFAState extends IntegerKeyedState<INFAEdge, NFAState> {
 		for (INFAEdge edge : getOut()) {
 			if(edge instanceof NFACharSetEdge) {
 				if(((NFACharSetEdge) edge).getCharSet().intersects(charSet))
-					edge.getTo();
+					return edge.getTo();
 			}
 		}
 

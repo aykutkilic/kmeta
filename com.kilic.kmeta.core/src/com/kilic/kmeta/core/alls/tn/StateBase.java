@@ -17,6 +17,7 @@ public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements 
 
 		this.container = container;
 		this.key = key;
+		type = StateType.REGULAR;
 	}
 
 	public ITransitionNetwork<K,S> getContainer() {

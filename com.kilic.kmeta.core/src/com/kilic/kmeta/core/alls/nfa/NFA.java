@@ -11,7 +11,9 @@ import com.kilic.kmeta.core.util.CharSet;
 
 public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
 	public NFAState createState() {
-		return new NFAState(this);
+		NFAState newState = new NFAState(this);
+		this.states.put(newState.getKey(), newState);
+		return newState;
 	}
 	
 	public void createEpsilonEdge(NFAState from, NFAState to) {
@@ -22,7 +24,7 @@ public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
 		connectEdge(from, to, new NFACharSetEdge(charSet));
 	}
 	
-	public TokenDFA convertToTokenDFA() {
+	public TokenDFA getEquivalentDFA() {
 		HashMap<EpsilonClosure, TokenDFAState> dfaStates = new HashMap<>();
 
 		TokenDFA result = new TokenDFA();
@@ -32,6 +34,7 @@ public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
 
 		while (closuresToProcess.size() > 0) {
 			EpsilonClosure fromClosure = closuresToProcess.iterator().next();
+			closuresToProcess.remove(fromClosure);
 			TokenDFAState fromState = null;
 			if (dfaStates.containsKey(fromClosure)) {
 				fromState = dfaStates.get(fromClosure);
@@ -42,6 +45,8 @@ public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
 			
 			for (CharSet charSet : distinctCharSets) {
 				EpsilonClosure toClosure = fromClosure.moveByCharSet(charSet);
+				closuresToProcess.add(toClosure);
+				
 				TokenDFAState toState = null;
 				if (dfaStates.containsKey(toClosure)) {
 					toState = dfaStates.get(toClosure);
