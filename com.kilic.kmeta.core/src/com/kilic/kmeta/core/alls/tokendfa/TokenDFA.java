@@ -11,8 +11,8 @@ public class TokenDFA extends AutomatonBase<Integer, ITokenDFAEdge, TokenDFAStat
 		return newState;
 	}
 	
-	public void createCharSetEdge(TokenDFAState from, TokenDFAState to, CharSet charSet) {
-		connectEdge(from, to, new TokenDFACharSetEdge(charSet));
+	public TokenDFACharSetEdge createCharSetEdge(TokenDFAState from, TokenDFAState to, CharSet charSet) {
+		return new TokenDFACharSetEdge(from, to, charSet);
 	}
 	
 	public boolean matches(IStream stream) {

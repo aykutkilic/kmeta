@@ -8,5 +8,8 @@ public interface IEdge<S extends IState<?,?>> extends ILabeled {
 	S getTo();
 	void setTo(S state);
 
+	void connect(S from, S to);
+	void disconnect();
+	
 	boolean moves(IStream input);
 }

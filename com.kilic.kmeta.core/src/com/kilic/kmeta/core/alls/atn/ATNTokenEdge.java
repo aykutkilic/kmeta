@@ -5,15 +5,16 @@ import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 
 public class ATNTokenEdge extends ATNEdgeBase {
 	TokenDFA dfa;
-	
-	ATNTokenEdge(TokenDFA dfa) {
+
+	ATNTokenEdge(ATNState from, ATNState to, TokenDFA dfa) {
 		this.dfa = dfa;
+		connect(from, to);
 	}
-	
+
 	TokenDFA getDFA() {
 		return dfa;
 	}
-	
+
 	@Override
 	public boolean moves(IStream input) {
 		return dfa.matches(input);
@@ -23,5 +24,4 @@ public class ATNTokenEdge extends ATNEdgeBase {
 	public String getLabel() {
 		return dfa.getLabel();
 	}
-
 }

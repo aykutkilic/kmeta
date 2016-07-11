@@ -17,12 +17,12 @@ public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 		return newState;
 	}
 
-	public void createEpsilonEdge(NFAState from, NFAState to) {
-		connectEdge(from, to, new NFAEpsilonEdge());
+	public NFAEpsilonEdge createEpsilonEdge(NFAState from, NFAState to) {
+		return new NFAEpsilonEdge(from, to);
 	}
 
-	public void createCharSetEdge(NFAState from, NFAState to, CharSet charSet) {
-		connectEdge(from, to, new NFACharSetEdge(charSet));
+	public NFACharSetEdge createCharSetEdge(NFAState from, NFAState to, CharSet charSet) {
+		return new NFACharSetEdge(from, to, charSet);
 	}
 
 	public TokenDFA getEquivalentDFA() {
@@ -40,7 +40,7 @@ public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 				fromState = dfaStates.get(fromClosure);
 			} else {
 				fromState = result.createState();
-				if(fromClosure.isFinal())
+				if (fromClosure.isFinal())
 					fromState.setType(StateType.FINAL);
 				dfaStates.put(fromClosure, fromState);
 			}
@@ -56,14 +56,14 @@ public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 					toState = dfaStates.get(toClosure);
 				} else {
 					toState = result.createState();
-					if(toClosure.isFinal())
+					if (toClosure.isFinal())
 						toState.setType(StateType.FINAL);
 					dfaStates.put(toClosure, toState);
 				}
 
 				result.createCharSetEdge(fromState, toState, charSet);
 			}
-			
+
 			closuresToProcess.remove(fromClosure);
 		}
 

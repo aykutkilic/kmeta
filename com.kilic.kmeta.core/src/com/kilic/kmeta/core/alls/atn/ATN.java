@@ -6,8 +6,9 @@ import java.util.Set;
 
 import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.nfa.NFAState;
-import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
+import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
+import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
@@ -37,39 +38,31 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	}
 
 	public ATNEpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
-		ATNEpsilonEdge edge = new ATNEpsilonEdge();
-		connectEdge(from, to, edge);
-		return edge;
+		return new ATNEpsilonEdge(from, to);
 	}
 
 	public ATNCharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
-		ATNCharSetEdge edge = new ATNCharSetEdge(charSet);
-		connectEdge(from, to, edge);
-		return edge;
+		return new ATNCharSetEdge(from, to, charSet);
 	}
 
 	public ATNStringEdge createStringEdge(ATNState from, ATNState to, String string) {
-		ATNStringEdge edge = new ATNStringEdge(string);
-		connectEdge(from, to, edge);
-		return edge;
+		return new ATNStringEdge(from, to, string);
 	}
 
 	public ATNCallEdge createCallEdge(ATNState from, ATNState to, ATN atn) {
-		ATNCallEdge edge = new ATNCallEdge(atn);
-		connectEdge(from, to, edge);
-		return edge;
+		return new ATNCallEdge(from, to, atn);
 	}
 
 	public ATNPredicateEdge createPredicateEdge(ATNState from, ATNState to) {
-		ATNPredicateEdge edge = new ATNPredicateEdge();
-		connectEdge(from, to, edge);
-		return edge;
+		return new ATNPredicateEdge(from, to);
 	}
 
 	public ATNMutatorEdge createMutatorEdge(ATNState from, ATNState to) {
-		ATNMutatorEdge edge = new ATNMutatorEdge();
-		connectEdge(from, to, edge);
-		return edge;
+		return new ATNMutatorEdge(from, to);
+	}
+
+	ATNTokenEdge createTokenEdge(ATNState from, ATNState to, TokenDFA dfa) {
+		return new ATNTokenEdge(from, to, dfa);
 	}
 
 	public void addCaller(ATNCallEdge edge) {
@@ -97,8 +90,8 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		assert (hasEquivalentNFA());
 
 		NFA result = new NFA();
-		result.setLabel( getLabel() + "NFA" );
-		
+		result.setLabel(getLabel() + "NFA");
+
 		HashMap<ATNState, NFAState> nfaStates = new HashMap<>();
 
 		for (ATNState state : states.values()) {
@@ -110,7 +103,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 				nfaFromState.setType(state.getType());
 				nfaStates.put(state, nfaFromState);
 			}
-			
+
 			for (IATNEdge edge : state.getOut()) {
 				ATNState toState = edge.getTo();
 
@@ -131,23 +124,41 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 					String string = ((ATNStringEdge) edge).getString();
 
 					NFAState currentNFAFromState = nfaFromState;
-					for (int i = 0; i < string.length()-1; i++) {
+					for (int i = 0; i < string.length() - 1; i++) {
 						NFAState currentNFAToSTate = result.createState();
-						result.createCharSetEdge(currentNFAFromState, currentNFAToSTate, new CharSet().addSingleton(string.charAt(i)));
+						result.createCharSetEdge(currentNFAFromState, currentNFAToSTate,
+								new CharSet().addSingleton(string.charAt(i)));
 						currentNFAFromState = currentNFAToSTate;
 					}
-					
-					result.createCharSetEdge(currentNFAFromState, nfaToState, new CharSet().addSingleton(string.charAt(string.length()-1)));
+
+					result.createCharSetEdge(currentNFAFromState, nfaToState,
+							new CharSet().addSingleton(string.charAt(string.length() - 1)));
 				}
 			}
 		}
-		
+
 		ATNState atnStartState = getStartState();
 		NFAState nfaStartState = nfaStates.get(atnStartState);
-		
+
 		result.setStartState(nfaStartState);
 
 		return result;
+	}
+
+	public void reduceToTokenDFAEdge() {
+		assert (hasEquivalentNFA());
+
+		NFA nfa = getEquivalentNFA();
+		TokenDFA dfa = nfa.getEquivalentDFA();
+		
+		for (ATNCallEdge edge : callers) {
+			ATNState from = edge.getFrom();
+			ATNState to = edge.getTo();
+			edge.disconnect();
+			
+			ATN atn = (ATN)from.getContainer();
+			atn.createTokenEdge(from, to, dfa);
+		}
 	}
 
 	public String toGraphviz() {

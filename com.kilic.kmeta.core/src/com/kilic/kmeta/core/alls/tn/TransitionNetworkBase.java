@@ -27,10 +27,15 @@ public abstract class TransitionNetworkBase <K,E extends IEdge<S>, S extends ISt
 		return states.get(key);
 	}
 	
-	protected void connectEdge(S from, S to, E edge) {
+	/*protected void connectEdge(S from, S to, E edge) {
 		edge.setFrom(from);
 		edge.setTo(to);
 		from.getOut().add(edge);
 		to.getIn().add(edge);
 	}
+	
+	protected void disconnectEdge(E edge) {
+		edge.getFrom().getOut().remove(edge);
+		edge.getTo().getIn().remove(edge);
+	}*/
 }

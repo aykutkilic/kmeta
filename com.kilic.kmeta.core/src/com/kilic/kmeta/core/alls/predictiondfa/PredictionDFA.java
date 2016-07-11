@@ -32,12 +32,12 @@ public class PredictionDFA extends AutomatonBase<ATNConfigSet, IPredictionDFAEdg
 		return newState;
 	}
 
-	public void createCharSetEdge(PredictionDFAState from, PredictionDFAState to, CharSet charSet) {
-		connectEdge(from, to, new PredictionDFACharSetEdge(charSet));
+	public PredictionDFACharSetEdge createCharSetEdge(PredictionDFAState from, PredictionDFAState to, CharSet charSet) {
+		return new PredictionDFACharSetEdge(from, to, charSet);
 	}
 
-	public void createStringEdge(PredictionDFAState from, PredictionDFAState to, String string) {
-		connectEdge(from, to, new PredictionDFAStringEdge(string));
+	public PredictionDFAStringEdge createStringEdge(PredictionDFAState from, PredictionDFAState to, String string) {
+		return new PredictionDFAStringEdge(from, to, string);
 	}
 
 	public Collection<PredictionDFAState> getFinalStates() {

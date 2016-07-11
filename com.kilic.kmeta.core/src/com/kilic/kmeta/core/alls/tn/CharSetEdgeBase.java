@@ -6,8 +6,9 @@ import com.kilic.kmeta.core.util.CharSet;
 public abstract class CharSetEdgeBase <S extends IState<?,?>> extends EdgeBase<S> {
 	CharSet charSet;
 
-	protected CharSetEdgeBase(CharSet charSet) {
+	protected CharSetEdgeBase(S from, S to, CharSet charSet) {
 		this.charSet = charSet;
+		connect(from,to);
 	}
 
 	@Override
