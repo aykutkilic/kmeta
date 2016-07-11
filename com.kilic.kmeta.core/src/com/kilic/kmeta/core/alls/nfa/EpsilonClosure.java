@@ -8,13 +8,25 @@ import com.kilic.kmeta.core.util.CharSet;
 public class EpsilonClosure extends HashSet<NFAState> {
 	private static final long serialVersionUID = -2035118906817429220L;
 	
+	public static EpsilonClosure create(NFAState state) {
+		EpsilonClosure result = new EpsilonClosure();
+		result.add(state);
+
+		for (INFAEdge out : state.getOut()) {
+			if (out instanceof NFAEpsilonEdge)
+				result.addAll(create(out.getTo()));
+		}
+
+		return result;
+	}
+	
 	EpsilonClosure moveByCharSet(CharSet charSet) {
 		EpsilonClosure result = new EpsilonClosure();
 		
 		for (NFAState state : this) {
 			NFAState toState = state.moveByCharSet(charSet);
 			if (toState != null)
-				result.add(toState);
+				result.addAll(create(toState));
 		}
 
 		return result;

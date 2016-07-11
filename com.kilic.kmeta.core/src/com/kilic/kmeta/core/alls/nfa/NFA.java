@@ -9,64 +9,57 @@ import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.alls.tokendfa.TokenDFAState;
 import com.kilic.kmeta.core.util.CharSet;
 
-public class NFA extends AutomatonBase<Integer,INFAEdge, NFAState> {
+public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 	public NFAState createState() {
 		NFAState newState = new NFAState(this);
 		this.states.put(newState.getKey(), newState);
 		return newState;
 	}
-	
+
 	public void createEpsilonEdge(NFAState from, NFAState to) {
 		connectEdge(from, to, new NFAEpsilonEdge());
 	}
-	
+
 	public void createCharSetEdge(NFAState from, NFAState to, CharSet charSet) {
 		connectEdge(from, to, new NFACharSetEdge(charSet));
 	}
-	
+
 	public TokenDFA getEquivalentDFA() {
 		HashMap<EpsilonClosure, TokenDFAState> dfaStates = new HashMap<>();
 
 		TokenDFA result = new TokenDFA();
-		
+
 		Set<EpsilonClosure> closuresToProcess = new HashSet<>();
-		closuresToProcess.add(getEpsilonClosure(getStartState()));
+		closuresToProcess.add(EpsilonClosure.create(getStartState()));
 
 		while (closuresToProcess.size() > 0) {
 			EpsilonClosure fromClosure = closuresToProcess.iterator().next();
-			closuresToProcess.remove(fromClosure);
 			TokenDFAState fromState = null;
 			if (dfaStates.containsKey(fromClosure)) {
 				fromState = dfaStates.get(fromClosure);
-			} else
+			} else {
 				fromState = result.createState();
+				dfaStates.put(fromClosure, fromState);
+			}
 
 			Set<CharSet> distinctCharSets = CharSet.getDistinctCharSets(fromClosure.getCharSets());
-			
+
 			for (CharSet charSet : distinctCharSets) {
 				EpsilonClosure toClosure = fromClosure.moveByCharSet(charSet);
 				closuresToProcess.add(toClosure);
-				
+
 				TokenDFAState toState = null;
 				if (dfaStates.containsKey(toClosure)) {
 					toState = dfaStates.get(toClosure);
-				} else
+				} else {
 					toState = result.createState();
-				
-				result.createCharSetEdge(fromState,toState,charSet);
+					dfaStates.put(toClosure, toState);
+				}
+
+				result.createCharSetEdge(fromState, toState, charSet);
 			}
-		}
-		
-		return result;
-	}
-
-	EpsilonClosure getEpsilonClosure(NFAState state) {
-		EpsilonClosure result = new EpsilonClosure();
-		result.add(state);
-
-		for (INFAEdge out : state.getOut()) {
-			if (out instanceof NFAEpsilonEdge)
-				result.addAll(getEpsilonClosure(out.getTo()));
+			
+			closuresToProcess.remove(fromClosure);
 		}
 
 		return result;
