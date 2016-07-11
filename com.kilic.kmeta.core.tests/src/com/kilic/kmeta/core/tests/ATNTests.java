@@ -125,6 +125,13 @@ public class ATNTests {
 	}
 
 	@Test
+	public void dfaReductionTest() throws FileNotFoundException {
+		HexL.reduceToTokenDFAEdge();
+		DecL.reduceToTokenDFAEdge();
+		Utils.dumpTNToFile(PrimE, 	desktopPath + "Prim_after_reduction.graphviz" );
+	}
+	
+	@Test
 	public void atnTest() throws FileNotFoundException {
 		Utils.dumpTNToFile(E, 		desktopPath + "E.graphviz"		);
 		Utils.dumpTNToFile(AddE, 	desktopPath + "AddE.graphviz"	);

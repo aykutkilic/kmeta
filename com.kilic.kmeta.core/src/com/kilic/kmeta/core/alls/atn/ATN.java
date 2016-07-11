@@ -150,6 +150,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 
 		NFA nfa = getEquivalentNFA();
 		TokenDFA dfa = nfa.getEquivalentDFA();
+		dfa.setLabel(getLabel()+"DFA");
 		
 		for (ATNCallEdge edge : callers) {
 			ATNState from = edge.getFrom();
