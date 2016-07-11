@@ -7,6 +7,7 @@ import java.util.Set;
 import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.nfa.NFAState;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
+import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
@@ -18,6 +19,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		callers = new HashSet<>();
 		startState = createState();
 		finalState = createState();
+		finalState.setType(StateType.FINAL);
 	}
 
 	public ATNState getStartState() {
@@ -117,7 +119,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 					nfaToState = nfaStates.get(toState);
 				} else {
 					nfaToState = result.createState();
-					nfaToState.setType(state.getType());
+					nfaToState.setType(toState.getType());
 					nfaStates.put(toState, nfaToState);
 				}
 

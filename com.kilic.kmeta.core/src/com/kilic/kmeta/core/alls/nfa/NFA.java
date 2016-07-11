@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.kilic.kmeta.core.alls.automaton.AutomatonBase;
+import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.alls.tokendfa.TokenDFAState;
 import com.kilic.kmeta.core.util.CharSet;
@@ -39,6 +40,8 @@ public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 				fromState = dfaStates.get(fromClosure);
 			} else {
 				fromState = result.createState();
+				if(fromClosure.isFinal())
+					fromState.setType(StateType.FINAL);
 				dfaStates.put(fromClosure, fromState);
 			}
 
@@ -53,6 +56,8 @@ public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 					toState = dfaStates.get(toClosure);
 				} else {
 					toState = result.createState();
+					if(toClosure.isFinal())
+						toState.setType(StateType.FINAL);
 					dfaStates.put(toClosure, toState);
 				}
 

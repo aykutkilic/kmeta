@@ -3,6 +3,7 @@ package com.kilic.kmeta.core.alls.nfa;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class EpsilonClosure extends HashSet<NFAState> {
@@ -18,6 +19,14 @@ public class EpsilonClosure extends HashSet<NFAState> {
 		}
 
 		return result;
+	}
+	
+	public boolean isFinal() {
+		for(NFAState state : this)
+			if(state.getType()==StateType.FINAL)
+				return true;
+		
+		return false;
 	}
 	
 	EpsilonClosure moveByCharSet(CharSet charSet) {
