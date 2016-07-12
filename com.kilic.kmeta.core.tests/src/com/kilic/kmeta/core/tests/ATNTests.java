@@ -96,18 +96,8 @@ public class ATNTests {
 
 		Utils.dumpTNsTofile(desktopPath + "Body.graphviz", Body, E, AddE, MulE, PrimE, ParenE);
 
-		/*
-		 * Utils.dumpTNToFile(E, desktopPath + "E.graphviz");
-		 * Utils.dumpTNToFile(AddE, desktopPath + "AddE.graphviz");
-		 * Utils.dumpTNToFile(MulE, desktopPath + "MulE.graphviz");
-		 * Utils.dumpTNToFile(PrimE, desktopPath + "PrimE.graphviz");
-		 * Utils.dumpTNToFile(ParenE, desktopPath + "ParenE.graphviz");
-		 * Utils.dumpTNToFile(HexL, desktopPath + "HexL.graphviz");
-		 * Utils.dumpTNToFile(DecL, desktopPath + "DecL.graphviz");
-		 */
-
 		ALLSParser parser = new ALLSParser();
 		IStream input = new StringStream("1+2*3*(4+5)");
-		parser.parse(E, input);
+		parser.parse(Body, input);
 	}
 }

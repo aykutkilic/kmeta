@@ -58,7 +58,7 @@ public class MultiplicityExpr implements ISyntaxExpr {
 			atn.createEpsilonEdge(sourceState, decisionState);
 			atn.createEpsilonEdge(decisionState, exprStartState);
 			expr.appendToATN(atn, exprStartState, decisionState);
-			atn.createEpsilonEdge(exprStartState, targetState);
+			atn.createEpsilonEdge(decisionState, targetState);
 			break;
 
 		case ONEORMORE:
