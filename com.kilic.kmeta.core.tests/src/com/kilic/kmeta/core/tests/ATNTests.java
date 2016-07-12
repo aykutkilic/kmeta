@@ -133,6 +133,10 @@ public class ATNTests {
 
 	@Test
 	public void atnTest() throws FileNotFoundException {
+		HexL.reduceToTokenDFAEdge();
+		DecL.reduceToTokenDFAEdge();
+		
+		
 		Utils.dumpTNToFile(E, desktopPath + "E.graphviz");
 		Utils.dumpTNToFile(AddE, desktopPath + "AddE.graphviz");
 		Utils.dumpTNToFile(MulE, desktopPath + "MulE.graphviz");
