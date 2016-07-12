@@ -20,6 +20,8 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		callers = new HashSet<>();
 		startState = createState();
 		finalState = createState();
+		
+		startState.setType(StateType.START);
 		finalState.setType(StateType.FINAL);
 	}
 

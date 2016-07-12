@@ -4,6 +4,7 @@ import java.util.Set;
 
 public interface IState <K, E extends IEdge<?>> extends ILabeled {
 	enum StateType {
+		START,
 		REGULAR,
 		FINAL,
 		ERROR

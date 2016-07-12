@@ -3,6 +3,8 @@ package com.kilic.kmeta.core.tests;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -18,6 +20,8 @@ import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
 import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
+import com.kilic.kmeta.core.alls.tn.TNUtils;
+import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.util.CharSet;
@@ -39,79 +43,30 @@ public class ATNTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
 
 		// @formatter:off
-		Utils.createATNFromSyntax( 
-			DecL,
-			new MultiplicityExpr(
-				Multiplicity.ONEORMORE, 
-				new CharSetExpr(CharSet.DEC)
-			)
-		).setLabel("DecL");
-		
-		Utils.createATNFromSyntax( 
-			HexL,
-			new SequenceExpr(
-				new StringExpr("0x"),
-				new MultiplicityExpr(
-					Multiplicity.ONEORMORE,
-					new CharSetExpr(CharSet.HEX)
-				)
-			)
-		).setLabel("HexL");
-		
-		Utils.createATNFromSyntax(
-			ParenE,
-			new SequenceExpr(
-				new StringExpr("("),
-				new ATNCallExpr(E),
-				new StringExpr(")")
-			)
-		).setLabel("ParenE");
-		
-		Utils.createATNFromSyntax(
-			PrimE,
-			new AlternativeExpr(
-				new ATNCallExpr(DecL),
-				new ATNCallExpr(HexL),
-				new ATNCallExpr(ParenE)
-			)
-		).setLabel("PrimE");
-		
-		Utils.createATNFromSyntax(
-			MulE,
-			new SequenceExpr(
-				new ATNCallExpr(PrimE),
-				new MultiplicityExpr(Multiplicity.ANY,
-					new SequenceExpr(
-						new StringExpr("*"),
-						new ATNCallExpr(MulE)
-					)
-				)
-			)
-		).setLabel("MulE");
-		
-		Utils.createATNFromSyntax(
-			AddE,
-			new SequenceExpr(
-				new ATNCallExpr(MulE),
-				new MultiplicityExpr(Multiplicity.ANY,
-					new SequenceExpr(
-						new StringExpr("+"),
-						new ATNCallExpr(AddE)
-					)
-				)
-			)
-		).setLabel("AddE");
-		
-		Utils.createATNFromSyntax(
-			E,
-			new MultiplicityExpr(
-				Multiplicity.ANY,
-				new SequenceExpr(
-					new ATNCallExpr(AddE),
-					new StringExpr(";")
-				)
-			)
-		).setLabel("E");
+		Utils.createATNFromSyntax(DecL, new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.DEC)))
+				.setLabel("DecL");
+
+		Utils.createATNFromSyntax(HexL, new SequenceExpr(new StringExpr("0x"),
+				new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.HEX)))).setLabel("HexL");
+
+		Utils.createATNFromSyntax(ParenE,
+				new SequenceExpr(new StringExpr("("), new ATNCallExpr(E), new StringExpr(")"))).setLabel("ParenE");
+
+		Utils.createATNFromSyntax(PrimE,
+				new AlternativeExpr(new ATNCallExpr(DecL), new ATNCallExpr(HexL), new ATNCallExpr(ParenE)))
+				.setLabel("PrimE");
+
+		Utils.createATNFromSyntax(MulE, new SequenceExpr(new ATNCallExpr(PrimE),
+				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("*"), new ATNCallExpr(MulE)))))
+				.setLabel("MulE");
+
+		Utils.createATNFromSyntax(AddE, new SequenceExpr(new ATNCallExpr(MulE),
+				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("+"), new ATNCallExpr(AddE)))))
+				.setLabel("AddE");
+
+		Utils.createATNFromSyntax(E,
+				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new ATNCallExpr(AddE), new StringExpr(";"))))
+				.setLabel("E");
 		// @formatter:on
 	}
 
@@ -135,15 +90,19 @@ public class ATNTests {
 	public void atnTest() throws FileNotFoundException {
 		HexL.reduceToTokenDFAEdge();
 		DecL.reduceToTokenDFAEdge();
-		
-		
-		Utils.dumpTNToFile(E, desktopPath + "E.graphviz");
-		Utils.dumpTNToFile(AddE, desktopPath + "AddE.graphviz");
-		Utils.dumpTNToFile(MulE, desktopPath + "MulE.graphviz");
-		Utils.dumpTNToFile(PrimE, desktopPath + "PrimE.graphviz");
-		Utils.dumpTNToFile(ParenE, desktopPath + "ParenE.graphviz");
-		Utils.dumpTNToFile(HexL, desktopPath + "HexL.graphviz");
-		Utils.dumpTNToFile(DecL, desktopPath + "DecL.graphviz");
+
+		Collection<TransitionNetworkBase<?, ?, ?>> atns = new ArrayList<>();
+		Utils.dumpTNsTofile(desktopPath + "E.graphviz", E, AddE, MulE, PrimE, ParenE);
+
+		/*
+		 * Utils.dumpTNToFile(E, desktopPath + "E.graphviz");
+		 * Utils.dumpTNToFile(AddE, desktopPath + "AddE.graphviz");
+		 * Utils.dumpTNToFile(MulE, desktopPath + "MulE.graphviz");
+		 * Utils.dumpTNToFile(PrimE, desktopPath + "PrimE.graphviz");
+		 * Utils.dumpTNToFile(ParenE, desktopPath + "ParenE.graphviz");
+		 * Utils.dumpTNToFile(HexL, desktopPath + "HexL.graphviz");
+		 * Utils.dumpTNToFile(DecL, desktopPath + "DecL.graphviz");
+		 */
 
 		ALLSParser parser = new ALLSParser();
 		IStream input = new StringStream("1+2*3*(4+5)");

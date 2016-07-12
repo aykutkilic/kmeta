@@ -19,6 +19,7 @@ public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>>
 
 	public void setStartState(S newStartState) {
 		startState = newStartState;
+		startState.setType(StateType.START);
 	}
 	
 	public S getErrorState() {

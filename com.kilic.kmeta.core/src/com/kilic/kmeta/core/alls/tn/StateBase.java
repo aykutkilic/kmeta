@@ -53,6 +53,10 @@ public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements 
 		this.type = newType;
 	}
 	
+	protected boolean isStart() {
+		return getType()==StateType.START;
+	}
+	
 	protected boolean isFinal() {
 		return getType()==StateType.FINAL;
 	}
@@ -86,10 +90,14 @@ public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements 
 	@Override
 	public String toString() {
 		switch (type) {
+		case START:
+			return "[S " + key.toString() + " ]";
+			
 		case FINAL:
 			return "[[" + key.toString() + "]]";
+			
 		case ERROR:
-			return "[E " + key.toString() + " E]";
+			return "[E " + key.toString() + " ]";
 
 		case REGULAR:
 		default:
