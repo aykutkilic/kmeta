@@ -34,8 +34,9 @@ public class MultiplicityExpr implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = atn.createState();
 
+		ATNState decisionState = null;
 		ATNState exprStartState = null;
-		ATNState exprEndState = null;
+		//ATNState exprEndState = null;
 
 		switch (multiplicity) {
 		case ONE:
@@ -43,28 +44,30 @@ public class MultiplicityExpr implements ISyntaxExpr {
 			break;
 
 		case OPTIONAL:
+			decisionState = atn.createState();
 			exprStartState = atn.createState();
-			atn.createEpsilonEdge(sourceState, exprStartState);
+			atn.createEpsilonEdge(sourceState, decisionState);
+			atn.createEpsilonEdge(decisionState, exprStartState);
 			expr.appendToATN(atn, exprStartState, targetState);
-			atn.createEpsilonEdge(exprStartState, targetState);
+			atn.createEpsilonEdge(decisionState, targetState);
 			break;
 
 		case ANY:
+			decisionState = atn.createState();
 			exprStartState = atn.createState();
-			exprEndState = atn.createState();
-			atn.createEpsilonEdge(sourceState, exprStartState);
-			expr.appendToATN(atn, exprStartState, exprEndState);
-			atn.createEpsilonEdge(exprEndState, exprStartState);
+			atn.createEpsilonEdge(sourceState, decisionState);
+			atn.createEpsilonEdge(decisionState, exprStartState);
+			expr.appendToATN(atn, exprStartState, decisionState);
 			atn.createEpsilonEdge(exprStartState, targetState);
 			break;
 
 		case ONEORMORE:
 			exprStartState = atn.createState();
-			exprEndState = atn.createState();
+			decisionState = atn.createState();
 			atn.createEpsilonEdge(sourceState, exprStartState);
-			expr.appendToATN(atn, exprStartState, exprEndState);
-			atn.createEpsilonEdge(exprEndState, exprStartState);
-			atn.createEpsilonEdge(exprEndState, targetState);
+			expr.appendToATN(atn, exprStartState, decisionState);
+			atn.createEpsilonEdge(decisionState, exprStartState);
+			atn.createEpsilonEdge(decisionState, targetState);
 			break;
 		}
 

@@ -84,7 +84,6 @@ public class BasicATNSimulator {
 				// get all returns of call for this type
 				ATN atn = (ATN) config.getState().getContainer();
 				for (ATNCallEdge edge : atn.getAllCallers()) {
-					
 					result.addAll(closure(new ATNConfig(edge.getTo(), config.getAlternative(), config.getCallStack()),
 							history));
 				}

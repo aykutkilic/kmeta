@@ -37,6 +37,7 @@ public class ATNTests {
 	ATN MulE = new ATN();
 	ATN AddE = new ATN();
 	ATN E = new ATN();
+	ATN Body = new ATN();
 
 	@Before
 	public void init() {
@@ -64,9 +65,11 @@ public class ATNTests {
 				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("+"), new ATNCallExpr(AddE)))))
 				.setLabel("AddE");
 
-		Utils.createATNFromSyntax(E,
-				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new ATNCallExpr(AddE), new StringExpr(";"))))
-				.setLabel("E");
+		Utils.createATNFromSyntax(E, new ATNCallExpr(AddE)).setLabel("E");
+		
+		Utils.createATNFromSyntax(Body,
+				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new ATNCallExpr(E), new StringExpr(";"))))
+				.setLabel("Body");
 		// @formatter:on
 	}
 
@@ -91,8 +94,7 @@ public class ATNTests {
 		HexL.reduceToTokenDFAEdge();
 		DecL.reduceToTokenDFAEdge();
 
-		Collection<TransitionNetworkBase<?, ?, ?>> atns = new ArrayList<>();
-		Utils.dumpTNsTofile(desktopPath + "E.graphviz", E, AddE, MulE, PrimE, ParenE);
+		Utils.dumpTNsTofile(desktopPath + "Body.graphviz", Body, E, AddE, MulE, PrimE, ParenE);
 
 		/*
 		 * Utils.dumpTNToFile(E, desktopPath + "E.graphviz");

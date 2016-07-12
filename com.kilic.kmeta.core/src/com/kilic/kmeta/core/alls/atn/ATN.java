@@ -169,7 +169,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 
 		result.append("digraph finite_state_machine {\n");
 		result.append("  rankdir=S;\n");
-		result.append("  size=\"8,5\"\n");
+		result.append("  size=\"10\"\n");
 		result.append("node [shape = square];\n");
 		result.append("S" + startState.getKey() + ";\n");
 		result.append("node [shape = doublecircle];\n ");

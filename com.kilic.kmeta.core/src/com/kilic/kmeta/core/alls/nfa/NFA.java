@@ -40,6 +40,8 @@ public class NFA extends AutomatonBase<Integer, INFAEdge, NFAState> {
 				fromState = dfaStates.get(fromClosure);
 			} else {
 				fromState = result.createState();
+				if(result.getStartState()==null)
+					result.setStartState(fromState);
 				if (fromClosure.isFinal())
 					fromState.setType(StateType.FINAL);
 				dfaStates.put(fromClosure, fromState);
