@@ -114,33 +114,33 @@ public class ATNTests {
 		).setLabel("E");
 		// @formatter:on
 	}
-	
+
 	@Test
 	public void atnToNFATest() throws FileNotFoundException {
 		assertTrue(HexL.hasEquivalentNFA());
 		NFA HexLNFA = HexL.getEquivalentNFA();
-		Utils.dumpTNToFile(HexLNFA, desktopPath + "HexLNFA.graphviz" );
+		Utils.dumpTNToFile(HexLNFA, desktopPath + "HexLNFA.graphviz");
 		TokenDFA HexLDFA = HexLNFA.getEquivalentDFA();
-		Utils.dumpTNToFile(HexLDFA, desktopPath + "HexLDFA.graphviz" );
+		Utils.dumpTNToFile(HexLDFA, desktopPath + "HexLDFA.graphviz");
 	}
 
 	@Test
 	public void dfaReductionTest() throws FileNotFoundException {
 		HexL.reduceToTokenDFAEdge();
 		DecL.reduceToTokenDFAEdge();
-		Utils.dumpTNToFile(PrimE, 	desktopPath + "Prim_after_reduction.graphviz" );
+		Utils.dumpTNToFile(PrimE, desktopPath + "Prim_after_reduction.graphviz");
 	}
-	
+
 	@Test
 	public void atnTest() throws FileNotFoundException {
-		Utils.dumpTNToFile(E, 		desktopPath + "E.graphviz"		);
-		Utils.dumpTNToFile(AddE, 	desktopPath + "AddE.graphviz"	);
-		Utils.dumpTNToFile(MulE, 	desktopPath + "MulE.graphviz"	);
-		Utils.dumpTNToFile(PrimE, 	desktopPath + "PrimE.graphviz"	);
-		Utils.dumpTNToFile(ParenE, desktopPath + "ParenE.graphviz"	);
-		Utils.dumpTNToFile(HexL, 	desktopPath + "HexL.graphviz"	);
-		Utils.dumpTNToFile(DecL, 	desktopPath + "DecL.graphviz"	);
-		
+		Utils.dumpTNToFile(E, desktopPath + "E.graphviz");
+		Utils.dumpTNToFile(AddE, desktopPath + "AddE.graphviz");
+		Utils.dumpTNToFile(MulE, desktopPath + "MulE.graphviz");
+		Utils.dumpTNToFile(PrimE, desktopPath + "PrimE.graphviz");
+		Utils.dumpTNToFile(ParenE, desktopPath + "ParenE.graphviz");
+		Utils.dumpTNToFile(HexL, desktopPath + "HexL.graphviz");
+		Utils.dumpTNToFile(DecL, desktopPath + "DecL.graphviz");
+
 		ALLSParser parser = new ALLSParser();
 		IStream input = new StringStream("1+2*3*(4+5)");
 		parser.parse(E, input);

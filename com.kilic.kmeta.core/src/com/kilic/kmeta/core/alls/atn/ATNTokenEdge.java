@@ -17,7 +17,7 @@ public class ATNTokenEdge extends ATNEdgeBase {
 
 	@Override
 	public boolean moves(IStream input) {
-		return dfa.matches(input);
+		return dfa.lookAhead(input) != null;
 	}
 
 	@Override

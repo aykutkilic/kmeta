@@ -53,7 +53,13 @@ public class StringStream implements IStream {
 
 	@Override
 	public void seek(int pos) {
-		assert( pos<string.length() );
+		assert (pos < string.length());
 		this.pos = pos;
+	}
+
+	@Override
+	public void skip(int count) {
+		assert (pos + count < string.length());
+		this.pos += count;
 	}
 }
