@@ -40,12 +40,12 @@ public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
 		return nextEdge().getTo();
 	}
 	
-	public Set<ATNState> move(IStream input) {
-		Set<ATNState> result = new HashSet<>();
+	public Set<IATNEdge> move(IStream input) {
+		Set<IATNEdge> result = new HashSet<>();
 		
 		for( IATNEdge edge : out) {
 			if(edge.moves(input))
-				result.add((ATNState) edge.getTo());
+				result.add(edge);
 		}
 		
 		return result;

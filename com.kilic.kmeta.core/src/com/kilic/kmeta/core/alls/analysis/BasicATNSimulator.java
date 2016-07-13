@@ -148,8 +148,9 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			PredictionDFAState finalState = dfa.getFinalState(predictedEdge);
-			return null;
+			// we need the edges that led us here and get an intersection.
+			PredictionDFAState f = dfa.getFinalState(predictedEdge);
+			return f;
 		}
 		
 		return null;
@@ -167,8 +168,8 @@ public class BasicATNSimulator {
 			if (isStackSensitive)
 				return llPredict(atnState, g, offset);
 
-			if (d.getType() == StateType.FINAL)
-				return d.getDecisionEdge(); // i
+			if (next.getType() == StateType.FINAL)
+				return next.getDecisionEdge();
 
 			d = next;
 			input.nextChar();

@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.alls.analysis;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import com.kilic.kmeta.core.alls.atn.ATNState;
+import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.stream.IStream;
 
 public class ATNConfigSet extends HashSet<ATNConfig> {
@@ -18,7 +18,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 		while(i.hasNext()) {
 			ATNConfig c = i.next();
 
-			for(ATNState next : c.getState().move(input) ) {
+			for(IATNEdge next : c.getState().move(input) ) {
 				result.add(
 					new ATNConfig(
 						next,
