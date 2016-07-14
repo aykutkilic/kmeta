@@ -6,10 +6,7 @@ import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class DFA extends AutomatonBase<Integer, IDFAEdge, DFAState> {
-	public DFA() {
-		startState = createState();
-		startState.setType(StateType.START);
-	}
+	public DFA() {}
 	
 	public DFAState createState() {
 		DFAState newState = new DFAState(this);
@@ -31,6 +28,7 @@ public class DFA extends AutomatonBase<Integer, IDFAEdge, DFAState> {
 	
 	public static DFA createFromCharSet(CharSet charSet) {
 		DFA result = new DFA();
+		result.setStartState( result.createState() );
 		
 		DFAState finalState = result.createState();
 		finalState.setType(StateType.FINAL);
@@ -44,6 +42,7 @@ public class DFA extends AutomatonBase<Integer, IDFAEdge, DFAState> {
 		assert(string.length()>0);
 		
 		DFA result = new DFA();
+		result.setStartState( result.createState() );
 		
 		DFAState finalState = result.createState();
 		finalState.setType(StateType.FINAL);
@@ -60,5 +59,4 @@ public class DFA extends AutomatonBase<Integer, IDFAEdge, DFAState> {
 		result.toGraphviz();
 		return result;
 	}
-	
 }

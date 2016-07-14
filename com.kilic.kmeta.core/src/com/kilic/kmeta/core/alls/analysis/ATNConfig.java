@@ -4,22 +4,18 @@ import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 
 public class ATNConfig {
-	IATNEdge edge;
+	ATNState state;
 	IATNEdge alternative;
 	RegularCallStack callStack;
 
-	public ATNConfig(IATNEdge edge, IATNEdge alternative, RegularCallStack callStack) {
-		this.edge = edge;
+	public ATNConfig(ATNState state, IATNEdge alternative, RegularCallStack callStack) {
+		this.state = state;
 		this.alternative = alternative;
 		this.callStack = callStack;
 	}
 
-	public IATNEdge getEdge() {
-		return edge;
-	}
-	
 	public ATNState getState() {
-		return edge.getTo();
+		return state;
 	}
 
 	public IATNEdge getAlternative() {

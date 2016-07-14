@@ -8,6 +8,7 @@ import com.kilic.kmeta.core.alls.atn.ATNCallEdge;
 import com.kilic.kmeta.core.alls.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
+import com.kilic.kmeta.core.alls.discriminatordfa.DiscriminatorDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.alls.stream.IStream;
@@ -124,6 +125,9 @@ public class BasicATNSimulator {
 	PredictionDFAState target(PredictionDFAState d) {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
+		Set<IATNEdge> terminalEdges = d.getKey().getNextTerminalEdges();
+		DiscriminatorDFA.create(terminalEdges, input);
+		
 		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getKey());
 		if (newConfigSet.isEmpty()) {
 			// connect transition to error

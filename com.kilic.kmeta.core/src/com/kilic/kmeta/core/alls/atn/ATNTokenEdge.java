@@ -11,7 +11,7 @@ public class ATNTokenEdge extends ATNEdgeBase {
 		connect(from, to);
 	}
 
-	DFA getTokenDFA() {
+	public DFA getTokenDFA() {
 		return tokenDFA;
 	}
 

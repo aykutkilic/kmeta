@@ -5,7 +5,7 @@ import java.util.Collection;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
 
 public class TNUtils {
-	public static String toGraphviz(Collection<TransitionNetworkBase<?,?,?>> automatons) {
+	public static String toGraphviz(Collection<TransitionNetworkBase<?,?,?>> tns) {
 		StringBuilder result = new StringBuilder();
 		
 		result.append("digraph finite_state_machine {\n");
@@ -14,12 +14,11 @@ public class TNUtils {
 		
 		result.append("node [shape = square];\n");
 		boolean hasStartState = false;
-		for(TransitionNetworkBase<?, ?, ?> automaton : automatons) {
-			for(IState<?, ?> state : automaton.getStates()) {
-				if(state.getType()==StateType.START) {
-					result.append(" S" + state.getKey().toString());
-					hasStartState = true;
-				}
+		for(TransitionNetworkBase<?, ?, ?> tn : tns) {
+			IState<?, ?> startState = tn.getStartState();
+			if(startState != null) {
+				result.append(" S" + startState.getKey().toString());
+				hasStartState = true;
 			}
 		}
 		if(hasStartState)
@@ -27,8 +26,8 @@ public class TNUtils {
 		
 		result.append("node [shape = doublecircle];\n ");
 		boolean hasFinalState = false;
-		for(TransitionNetworkBase<?, ?, ?> automaton : automatons) {
-			for(IState<?, ?> state : automaton.getStates()) {
+		for(TransitionNetworkBase<?, ?, ?> tn : tns) {
+			for(IState<?, ?> state : tn.getStates()) {
 				if(state.getType()==StateType.FINAL) {
 					result.append(" S" + state.getKey().toString());
 					hasFinalState = true;
@@ -40,8 +39,8 @@ public class TNUtils {
 		
 		result.append("node [shape = circle];");
 		
-		for(TransitionNetworkBase<?, ?, ?> automaton : automatons) {
-			for(IState<?, ?> state : automaton.getStates()) {
+		for(TransitionNetworkBase<?, ?, ?> tn : tns) {
+			for(IState<?, ?> state : tn.getStates()) {
 				for ( IEdge<?> edge : state.getOut() ) {
 					result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
 							+ edge.getLabel() + "\" ];\n");
