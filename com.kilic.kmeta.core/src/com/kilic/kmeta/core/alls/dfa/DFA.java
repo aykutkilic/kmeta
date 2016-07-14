@@ -6,8 +6,9 @@ import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class DFA extends AutomatonBase<Integer, IDFAEdge, DFAState> {
-	public DFA() {}
-	
+	public DFA() {
+	}
+
 	public DFAState createState() {
 		DFAState newState = new DFAState(this);
 		states.put(newState.getKey(), newState);
@@ -25,38 +26,38 @@ public class DFA extends AutomatonBase<Integer, IDFAEdge, DFAState> {
 		input.seek(startPos);
 		return match;
 	}
-	
+
 	public static DFA createFromCharSet(CharSet charSet) {
 		DFA result = new DFA();
-		result.setStartState( result.createState() );
-		
+		result.setStartState(result.createState());
+
 		DFAState finalState = result.createState();
 		finalState.setType(StateType.FINAL);
-		
+
 		result.createCharSetEdge(result.getStartState(), finalState, charSet);
-		result.toGraphviz();
+
 		return result;
 	}
-	
+
 	public static DFA createFromString(String string) {
-		assert(string.length()>0);
-		
+		assert (string.length() > 0);
+
 		DFA result = new DFA();
-		result.setStartState( result.createState() );
-		
+		result.setStartState(result.createState());
+
 		DFAState finalState = result.createState();
 		finalState.setType(StateType.FINAL);
 		DFAState currentState = result.getStartState();
-		
+
 		for (int i = 0; i < string.length() - 1; i++) {
 			DFAState nextState = result.createState();
 			result.createCharSetEdge(currentState, nextState, new CharSet().addSingleton(string.charAt(i)));
 			currentState = nextState;
 		}
+
+		char lastChar = string.charAt(string.length() - 1);
+		result.createCharSetEdge(currentState, finalState, new CharSet().addSingleton(lastChar));
 		
-		char lastChar = string.charAt(string.length()-1);
-		result.createCharSetEdge(currentState, finalState,new CharSet().addSingleton(lastChar));
-		result.toGraphviz();
 		return result;
 	}
 }

@@ -8,7 +8,6 @@ import com.kilic.kmeta.core.alls.atn.ATNCallEdge;
 import com.kilic.kmeta.core.alls.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
-import com.kilic.kmeta.core.alls.discriminatordfa.DiscriminatorDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.alls.stream.IStream;
@@ -38,7 +37,7 @@ public class BasicATNSimulator {
 			PredictionDFA predictionDFA = new PredictionDFA();
 			atnState.setPredictionDFA(predictionDFA);
 
-			for( IATNEdge edge : atnState.getOut())
+			for (IATNEdge edge : atnState.getOut())
 				predictionDFA.createFinalState(edge);
 
 			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
@@ -55,7 +54,7 @@ public class BasicATNSimulator {
 
 	ATNConfigSet startState(ATNState atnState, RegularCallStack g) {
 		ATNConfigSet d0 = new ATNConfigSet();
-		
+
 		for (IATNEdge edge : atnState.getOut()) {
 			if (edge instanceof ATNCallEdge) {
 				ATNCallEdge callEdge = (ATNCallEdge) edge;
@@ -66,7 +65,7 @@ public class BasicATNSimulator {
 				d0.addAll(closure(new ATNConfig((ATNState) edge.getTo(), edge, g), null));
 			}
 		}
-		
+
 		return d0;
 	}
 
@@ -125,16 +124,19 @@ public class BasicATNSimulator {
 	PredictionDFAState target(PredictionDFAState d) {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
-		Set<IATNEdge> terminalEdges = d.getKey().getNextTerminalEdges();
-		DiscriminatorDFA ddfa = DiscriminatorDFA.create(terminalEdges, input);
+		Set<IATNEdge> matchingEdges = new HashSet<>();
+		for (IATNEdge te : d.getKey().getNextTerminalEdges()) {
+			if(te.moves(input))
+				matchingEdges.add(te);
+		}
+
+		// DiscriminatorDFA ddfa = DiscriminatorDFA.create(terminalEdges,
+		// input);
 		// ddfa will give the matching tokens. it can be more than one.
-		
+
 		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getKey());
 		if (newConfigSet.isEmpty()) {
-			// connect transition to error
-			// but how? there's no tokenization :/
-			// maybe I create a charset and add the char as a singleton
-			// but that'd also be computationally expensive
+			dfa.createEdge(d, dfa.getErrorState(), matchingEdges);
 			return dfa.getErrorState();
 		}
 
@@ -153,11 +155,11 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			// we need the edges that led us here and get an intersection.
 			PredictionDFAState f = dfa.getFinalState(predictedEdge);
+			dfa.createEdge(d, f, matchingEdges);
 			return f;
 		}
-		
+
 		return null;
 	}
 
@@ -167,7 +169,7 @@ public class BasicATNSimulator {
 			PredictionDFAState next = d.move(input);
 			if (next == null)
 				next = target(d);
-			if (next.getType()==StateType.ERROR)
+			if (next.getType() == StateType.ERROR)
 				return null; // error
 			boolean isStackSensitive = false;
 			if (isStackSensitive)

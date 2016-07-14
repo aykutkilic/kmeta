@@ -14,3 +14,4 @@ Export-Package: com.kilic.kmeta.core.alls.analysis,
  com.kilic.kmeta.core.alls.syntax,
  com.kilic.kmeta.core.meta,
  com.kilic.kmeta.core.util
+Import-Package: com.kilic.kmeta.core.alls.predictiondfa

@@ -3,11 +3,11 @@ package com.kilic.kmeta.core.alls.predictiondfa;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.kilic.kmeta.core.alls.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.automaton.AutomatonBase;
-import com.kilic.kmeta.core.alls.discriminatordfa.DiscriminatorDFA;
 
 public class PredictionDFA extends AutomatonBase<ATNConfigSet, IPredictionDFAEdge, PredictionDFAState> {
 	Map<IATNEdge, PredictionDFAState> finalStates;
@@ -32,8 +32,8 @@ public class PredictionDFA extends AutomatonBase<ATNConfigSet, IPredictionDFAEdg
 		return newState;
 	}
 
-	public PredictionDFADiscriminatorEdge createDiscriminatorEdge(PredictionDFAState from, PredictionDFAState to, DiscriminatorDFA dfa) {
-		return new PredictionDFADiscriminatorEdge(from, to, dfa);
+	public PredictionDFAEdge createEdge(PredictionDFAState from, PredictionDFAState to, Set<IATNEdge> matchingATNEdges) {
+		return new PredictionDFAEdge(from, to, matchingATNEdges);
 	}
 
 	public Collection<PredictionDFAState> getFinalStates() {
