@@ -126,7 +126,8 @@ public class BasicATNSimulator {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
 		Set<IATNEdge> terminalEdges = d.getKey().getNextTerminalEdges();
-		DiscriminatorDFA.create(terminalEdges, input);
+		DiscriminatorDFA ddfa = DiscriminatorDFA.create(terminalEdges, input);
+		// ddfa will give the matching tokens. it can be more than one.
 		
 		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getKey());
 		if (newConfigSet.isEmpty()) {
