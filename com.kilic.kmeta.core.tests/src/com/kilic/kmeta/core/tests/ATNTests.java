@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
+import com.kilic.kmeta.core.alls.dfa.DFA;
 import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
 import com.kilic.kmeta.core.alls.stream.IStream;
@@ -22,7 +23,6 @@ import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.alls.tn.TNUtils;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
-import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.util.CharSet;
 
@@ -78,7 +78,7 @@ public class ATNTests {
 		assertTrue(HexL.hasEquivalentNFA());
 		NFA HexLNFA = HexL.getEquivalentNFA();
 		Utils.dumpTNToFile(HexLNFA, desktopPath + "HexLNFA.graphviz");
-		TokenDFA HexLDFA = HexLNFA.getEquivalentDFA();
+		DFA HexLDFA = HexLNFA.getEquivalentDFA();
 		Utils.dumpTNToFile(HexLDFA, desktopPath + "HexLDFA.graphviz");
 	}
 

@@ -6,8 +6,8 @@ import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 
 public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>> extends TransitionNetworkBase<K,E,S> {
-	S startState;
-	S errorState;
+	protected S startState;
+	protected S errorState;
 	
 	protected AutomatonBase() {
 		super();

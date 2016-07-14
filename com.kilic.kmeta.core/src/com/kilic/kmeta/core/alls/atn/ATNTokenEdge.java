@@ -1,27 +1,27 @@
 package com.kilic.kmeta.core.alls.atn;
 
+import com.kilic.kmeta.core.alls.dfa.DFA;
 import com.kilic.kmeta.core.alls.stream.IStream;
-import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 
 public class ATNTokenEdge extends ATNEdgeBase {
-	TokenDFA dfa;
+	DFA tokenDFA;
 
-	ATNTokenEdge(ATNState from, ATNState to, TokenDFA dfa) {
-		this.dfa = dfa;
+	ATNTokenEdge(ATNState from, ATNState to, DFA dfa) {
+		this.tokenDFA = dfa;
 		connect(from, to);
 	}
 
-	TokenDFA getDFA() {
-		return dfa;
+	DFA getTokenDFA() {
+		return tokenDFA;
 	}
 
 	@Override
 	public boolean moves(IStream input) {
-		return dfa.lookAhead(input) != null;
+		return tokenDFA.lookAhead(input) != null;
 	}
 
 	@Override
 	public String getLabel() {
-		return dfa.getLabel();
+		return tokenDFA.getLabel();
 	}
 }

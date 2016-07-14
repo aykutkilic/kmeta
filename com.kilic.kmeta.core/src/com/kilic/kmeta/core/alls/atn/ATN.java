@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.kilic.kmeta.core.alls.dfa.DFA;
 import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.nfa.NFAState;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
-import com.kilic.kmeta.core.alls.tokendfa.TokenDFA;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
@@ -45,10 +45,16 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 
 	public ATNCharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
 		return new ATNCharSetEdge(from, to, charSet);
+		/*TokenDFA dfa = TokenDFA.createFromCharSet(charSet);
+		dfa.setLabel(charSet.toString());
+		return createTokenEdge(from, to, dfa);*/
 	}
 
 	public ATNStringEdge createStringEdge(ATNState from, ATNState to, String string) {
 		return new ATNStringEdge(from, to, string);
+		/*TokenDFA dfa = TokenDFA.createFromString(string);
+		dfa.setLabel(string);
+		return createTokenEdge(from,to,dfa);*/
 	}
 
 	public ATNCallEdge createCallEdge(ATNState from, ATNState to, ATN atn) {
@@ -63,7 +69,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		return new ATNMutatorEdge(from, to);
 	}
 
-	ATNTokenEdge createTokenEdge(ATNState from, ATNState to, TokenDFA dfa) {
+	ATNTokenEdge createTokenEdge(ATNState from, ATNState to, DFA dfa) {
 		return new ATNTokenEdge(from, to, dfa);
 	}
 
@@ -127,10 +133,10 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 
 					NFAState currentNFAFromState = nfaFromState;
 					for (int i = 0; i < string.length() - 1; i++) {
-						NFAState currentNFAToSTate = result.createState();
-						result.createCharSetEdge(currentNFAFromState, currentNFAToSTate,
+						NFAState currentNFAToState = result.createState();
+						result.createCharSetEdge(currentNFAFromState, currentNFAToState,
 								new CharSet().addSingleton(string.charAt(i)));
-						currentNFAFromState = currentNFAToSTate;
+						currentNFAFromState = currentNFAToState;
 					}
 
 					result.createCharSetEdge(currentNFAFromState, nfaToState,
@@ -151,7 +157,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		assert (hasEquivalentNFA());
 
 		NFA nfa = getEquivalentNFA();
-		TokenDFA dfa = nfa.getEquivalentDFA();
+		DFA dfa = nfa.getEquivalentDFA();
 		dfa.setLabel(getLabel()+"DFA");
 		
 		for (ATNCallEdge edge : callers) {
