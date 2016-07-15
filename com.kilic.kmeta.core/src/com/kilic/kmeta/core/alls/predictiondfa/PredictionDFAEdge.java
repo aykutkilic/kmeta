@@ -6,7 +6,7 @@ import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.EdgeBase;
 
-public class PredictionDFAEdge extends EdgeBase<PredictionDFAState> {
+public class PredictionDFAEdge extends EdgeBase<PredictionDFAState> implements IPredictionDFAEdge {
 	Set<IATNEdge> matchingATNEdges;
 	String label;
 

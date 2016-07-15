@@ -22,6 +22,7 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 public class ALLSParser {
 	public void parse(ATN atn, IStream input) {
 		ATNState p = atn.getStartState();
+		RegularCallStack callStack = new RegularCallStack();
 		ATNState oldp = p;
 
 		while (true) {
@@ -36,7 +37,7 @@ public class ALLSParser {
 					p = e.getTo();
 				} else if (e instanceof ATNCallEdge) {
 					ATNCallEdge ace = (ATNCallEdge) e;
-					// push q
+					callStack.push(e.getTo());
 					p = ace.getATN().getStartState();
 				} else if (e instanceof ATNMutatorEdge) {
 					ATNMutatorEdge ame = (ATNMutatorEdge) e;
@@ -56,7 +57,7 @@ public class ALLSParser {
 				}
 			} else if (p.isDecisionState()) {
 				BasicATNSimulator slas = new BasicATNSimulator(input);
-				IATNEdge predictedEdge = slas.adaptivePredict(p, new RegularCallStack());
+				IATNEdge predictedEdge = slas.adaptivePredict(p, callStack);
 				p = predictedEdge.getTo();
 			} else {
 				// error.
