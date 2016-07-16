@@ -13,7 +13,8 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 public class ATNConfigSet extends HashSet<ATNConfig> {
 	private static final long serialVersionUID = -4055740663032286654L;
 
-	public ATNConfigSet() {}
+	public ATNConfigSet() {
+	}
 
 	public ATNConfigSet move(IStream input) {
 		ATNConfigSet result = new ATNConfigSet();
@@ -22,8 +23,12 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 		while (i.hasNext()) {
 			ATNConfig c = i.next();
 
-			for (IATNEdge next : c.getState().move(input)) {
-				result.add(new ATNConfig(next.getTo(), c.getAlternative(), c.getCallStack()));
+			if (input.hasEnded() && c.getState().isFinalState()) {
+				result.add(c);
+			} else {
+				for (IATNEdge next : c.getState().move(input)) {
+					result.add(new ATNConfig(next.getTo(), c.getAlternative(), c.getCallStack()));
+				}
 			}
 		}
 

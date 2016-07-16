@@ -50,7 +50,7 @@ public class RegularCallStack {
 		int stateIndex = callStack.pop();
 		
 		ATNState result = states.get(stateIndex);
-		states.remove(stateIndex);
+		//states.remove(stateIndex);
 		
 		return result;
 	}

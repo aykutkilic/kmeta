@@ -7,6 +7,7 @@ public class StringStream implements IStream {
 
 	public StringStream(String string) {
 		this.string = string;
+		this.pos = 0;
 	}
 
 	@Override
@@ -53,7 +54,7 @@ public class StringStream implements IStream {
 
 	@Override
 	public void seek(int pos) {
-		assert (pos < string.length());
+		assert (pos <= string.length());
 		this.pos = pos;
 	}
 

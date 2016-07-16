@@ -93,7 +93,7 @@ public class ATNTests {
 		Utils.dumpTNsTofile(desktopPath + "Body.graphviz", Body, E, AddE, MulE, PrimE, ParenE);
 
 		ALLSParser parser = new ALLSParser();
-		IStream input = new StringStream("1+2*3*(4+5)");
+		IStream input = new StringStream("1+2*3*(4+5);");
 		parser.parse(Body, input);
 	}
 }

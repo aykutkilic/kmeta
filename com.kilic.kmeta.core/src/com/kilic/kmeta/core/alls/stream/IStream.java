@@ -2,8 +2,8 @@ package com.kilic.kmeta.core.alls.stream;
 
 public interface IStream {
 	int getPosition();
-	boolean hasEnded()
-	;
+	boolean hasEnded();
+	
 	void seek(int position);
 	void skip(int count);
 

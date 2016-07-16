@@ -9,7 +9,7 @@ public class EpsilonEdgeBase<S extends IState<?, ?>> extends EdgeBase<S> {
 	
 	@Override
 	public String getLabel() {
-		return "epsilon";
+		return new String("eps");
 	}
 
 	@Override
