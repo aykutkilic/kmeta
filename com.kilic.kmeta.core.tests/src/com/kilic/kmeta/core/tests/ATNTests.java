@@ -54,11 +54,11 @@ public class ATNTests {
 				.setLabel("PrimE");
 
 		Utils.createATNFromSyntax(MulE, new SequenceExpr(new ATNCallExpr(PrimE),
-				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("*"), new ATNCallExpr(MulE)))))
+				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("*"), new ATNCallExpr(PrimE)))))
 				.setLabel("MulE");
 
 		Utils.createATNFromSyntax(AddE, new SequenceExpr(new ATNCallExpr(MulE),
-				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("+"), new ATNCallExpr(AddE)))))
+				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("+"), new ATNCallExpr(MulE)))))
 				.setLabel("AddE");
 
 		Utils.createATNFromSyntax(E, new ATNCallExpr(AddE)).setLabel("E");

@@ -18,7 +18,7 @@ public class StringStream implements IStream {
 	}
 
 	@Override
-	public String getString(int length) {
+	public String nextString(int length) {
 		if (pos + length > string.length())
 			length = string.length() - pos;
 		String result = string.substring(pos, pos + length);

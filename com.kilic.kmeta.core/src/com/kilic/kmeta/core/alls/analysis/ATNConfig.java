@@ -25,6 +25,33 @@ public class ATNConfig {
 	public RegularCallStack getCallStack() {
 		return callStack;
 	}
+	
+	@Override
+	public int hashCode() {
+		return state.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(this == other)
+			return true;
+		
+		if(!(other instanceof ATNConfig))
+			return false;
+		
+		ATNConfig o = (ATNConfig)other;
+		
+		if(!state.equals(o.state))
+			return false;
+		
+		if(!alternative.equals(o.alternative))
+			return false;
+		
+		if(!callStack.equals(o.callStack))
+			return false;
+		
+		return true;
+	}
 
 	@Override
 	public String toString() {

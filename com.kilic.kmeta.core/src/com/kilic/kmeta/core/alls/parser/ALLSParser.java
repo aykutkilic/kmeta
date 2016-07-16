@@ -10,8 +10,11 @@ import com.kilic.kmeta.core.alls.atn.ATNMutatorEdge;
 import com.kilic.kmeta.core.alls.atn.ATNPredicateEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.ATNStringEdge;
+import com.kilic.kmeta.core.alls.atn.ATNTokenEdge;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
+import com.kilic.kmeta.core.alls.dfa.DFARunner;
 import com.kilic.kmeta.core.alls.stream.IStream;
+import com.kilic.kmeta.core.alls.tn.IState.StateType;
 
 /**
  * Algorithm from:
@@ -48,13 +51,26 @@ public class ALLSParser {
 					p = ape.getTo();
 				} else if (e instanceof ATNCharSetEdge) {
 					ATNCharSetEdge cse = (ATNCharSetEdge) e;
-					// if not match error
+					char c = input.nextChar();
+					System.out.println("matched charset <" + e.getLabel() + "> : " + c);
 					p = cse.getTo();
 				} else if (e instanceof ATNStringEdge) {
 					ATNStringEdge se = (ATNStringEdge) e;
-					// if not match error
+					String str = input.nextString(se.getString().length());
+					System.out.println("matched string <" + se.getLabel() + "> : " + str);
 					p = se.getTo();
+				} else if (e instanceof ATNTokenEdge) {
+					ATNTokenEdge te = (ATNTokenEdge) e;
+					DFARunner runner = new DFARunner(te.getTokenDFA());
+					System.out.println("matched token <" + te.getLabel() + "> :" + runner.match(input));
+					p = te.getTo();
 				}
+			} else if (p.isFinalState()) {
+				if( callStack.isEmpty() ) {
+					System.out.println("ERROR empty callstack");
+					return;
+				}
+				p = callStack.pop();
 			} else if (p.isDecisionState()) {
 				BasicATNSimulator slas = new BasicATNSimulator(input);
 				IATNEdge predictedEdge = slas.adaptivePredict(p, callStack);

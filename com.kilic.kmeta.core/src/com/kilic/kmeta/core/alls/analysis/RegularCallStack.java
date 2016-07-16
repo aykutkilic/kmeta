@@ -37,6 +37,10 @@ public class RegularCallStack {
 		return callStack.peek() == ANY_STACK;
 	}
 	
+	public boolean isEmpty() {
+		return callStack.isEmpty();
+	}
+	
 	public void push(ATNState state) {
 		callStack.push(state.getKey());
 		states.put(state.getKey(), state);
@@ -54,6 +58,24 @@ public class RegularCallStack {
 	public ATNState peek() {
 		if(callStack.isEmpty()) return null;
 		return states.get(callStack.peek());
+	}
+	
+	@Override
+	public int hashCode() {
+		return callStack.hashCode();
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(this == other)
+			return true;
+		
+		if(!(other instanceof RegularCallStack))
+			return false;
+		
+		RegularCallStack o = (RegularCallStack)other;
+		
+		return callStack.equals(o.callStack);
 	}
 	
 	@Override

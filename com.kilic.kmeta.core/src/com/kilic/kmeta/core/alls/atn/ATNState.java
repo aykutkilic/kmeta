@@ -22,6 +22,10 @@ public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
 		this.predictionDFA = predictionDFA;
 	}
 	
+	public boolean isFinalState() {
+		return type == StateType.FINAL;
+	}
+	
 	public boolean isDecisionState() {
 		return out.size()>1;
 	}

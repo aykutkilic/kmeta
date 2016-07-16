@@ -62,7 +62,8 @@ public class BasicATNSimulator {
 				pushedStack.push((ATNState) edge.getTo());
 				d0.addAll(closure(new ATNConfig(callEdge.getATN().getStartState(), edge, pushedStack), null));
 			} else if (edge instanceof ATNEpsilonEdge) {
-				d0.addAll(closure(new ATNConfig((ATNState) edge.getTo(), edge, g), null));
+				Set<ATNConfig> closure = closure(new ATNConfig((ATNState) edge.getTo(), edge, g), null);
+				d0.addAll(closure);
 			}
 		}
 
@@ -73,10 +74,11 @@ public class BasicATNSimulator {
 		if (history == null)
 			history = new HashSet<>();
 		else if (history.contains(config))
-			return null;
+			return new HashSet<ATNConfig>();
 
 		Set<ATNConfig> result = new HashSet<>();
 		result.add(config);
+		history.add(config);
 
 		if (config.getState().getType() == StateType.FINAL) {
 			// stack is SLL wildcard
@@ -84,8 +86,9 @@ public class BasicATNSimulator {
 				// get all returns of call for this type
 				ATN atn = (ATN) config.getState().getContainer();
 				for (ATNCallEdge edge : atn.getAllCallers()) {
-					result.addAll(closure(new ATNConfig(edge.getTo(), config.getAlternative(), config.getCallStack()),
-							history));
+					Set<ATNConfig> c = closure(
+							new ATNConfig(edge.getTo(), config.getAlternative(), config.getCallStack()), history);
+					result.addAll(c);
 				}
 			} else {
 				// nonempty SLL or LL stack
@@ -113,6 +116,8 @@ public class BasicATNSimulator {
 				}
 			}
 		}
+		
+		//System.out.println("closure of " + config + " = " + result);
 
 		return result;
 	}
@@ -126,7 +131,7 @@ public class BasicATNSimulator {
 
 		Set<IATNEdge> matchingEdges = new HashSet<>();
 		for (IATNEdge te : d.getKey().getNextTerminalEdges()) {
-			if(te.moves(input))
+			if (te.moves(input))
 				matchingEdges.add(te);
 		}
 
