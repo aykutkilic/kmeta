@@ -62,7 +62,7 @@ public class ATNTests {
 				.setLabel("AddE");
 
 		Utils.createATNFromSyntax(E, new ATNCallExpr(AddE)).setLabel("E");
-		
+
 		Utils.createATNFromSyntax(Body,
 				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new ATNCallExpr(E), new StringExpr(";"))))
 				.setLabel("Body");
@@ -93,7 +93,18 @@ public class ATNTests {
 		Utils.dumpTNsTofile(desktopPath + "Body.graphviz", Body, E, AddE, MulE, PrimE, ParenE);
 
 		ALLSParser parser = new ALLSParser();
-		IStream input = new StringStream("1+2*3*(4+5);");
-		parser.parse(Body, input);
+		StringBuilder inputString = new StringBuilder();
+
+		for (int s = 50; s < 2500; s+=50) {
+			for (int i = 0; i < s; i++)
+				inputString.append("1123981092839182398*2*3*4*5*6*7*8*9*10*11*12*13*14*15*16*17*18*19*20;");
+
+			IStream input = new StringStream(inputString.toString());
+			long start = System.nanoTime()/1000000;
+			parser.parse(Body, input);
+			long end = System.nanoTime()/1000000;
+			System.out.println("s:" + s + " t:" + (end - start));
+		}
+
 	}
 }
