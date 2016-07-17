@@ -116,8 +116,8 @@ public class BasicATNSimulator {
 				}
 			}
 		}
-		
-		//System.out.println("closure of " + config + " = " + result);
+
+		// System.out.println("closure of " + config + " = " + result);
 
 		return result;
 	}
@@ -139,8 +139,9 @@ public class BasicATNSimulator {
 		// input);
 		// ddfa will give the matching tokens. it can be more than one.
 
-		Set<ATNConfig> newConfigSet = getAllClosuresOfMove(d.getKey());
+		ATNConfigSet newConfigSet = getAllClosuresOfMove(d.getKey());
 		if (newConfigSet.isEmpty()) {
+			System.out.println("Error: " + input.toString() + " - "+ d.toString());
 			dfa.createEdge(d, dfa.getErrorState(), matchingEdges);
 			return dfa.getErrorState();
 		}
@@ -163,9 +164,11 @@ public class BasicATNSimulator {
 			PredictionDFAState f = dfa.getFinalState(predictedEdge);
 			dfa.createEdge(d, f, matchingEdges);
 			return f;
+		} else {
+			PredictionDFAState newState = dfa.createState(newConfigSet);
+			dfa.createEdge(d, newState, matchingEdges);
+			return newState;
 		}
-
-		return null;
 	}
 
 	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
@@ -201,9 +204,9 @@ public class BasicATNSimulator {
 		}
 	}
 
-	private Set<ATNConfig> getAllClosuresOfMove(ATNConfigSet d) {
+	private ATNConfigSet getAllClosuresOfMove(ATNConfigSet d) {
 		ATNConfigSet mv = d.move(input);
-		Set<ATNConfig> newConfigSet = new HashSet<>();
+		ATNConfigSet newConfigSet = new ATNConfigSet();
 		for (ATNConfig config : mv)
 			newConfigSet.addAll(closure(config, null));
 		return newConfigSet;

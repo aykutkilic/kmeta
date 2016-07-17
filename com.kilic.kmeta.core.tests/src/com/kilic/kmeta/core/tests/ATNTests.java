@@ -95,16 +95,17 @@ public class ATNTests {
 		ALLSParser parser = new ALLSParser();
 		StringBuilder inputString = new StringBuilder();
 
-		for (int s = 50; s < 2500; s+=50) {
-			for (int i = 0; i < s; i++)
-				inputString.append("1123981092839182398*2*3*4*5*6*7*8*9*10*11*12*13*14*15*16*17*18*19*20;");
-
+//		for (int s = 50; s < 2500; s+=50) {
+	//		for (int i = 0; i < s; i++)
+		//		inputString.append("1+2+3+4+5+6+7+8+9+0;");
+			int s=1;
+			inputString.append("0x0011");
 			IStream input = new StringStream(inputString.toString());
 			long start = System.nanoTime()/1000000;
 			parser.parse(Body, input);
 			long end = System.nanoTime()/1000000;
 			System.out.println("s:" + s + " t:" + (end - start));
-		}
+		//}
 
 	}
 }
