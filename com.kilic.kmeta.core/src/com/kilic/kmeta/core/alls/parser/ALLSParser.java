@@ -14,7 +14,6 @@ import com.kilic.kmeta.core.alls.atn.ATNTokenEdge;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.dfa.DFARunner;
 import com.kilic.kmeta.core.alls.stream.IStream;
-import com.kilic.kmeta.core.alls.tn.IState.StateType;
 
 /**
  * Algorithm from:

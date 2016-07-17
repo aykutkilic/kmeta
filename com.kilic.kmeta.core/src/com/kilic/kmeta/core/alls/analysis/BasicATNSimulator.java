@@ -35,6 +35,7 @@ public class BasicATNSimulator {
 
 		if (atnState.getPredictionDFA() == null) {
 			PredictionDFA predictionDFA = new PredictionDFA();
+			predictionDFA.setLabel("S" + atnState.getLabel() + "PDFA");
 			atnState.setPredictionDFA(predictionDFA);
 
 			for (IATNEdge edge : atnState.getOut())
@@ -122,7 +123,7 @@ public class BasicATNSimulator {
 		return result;
 	}
 
-	// critic decision is the definition of deterministic edges
+	// Critic decision is the definition of deterministic edges
 	// ATN edges are in form charset and string.
 	// I'm planning to add regex edges and a class that will compute
 	// the intersections of those so determinism is always preserved.
@@ -141,7 +142,7 @@ public class BasicATNSimulator {
 
 		ATNConfigSet newConfigSet = getAllClosuresOfMove(d.getKey());
 		if (newConfigSet.isEmpty()) {
-			System.out.println("Error: " + input.toString() + " - "+ d.toString());
+			System.out.println("Error: " + input.toString() + " - " + d.toString());
 			dfa.createEdge(d, dfa.getErrorState(), matchingEdges);
 			return dfa.getErrorState();
 		}
@@ -163,10 +164,12 @@ public class BasicATNSimulator {
 		if (predictionDone) {
 			PredictionDFAState f = dfa.getFinalState(predictedEdge);
 			dfa.createEdge(d, f, matchingEdges);
+			System.out.println(dfa.toString());
 			return f;
 		} else {
 			PredictionDFAState newState = dfa.createState(newConfigSet);
 			dfa.createEdge(d, newState, matchingEdges);
+			System.out.println(dfa.toString());
 			return newState;
 		}
 	}
