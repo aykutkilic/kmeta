@@ -21,8 +21,9 @@ public abstract class CharSetEdgeBase<S extends IState<?, ?>> extends EdgeBase<S
 	}
 
 	@Override
-	public boolean moves(IStream input) {
-		return charSet.containsSingleton(input.lookAheadChar(0));
+	public String match(IStream input) {
+		char c;
+		return charSet.containsSingleton(c = input.lookAheadChar(0)) ? String.valueOf(c) : null;
 	}
 
 	@Override

@@ -32,8 +32,8 @@ public class PredictionDFA extends AutomatonBase<ATNConfigSet, IPredictionDFAEdg
 		return newState;
 	}
 
-	public PredictionDFAEdge createEdge(PredictionDFAState from, PredictionDFAState to, Set<IATNEdge> matchingATNEdges) {
-		return new PredictionDFAEdge(from, to, matchingATNEdges);
+	public PredictionDFAEdge createEdge(PredictionDFAState from, PredictionDFAState to, IATNEdge matchingATNEdge) {
+		return new PredictionDFAEdge(from, to, matchingATNEdge);
 	}
 
 	public Collection<PredictionDFAState> getFinalStates() {

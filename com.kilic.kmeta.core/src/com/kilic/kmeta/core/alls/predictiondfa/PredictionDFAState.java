@@ -15,7 +15,7 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEd
 	
 	public PredictionDFAState move(IStream input) {
 		for (IPredictionDFAEdge edge : out) {
-			if (edge.moves(input))
+			if (edge.match(input) != null)
 				return edge.getTo();
 		}
 

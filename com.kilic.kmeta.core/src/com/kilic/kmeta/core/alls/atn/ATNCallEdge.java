@@ -24,7 +24,7 @@ public class ATNCallEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public boolean moves(IStream input) {
-		return false;
+	public String match(IStream input) {
+		return null;
 	}
 }

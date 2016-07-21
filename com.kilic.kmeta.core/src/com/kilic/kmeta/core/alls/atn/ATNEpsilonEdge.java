@@ -9,10 +9,10 @@ public class ATNEpsilonEdge extends EpsilonEdgeBase<ATNState> implements IATNEdg
 	}
 	
 	@Override
-	public boolean moves(IStream input) {
+	public String match(IStream input) {
 		if(input.hasEnded() && this.getTo().isFinalState())
-			return true;
+			return "";
 		
-		return super.moves(input);
+		return super.match(input);
 	}
 }

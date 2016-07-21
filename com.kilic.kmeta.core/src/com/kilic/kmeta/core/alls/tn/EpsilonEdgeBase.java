@@ -13,7 +13,7 @@ public class EpsilonEdgeBase<S extends IState<?, ?>> extends EdgeBase<S> {
 	}
 
 	@Override
-	public boolean moves(IStream input) {
-		return false;
+	public String match(IStream input) {
+		return null;
 	}
 }

@@ -21,8 +21,8 @@ public abstract class StringEdgeBase<S extends IState<?, ?>> extends EdgeBase<S>
 	}
 
 	@Override
-	public boolean moves(IStream input) {
-		return string.equals(input.lookAheadString(0, string.length()));
+	public String match(IStream input) {
+		return string.equals(input.lookAheadString(0, string.length())) ? string : null;
 	}
 
 	@Override

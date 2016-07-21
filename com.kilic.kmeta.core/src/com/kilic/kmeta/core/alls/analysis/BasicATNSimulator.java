@@ -41,7 +41,7 @@ public class BasicATNSimulator {
 			for (IATNEdge edge : atnState.getOut())
 				predictionDFA.createFinalState(edge);
 
-			ATNConfigSet configSet = startState(atnState, RegularCallStack.newAnyStack());
+			ATNConfigSet configSet = computePredictionDFAStartState(atnState, RegularCallStack.newAnyStack());
 			PredictionDFAState startState = predictionDFA.createState(configSet);
 			predictionDFA.setStartState(startState);
 		}
@@ -52,8 +52,41 @@ public class BasicATNSimulator {
 		input.seek(pos);
 		return result;
 	}
+	
+	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
+		PredictionDFAState d = d0;
+		while (true) {
+			PredictionDFAState next = d.move(input);
+			if (next == null)
+				next = target(d);
+			if (next.getType() == StateType.ERROR)
+				return null; // error
+			boolean isStackSensitive = false;
+			if (isStackSensitive)
+				return llPredict(atnState, g, offset);
 
-	ATNConfigSet startState(ATNState atnState, RegularCallStack g) {
+			if (next.getType() == StateType.FINAL)
+				return next.getDecisionEdge();
+
+			d = next;
+			input.nextChar();
+		}
+	}
+
+	IATNEdge llPredict(ATNState atnState, RegularCallStack g, int offset) {
+		ATNConfigSet acs = computePredictionDFAStartState(atnState, g);
+		while (true) {
+			Set<ATNConfig> newConfigSet = moveAndGetClosures(acs);
+
+			if (newConfigSet.isEmpty())
+				return null;
+
+			Set<Set<Integer>> altSets = getConflictSetsPerLoc(newConfigSet);
+			// if ambiguity report return min(x)
+		}
+	}
+
+	ATNConfigSet computePredictionDFAStartState(ATNState atnState, RegularCallStack g) {
 		ATNConfigSet d0 = new ATNConfigSet();
 
 		for (IATNEdge edge : atnState.getOut()) {
@@ -118,32 +151,27 @@ public class BasicATNSimulator {
 			}
 		}
 
-		// System.out.println("closure of " + config + " = " + result);
-
 		return result;
 	}
 
-	// Critic decision is the definition of deterministic edges
-	// ATN edges are in form charset and string.
-	// I'm planning to add regex edges and a class that will compute
-	// the intersections of those so determinism is always preserved.
 	PredictionDFAState target(PredictionDFAState d) {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
-		Set<IATNEdge> matchingEdges = new HashSet<>();
+		String longestMatch = "";
+		IATNEdge longestMatchingEdge = null;
 		for (IATNEdge te : d.getKey().getNextTerminalEdges()) {
-			if (te.moves(input))
-				matchingEdges.add(te);
+			String match = te.match(input);
+			
+			if (match!=null && match.length() > longestMatch.length()) {
+				longestMatch = match;
+				longestMatchingEdge = te;
+			}
 		}
 
-		// DiscriminatorDFA ddfa = DiscriminatorDFA.create(terminalEdges,
-		// input);
-		// ddfa will give the matching tokens. it can be more than one.
-
-		ATNConfigSet newConfigSet = getAllClosuresOfMove(d.getKey());
+		ATNConfigSet newConfigSet = moveAndGetClosures(d.getKey());
 		if (newConfigSet.isEmpty()) {
 			System.out.println("Error: " + input.toString() + " - " + d.toString());
-			dfa.createEdge(d, dfa.getErrorState(), matchingEdges);
+			dfa.createEdge(d, dfa.getErrorState(), longestMatchingEdge);
 			return dfa.getErrorState();
 		}
 
@@ -163,51 +191,18 @@ public class BasicATNSimulator {
 
 		if (predictionDone) {
 			PredictionDFAState f = dfa.getFinalState(predictedEdge);
-			dfa.createEdge(d, f, matchingEdges);
+			dfa.createEdge(d, f, longestMatchingEdge);
 			System.out.println(dfa.toString());
 			return f;
 		} else {
 			PredictionDFAState newState = dfa.createState(newConfigSet);
-			dfa.createEdge(d, newState, matchingEdges);
+			dfa.createEdge(d, newState, longestMatchingEdge);
 			System.out.println(dfa.toString());
 			return newState;
 		}
 	}
 
-	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
-		PredictionDFAState d = d0;
-		while (true) {
-			PredictionDFAState next = d.move(input);
-			if (next == null)
-				next = target(d);
-			if (next.getType() == StateType.ERROR)
-				return null; // error
-			boolean isStackSensitive = false;
-			if (isStackSensitive)
-				return llPredict(atnState, g, offset);
-
-			if (next.getType() == StateType.FINAL)
-				return next.getDecisionEdge();
-
-			d = next;
-			input.nextChar();
-		}
-	}
-
-	IATNEdge llPredict(ATNState atnState, RegularCallStack g, int offset) {
-		ATNConfigSet acs = startState(atnState, g);
-		while (true) {
-			Set<ATNConfig> newConfigSet = getAllClosuresOfMove(acs);
-
-			if (newConfigSet.isEmpty())
-				return null;
-
-			Set<Set<Integer>> altSets = getConflictSetsPerLoc(newConfigSet);
-			// if ambiguity report return min(x)
-		}
-	}
-
-	private ATNConfigSet getAllClosuresOfMove(ATNConfigSet d) {
+	private ATNConfigSet moveAndGetClosures(ATNConfigSet d) {
 		ATNConfigSet mv = d.move(input);
 		ATNConfigSet newConfigSet = new ATNConfigSet();
 		for (ATNConfig config : mv)

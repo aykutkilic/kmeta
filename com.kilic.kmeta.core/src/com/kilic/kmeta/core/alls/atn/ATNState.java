@@ -48,7 +48,7 @@ public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
 		Set<IATNEdge> result = new HashSet<>();
 
 		for (IATNEdge edge : out) {
-			if (edge.moves(input))
+			if (edge.match(input)!=null)
 				result.add(edge);
 		}
 

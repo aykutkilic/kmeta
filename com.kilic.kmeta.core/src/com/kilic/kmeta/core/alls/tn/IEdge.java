@@ -11,5 +11,5 @@ public interface IEdge<S extends IState<?,?>> extends ILabeled {
 	void connect(S from, S to);
 	void disconnect();
 	
-	boolean moves(IStream input);
+	String match(IStream input);
 }

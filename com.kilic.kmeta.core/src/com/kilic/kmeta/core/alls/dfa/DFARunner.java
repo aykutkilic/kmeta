@@ -42,7 +42,7 @@ public class DFARunner {
 			if (!input.hasEnded()) {
 				for (IDFAEdge edge : current.getOut()) {
 					if (edge instanceof DFACharSetEdge) {
-						if (edge.moves(input)) {
+						if (edge.match(input)!=null) {
 							result.append(input.nextChar());
 							current = edge.getTo();
 							hasMoved = true;
