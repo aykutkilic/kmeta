@@ -69,7 +69,6 @@ public class BasicATNSimulator {
 				return next.getDecisionEdge();
 
 			d = next;
-			input.nextChar();
 		}
 	}
 
@@ -193,11 +192,13 @@ public class BasicATNSimulator {
 			PredictionDFAState f = dfa.getFinalState(predictedEdge);
 			dfa.createEdge(d, f, longestMatchingEdge);
 			System.out.println(dfa.toString());
+			input.skip(longestMatch.length());
 			return f;
 		} else {
 			PredictionDFAState newState = dfa.createState(newConfigSet);
 			dfa.createEdge(d, newState, longestMatchingEdge);
 			System.out.println(dfa.toString());
+			input.skip(longestMatch.length());
 			return newState;
 		}
 	}

@@ -6,11 +6,14 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.StateBase;
 
 public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEdge, PredictionDFAState> {
+	public static int count = 0;
 	IATNEdge decisionEdge;
+	int index;
 
 	protected PredictionDFAState(PredictionDFA container, ATNConfigSet configSet) {
 		super(container, configSet);
 		type = StateType.REGULAR;
+		index = count++;
 	}
 	
 	public PredictionDFAState move(IStream input) {
@@ -29,5 +32,15 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEd
 	public void setFinal(IATNEdge decisionEdge) {
 		this.setType(StateType.FINAL);
 		this.decisionEdge = decisionEdge;
+	}
+	
+	@Override
+	public String getLabel() {
+		return "S" + index;
+	}
+	
+	@Override
+	public String toString() {
+		return getLabel();
 	}
 }

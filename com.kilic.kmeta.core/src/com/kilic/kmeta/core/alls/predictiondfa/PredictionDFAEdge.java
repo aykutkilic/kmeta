@@ -13,11 +13,11 @@ public class PredictionDFAEdge extends EdgeBase<PredictionDFAState> implements I
 		connect(from, to);
 		this.label = computeLabel();
 	}
-	
+
 	String computeLabel() {
 		return matchingATNEdge.getLabel();
 	}
-	
+
 	@Override
 	public String match(IStream input) {
 		return matchingATNEdge.match(input);
@@ -26,5 +26,10 @@ public class PredictionDFAEdge extends EdgeBase<PredictionDFAState> implements I
 	@Override
 	public String getLabel() {
 		return label;
+	}
+
+	@Override
+	public String toString() {
+		return getFrom().getLabel() + " -" + label + "-> " + getTo().getLabel();
 	}
 }

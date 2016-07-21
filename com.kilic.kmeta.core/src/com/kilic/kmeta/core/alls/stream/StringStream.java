@@ -60,7 +60,7 @@ public class StringStream implements IStream {
 
 	@Override
 	public void skip(int count) {
-		assert (pos + count < string.length());
+		assert (pos + count <= string.length());
 		this.pos += count;
 	}
 }
