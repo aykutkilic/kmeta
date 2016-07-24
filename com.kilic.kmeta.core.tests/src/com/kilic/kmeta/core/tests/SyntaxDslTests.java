@@ -92,8 +92,8 @@ public class SyntaxDslTests {
 				new ATNCallExpr(StrL),
 				new ATNCallExpr(RuleRefL)
 			)
-
-				).setLabel("PrimE");
+		).setLabel("PrimE");
+		
 		Utils.createATNFromSyntax(AltE, 
 			new SequenceExpr(
 				new ATNCallExpr(PrimE),

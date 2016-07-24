@@ -126,11 +126,10 @@ public class CharRange {
 	public boolean isUnifiable(CharRange other) {
 		return isAdjacent(other) || !getIntersection(other).isEmpty();
 	}
-	
-	
+
 	@Override
 	public int hashCode() {
-		return start*0x10000 + end;
+		return start * 0x10000 + end;
 	}
 
 	/**
@@ -154,8 +153,15 @@ public class CharRange {
 			return new String(new char[] { 238 });
 
 		if (isSingleton())
-			return new String(new char[] { start });
+			return new String(new char[] { safeChar(start) });
+		
+		return new String(new char[] { safeChar(start), '-', safeChar(end) });
+	}
 
-		return new String(new char[] { start, '-', end });
+	private char safeChar(char input) {
+		if (input < 0x20 || input > 253)
+			return '?';
+
+		return input;
 	}
 }
