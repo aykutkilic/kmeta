@@ -15,6 +15,8 @@ public class CharSet {
 	public static CharSet HEX = new CharSet().addRange(new CharRange('0', '9')).addRange(new CharRange('a', 'f'))
 			.addRange(new CharRange('A', 'F'));
 
+	public static CharSet ANY = new CharSet().addRange(new CharRange((char) 0x00, (char) 0xFF));
+
 	public CharSet() {
 	}
 
@@ -25,18 +27,18 @@ public class CharSet {
 	}
 
 	public CharSet addSingleton(char... singletons) {
-		for( char singleton : singletons )
+		for (char singleton : singletons)
 			ranges.add(new CharRange(singleton));
-		
+
 		simplifyRanges();
 		return this;
 	}
-	
+
 	public boolean isEmpty() {
-		for(CharRange r : ranges)
-			if(!r.isEmpty())
+		for (CharRange r : ranges)
+			if (!r.isEmpty())
 				return false;
-		
+
 		return true;
 	}
 
@@ -136,7 +138,7 @@ public class CharSet {
 
 		return false;
 	}
-	
+
 	public boolean containsSingleton(char singleton) {
 		for (CharRange r : ranges) {
 			if (r.containsSingleton(singleton))
@@ -145,38 +147,38 @@ public class CharSet {
 
 		return false;
 	}
-	
-	public static Set<CharSet> getDistinctCharSets(Set<CharSet> charSets){
+
+	public static Set<CharSet> getDistinctCharSets(Set<CharSet> charSets) {
 		Set<CharSet> result = new HashSet<>();
-		
-		for( CharSet cs : charSets) {
-			if(result.isEmpty()) {
+
+		for (CharSet cs : charSets) {
+			if (result.isEmpty()) {
 				result.add(cs);
 				continue;
 			}
-			
-			for( CharSet dcs : new HashSet<>(result) ) {
-				if(dcs.equals(cs))
+
+			for (CharSet dcs : new HashSet<>(result)) {
+				if (dcs.equals(cs))
 					continue;
-				
+
 				CharSet intersection = dcs.getInstersection(cs);
-				
-				if(intersection.isEmpty()) {
+
+				if (intersection.isEmpty()) {
 					result.add(cs);
 				} else {
 					result.remove(dcs);
-					
+
 					CharSet dcsMinusCs = dcs.getSubtraction(cs);
-					if(!dcsMinusCs.isEmpty())
+					if (!dcsMinusCs.isEmpty())
 						result.add(dcsMinusCs);
-					
+
 					result.add(intersection);
-					
+
 					cs = cs.getSubtraction(dcs);
 				}
 			}
 		}
-		
+
 		return result;
 	}
 
@@ -184,7 +186,7 @@ public class CharSet {
 	public int hashCode() {
 		return this.ranges.hashCode();
 	}
-	
+
 	@Override
 	public boolean equals(Object other) {
 		if (other instanceof CharSet)

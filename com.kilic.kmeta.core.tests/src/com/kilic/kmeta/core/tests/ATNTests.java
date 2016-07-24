@@ -40,32 +40,74 @@ public class ATNTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
 
 		// @formatter:off
-		Utils.createATNFromSyntax(DecL, new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.DEC)))
-				.setLabel("DecL");
+		Utils.createATNFromSyntax(DecL, 
+			new MultiplicityExpr(Multiplicity.ONEORMORE, 
+				new CharSetExpr(CharSet.DEC)
+			)
+		).setLabel("DecL");
 
-		Utils.createATNFromSyntax(HexL, new SequenceExpr(new StringExpr("0x"),
-				new MultiplicityExpr(Multiplicity.ONEORMORE, new CharSetExpr(CharSet.HEX)))).setLabel("HexL");
+		Utils.createATNFromSyntax(HexL, 
+			new SequenceExpr(
+				new StringExpr("0x"),
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.HEX)
+				)
+			)
+		).setLabel("HexL");
 
 		Utils.createATNFromSyntax(ParenE,
-				new SequenceExpr(new StringExpr("("), new ATNCallExpr(E), new StringExpr(")"))).setLabel("ParenE");
+			new SequenceExpr(
+				new StringExpr("("), 
+				new ATNCallExpr(E), 
+				new StringExpr(")")
+			)
+		).setLabel("ParenE");
 
 		Utils.createATNFromSyntax(PrimE,
-				new AlternativeExpr(new ATNCallExpr(DecL), new ATNCallExpr(HexL), new ATNCallExpr(ParenE)))
-				.setLabel("PrimE");
+			new AlternativeExpr(
+				new ATNCallExpr(DecL), 
+				new ATNCallExpr(HexL), 
+				new ATNCallExpr(ParenE)
+			)
+		).setLabel("PrimE");
 
-		Utils.createATNFromSyntax(MulE, new SequenceExpr(new ATNCallExpr(PrimE),
-				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("*"), new ATNCallExpr(PrimE)))))
-				.setLabel("MulE");
+		Utils.createATNFromSyntax(MulE, 
+			new SequenceExpr(
+				new ATNCallExpr(PrimE),
+				new MultiplicityExpr(Multiplicity.ANY, 
+					new SequenceExpr(
+						new StringExpr("*"), 
+						new ATNCallExpr(PrimE)
+					)
+				)
+			)
+		).setLabel("MulE");
 
-		Utils.createATNFromSyntax(AddE, new SequenceExpr(new ATNCallExpr(MulE),
-				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new StringExpr("+"), new ATNCallExpr(MulE)))))
-				.setLabel("AddE");
+		Utils.createATNFromSyntax(AddE, 
+			new SequenceExpr(
+				new ATNCallExpr(MulE),
+				new MultiplicityExpr(Multiplicity.ANY, 
+					new SequenceExpr(
+						new StringExpr("+"), 
+						new ATNCallExpr(MulE)
+					)
+				)
+			)
+		).setLabel("AddE");
 
-		Utils.createATNFromSyntax(E, new ATNCallExpr(AddE)).setLabel("E");
+		Utils.createATNFromSyntax(E, 
+			new ATNCallExpr(AddE)
+		).setLabel("E");
 
 		Utils.createATNFromSyntax(Body,
-				new MultiplicityExpr(Multiplicity.ANY, new SequenceExpr(new ATNCallExpr(E), new StringExpr(";"))))
-				.setLabel("Body");
+			new MultiplicityExpr(Multiplicity.ANY, 
+				new SequenceExpr(
+					new ATNCallExpr(E), 
+					new StringExpr(";")
+				)
+			)
+		).setLabel("Body");
+		
 		// @formatter:on
 	}
 
@@ -95,17 +137,17 @@ public class ATNTests {
 		ALLSParser parser = new ALLSParser();
 		StringBuilder inputString = new StringBuilder();
 
-//		for (int s = 50; s < 2500; s+=50) {
-	//		for (int i = 0; i < s; i++)
-		//		inputString.append("1+2+3+4+5+6+7+8+9+0;");
-			int s=1;
-			inputString.append("0x0011+1;");
-			IStream input = new StringStream(inputString.toString());
-			long start = System.nanoTime()/1000000;
-			parser.parse(Body, input);
-			long end = System.nanoTime()/1000000;
-			System.out.println("s:" + s + " t:" + (end - start));
-		//}
+		// for (int s = 50; s < 2500; s+=50) {
+		// for (int i = 0; i < s; i++)
+		// inputString.append("1+2+3+4+5+6+7+8+9+0;");
+		int s = 1;
+		inputString.append("0x0011+1;");
+		IStream input = new StringStream(inputString.toString());
+		long start = System.nanoTime() / 1000000;
+		parser.parse(Body, input);
+		long end = System.nanoTime() / 1000000;
+		System.out.println("s:" + s + " t:" + (end - start));
+		// }
 
 	}
 }
