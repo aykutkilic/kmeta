@@ -154,7 +154,10 @@ public class CharRange {
 
 		if (isSingleton())
 			return new String(new char[] { safeChar(start) });
-		
+
+		if (start == 0x00 && end == 0xFF)
+			return "any";
+
 		return new String(new char[] { safeChar(start), '-', safeChar(end) });
 	}
 

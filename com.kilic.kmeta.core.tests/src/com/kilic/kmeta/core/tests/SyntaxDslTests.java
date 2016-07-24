@@ -10,6 +10,7 @@ import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
 import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
 import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
+import com.kilic.kmeta.core.alls.syntax.SeparatorExpr;
 import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -27,6 +28,7 @@ public class SyntaxDslTests {
 
 	ATN PrimE = new ATN();
 
+	ATN NotE = new ATN();
 	ATN CharSetE = new ATN();
 	ATN ParenE = new ATN();
 	ATN StrL = new ATN();
@@ -34,7 +36,9 @@ public class SyntaxDslTests {
 
 	ATN CharRangeL = new ATN();
 	ATN ID = new ATN();
-
+	
+	String grammar;
+	
 	@Before
 	public void init() {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
@@ -68,11 +72,22 @@ public class SyntaxDslTests {
 			)
 		).setLabel("CharRangeL");
 		
+		Utils.createATNFromSyntax(NotE, 
+			new SequenceExpr(
+				new StringExpr("~"),
+				new ATNCallExpr(CharSetE)
+			)
+		).setLabel("NotE");
+		
 		Utils.createATNFromSyntax(CharSetE, 
 			new SequenceExpr(
 				new StringExpr("["),
-				new MultiplicityExpr(Multiplicity.ONEORMORE, 
-					new ATNCallExpr(CharRangeL)
+				new SeparatorExpr(
+					new AlternativeExpr(
+						new CharSetExpr(CharSet.ANY),
+						new ATNCallExpr(CharRangeL)
+					), 
+					","
 				),
 				new StringExpr("]")
 			)
@@ -89,6 +104,7 @@ public class SyntaxDslTests {
 		Utils.createATNFromSyntax(PrimE,
 			new AlternativeExpr(
 				new ATNCallExpr(ParenE),
+				new ATNCallExpr(NotE),
 				new ATNCallExpr(CharSetE),
 				new ATNCallExpr(StrL),
 				new ATNCallExpr(RuleRefL)
@@ -139,20 +155,18 @@ public class SyntaxDslTests {
 			)
 		).setLabel("Grammar");
 	
-		/* Grammar: Rule+;
-		 * Rule: ID ':' E ';';
-		 * E: AltE;
-		 * AltE: MulE+ ( '|' MulE+ )*;
-		 * MulE: PrimE [+*]?;
-		 * PrimE: ParenE | CharSetE | StrL | RuleRefL;
-		 * ParenE: '(' E ')';
-		 * CharSetE: '[' CharRangeL+ ']';
-		 * RuleRefL: ID;
-		 * StrL: '\'' ~'\'' '\''
-		 * CharRangeL: . '-' .;
-		 * ID: LETTER+;
-		 */
-		
+		grammar = "Grammar: Rule+;" +
+				  "Rule: ID ':' E ';';" +
+				  "E: AltE;" +
+				  "AltE: MulE+ ( '|' MulE+ )*;" +
+				  "MulE: PrimE [+,*]?;" +
+				  "PrimE: ParenE | NotE | CharSetE | StrL | RuleRefL;" +
+				  "ParenE: '(' E ')';"+
+				  "CharSetE: '[' (. | CharRangeL)+\',' ']';"+
+				  "RuleRefL: ID;"+
+				  "StrL: ['] ~[']+ [']"+
+				  "CharRangeL: . '-' .;"+
+				  "ID: LETTER+;";
 		// @formatter:on
 	}
 
@@ -161,7 +175,7 @@ public class SyntaxDslTests {
 		ID.reduceToTokenDFAEdge();
 		CharRangeL.reduceToTokenDFAEdge();
 
-		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, MulE, AltE, PrimE, CharSetE, ParenE,
+		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, MulE, AltE, PrimE, NotE, CharSetE, ParenE,
 				StrL, RuleRefL);
 	}
 
