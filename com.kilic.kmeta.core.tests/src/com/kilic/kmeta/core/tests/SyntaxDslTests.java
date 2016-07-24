@@ -17,20 +17,21 @@ import com.kilic.kmeta.core.util.CharSet;
 
 public class SyntaxDslTests {
 	String desktopPath;
-	
+
 	ATN Grammar = new ATN();
 	ATN Rule = new ATN();
 	ATN E = new ATN();
+
 	ATN MulE = new ATN();
 	ATN AltE = new ATN();
-	
+
 	ATN PrimE = new ATN();
-	
+
 	ATN CharSetE = new ATN();
 	ATN ParenE = new ATN();
 	ATN StrL = new ATN();
 	ATN RuleRefL = new ATN();
-	
+
 	ATN CharRangeL = new ATN();
 	ATN ID = new ATN();
 
@@ -94,29 +95,33 @@ public class SyntaxDslTests {
 			)
 		).setLabel("PrimE");
 		
-		Utils.createATNFromSyntax(AltE, 
-			new SequenceExpr(
-				new ATNCallExpr(PrimE),
-				new MultiplicityExpr(Multiplicity.ANY, 
-					new SequenceExpr(
-						new StringExpr("|"), 
-						new ATNCallExpr(E)
-					)
-				)
-			)
-		).setLabel("AltE");
-		
 		Utils.createATNFromSyntax(MulE,
 			new SequenceExpr(
-				new ATNCallExpr(AltE),
+				new ATNCallExpr(PrimE),
 				new MultiplicityExpr(Multiplicity.OPTIONAL,
 					new CharSetExpr(new CharSet().addSingleton('+').addSingleton('*'))
 				)
 			)
 		).setLabel("MulE");
 		
+		Utils.createATNFromSyntax(AltE, 
+			new SequenceExpr(
+				new MultiplicityExpr(Multiplicity.ONEORMORE,
+					new ATNCallExpr(MulE)
+				),
+				new MultiplicityExpr(Multiplicity.ANY, 
+					new SequenceExpr(
+						new StringExpr("|"), 
+						new MultiplicityExpr(Multiplicity.ONEORMORE,
+							new ATNCallExpr(MulE)
+						)
+					)
+				)
+			)
+		).setLabel("AltE");
+		
 		Utils.createATNFromSyntax(E,
-			new ATNCallExpr(MulE)
+			new ATNCallExpr(AltE)
 		).setLabel("E");
 		
 		Utils.createATNFromSyntax(Rule,
@@ -133,17 +138,31 @@ public class SyntaxDslTests {
 				new ATNCallExpr(Rule)
 			)
 		).setLabel("Grammar");
+	
+		/* Grammar: Rule+;
+		 * Rule: ID ':' E ';';
+		 * E: AltE;
+		 * AltE: MulE+ ( '|' MulE+ )*;
+		 * MulE: PrimE [+*]?;
+		 * PrimE: ParenE | CharSetE | StrL | RuleRefL;
+		 * ParenE: '(' E ')';
+		 * CharSetE: '[' CharRangeL+ ']';
+		 * RuleRefL: ID;
+		 * StrL: '\'' ~'\'' '\''
+		 * CharRangeL: . '-' .;
+		 * ID: LETTER+;
+		 */
 		
 		// @formatter:on
 	}
-	
-	
+
 	@Test
 	public void atnTest() throws FileNotFoundException {
 		ID.reduceToTokenDFAEdge();
 		CharRangeL.reduceToTokenDFAEdge();
 
-		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, MulE, AltE, PrimE, CharSetE, ParenE, StrL, RuleRefL);
+		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, MulE, AltE, PrimE, CharSetE, ParenE,
+				StrL, RuleRefL);
 	}
 
 }
