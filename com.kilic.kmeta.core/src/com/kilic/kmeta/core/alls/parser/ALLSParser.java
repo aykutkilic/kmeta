@@ -35,8 +35,8 @@ public class ALLSParser {
 			if (p.hasNext()) {
 				IATNEdge e = p.nextEdge();
 
-				System.out.println( "Applying " + p.toString() +  " edge " + e.toString());
-				
+				System.out.println("Applying " + p.toString() + " edge " + e.toString());
+
 				if (e instanceof ATNEpsilonEdge) {
 					p = e.getTo();
 				} else if (e instanceof ATNCallEdge) {
@@ -68,10 +68,10 @@ public class ALLSParser {
 					System.out.println("matched token <" + te.getLabel() + "> :" + match);
 					p = te.getTo();
 				}
-				
+
 				System.out.println(" new p=" + p);
 			} else if (p.isFinalState()) {
-				if( callStack.isEmpty() ) {
+				if (callStack.isEmpty()) {
 					System.out.println("ERROR empty callstack");
 					return;
 				}
@@ -80,6 +80,7 @@ public class ALLSParser {
 				p = callStack.pop();
 				System.out.println("returned to " + p);
 			} else if (p.isDecisionState()) {
+				System.out.println("Making prediction " + p + " " + input.lookAheadString(0, 5));
 				BasicATNSimulator slas = new BasicATNSimulator(input);
 				IATNEdge predictedEdge = slas.adaptivePredict(p, callStack);
 				p = predictedEdge.getTo();
@@ -89,7 +90,7 @@ public class ALLSParser {
 				return;
 			}
 
-			assert (p!=null && p != oldp);
+			assert (p != null && p != oldp);
 			oldp = p;
 		}
 	}

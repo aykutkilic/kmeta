@@ -40,7 +40,8 @@ public class DelimiterExpr implements ISyntaxExpr {
 
 		ATNState exprStartState = atn.createState();
 		ATNState exprEndState = atn.createState();
-		ATNState afterSepState = atn.createState();
+		ATNState preDelimState = atn.createState();
+		ATNState afterDelimState = atn.createState();
 
 		atn.createEpsilonEdge(sourceState, exprStartState);
 		atn.createEpsilonEdge(exprEndState, targetState);
@@ -49,8 +50,9 @@ public class DelimiterExpr implements ISyntaxExpr {
 			atn.createEpsilonEdge(exprStartState, targetState);
 
 		expr.appendToATN(atn, exprStartState, exprEndState);
-		atn.createStringEdge(exprEndState, afterSepState, delimiter);
-		expr.appendToATN(atn, afterSepState, exprEndState);
+		atn.createEpsilonEdge(exprEndState, preDelimState);
+		atn.createStringEdge(preDelimState, afterDelimState, delimiter);
+		expr.appendToATN(atn, afterDelimState, exprEndState);
 
 		return targetState;
 	}

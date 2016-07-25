@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.dfa.DFA;
+import com.kilic.kmeta.core.alls.parser.ALLSParser;
+import com.kilic.kmeta.core.alls.stream.StringStream;
 import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
 import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
@@ -113,7 +115,7 @@ public class SyntaxDslTests {
 			new SequenceExpr(
 				new ATNCallExpr(PrimE),
 				new MultiplicityExpr(Multiplicity.OPTIONAL,
-					new CharSetExpr(new CharSet().addSingleton('+').addSingleton('*'))
+					new CharSetExpr(new CharSet().addSingleton('?').addSingleton('+').addSingleton('*'))
 				)
 			)
 		).setLabel("MulE");
@@ -170,13 +172,13 @@ public class SyntaxDslTests {
 				  "E: AltE;" +
 				  "AltE: DelimE+ ( '|' DelimE+ )*;" +
 				  "DelimE: MulE ('/' StrL)?;" +
-				  "MulE: PrimE [+,*]?;" +
+				  "MulE: PrimE [?,+,*]?;" +
 				  "PrimE: ParenE | NotE | CharSetE | StrL | ID;" +
 				  "ParenE: '(' E ')';" +
 				  "NotE: '~' CharSetE;" +
-				  "CharSetE: '[' (. | CharRangeL)+\',' ']';" +
+				  "CharSetE: '[' ([.] | CharRangeL)+/',' ']';" +
 				  "StrL: ['] ~[']+ [']" +
-				  "CharRangeL: . '-' .;" +
+				  "CharRangeL: [.] '-' [.];" +
 				  "ID: LETTER+;";
 		// @formatter:on
 	}
@@ -188,7 +190,10 @@ public class SyntaxDslTests {
 		DFA charRangeLDfa = CharRangeL.reduceToTokenDFAEdge();
 
 		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE,
-				CharSetE, idDfa, strLDfa, charRangeLDfa);
+				CharSetE, strLDfa, charRangeLDfa, idDfa);
+		
+		ALLSParser parser = new ALLSParser();
+		String grammarWithNoSpaces = grammar.replace(" ", "");
+		parser.parse(Grammar, new StringStream(grammarWithNoSpaces));
 	}
-
 }
