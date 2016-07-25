@@ -195,16 +195,17 @@ public class SyntaxDslTests {
 		ALLSParser parser = new ALLSParser();
 		String grammarWithNoSpaces = grammar.replace(" ", "");
 
-		for (int s = 1; s <= 101; s += 5) {
-			long start = System.nanoTime() / 1000000;
-			for (int i = 0; i < s; i++) {
-				parser.parse(Grammar, new StringStream(grammarWithNoSpaces));
-			}
-			long end = System.nanoTime() / 1000000;
-			long dt = end - start;
-			double avg = 1000.0 * (double) dt / (double) (s * grammar.length());
-			System.out.println("s:" + s + " t:" + dt + " len:" + grammar.length() + " avg:" + avg + "ms/c");
-		}
+		// for (int s = 1; s <= 101; s += 5) {
+		// long start = System.nanoTime() / 1000000;
+		// for (int i = 0; i < s; i++) {
+		parser.parse(Grammar, new StringStream(grammarWithNoSpaces));
+		// }
+		// long end = System.nanoTime() / 1000000;
+		// long dt = end - start;
+		// double avg = 1000.0 * (double) dt / (double) (s * grammar.length());
+		// System.out.println("s:" + s + " t:" + dt + " len:" + grammar.length()
+		// + " avg:" + avg + "ms/c");
+		// }
 
 	}
 }
