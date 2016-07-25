@@ -36,7 +36,7 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEd
 	
 	@Override
 	public String getLabel() {
-		return "S" + index;
+		return String.valueOf(index);
 	}
 	
 	@Override

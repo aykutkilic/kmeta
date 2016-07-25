@@ -5,6 +5,7 @@ public class IntegerKeyedState<E extends IEdge<?>, S extends IState<Integer,?>> 
 
 	protected IntegerKeyedState(ITransitionNetwork<Integer, S> container) {
 		super(container, stateIndexCounter++);
+		label = String.valueOf(key);
 	}
 	
 	@Override

@@ -3,7 +3,6 @@ package com.kilic.kmeta.core.alls.predictiondfa;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import com.kilic.kmeta.core.alls.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;

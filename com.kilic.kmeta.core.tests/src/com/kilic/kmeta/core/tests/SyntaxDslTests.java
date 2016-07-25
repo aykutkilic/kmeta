@@ -177,7 +177,7 @@ public class SyntaxDslTests {
 				  "ParenE: '(' E ')';" +
 				  "NotE: '~' CharSetE;" +
 				  "CharSetE: '[' ([.] | CharRangeL)+/',' ']';" +
-				  "StrL: ['] ~[']+ [']" +
+				  "StrL: ['] ~[']+ ['];" +
 				  "CharRangeL: [.] '-' [.];" +
 				  "ID: LETTER+;";
 		// @formatter:on

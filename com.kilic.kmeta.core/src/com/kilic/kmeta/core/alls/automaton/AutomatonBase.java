@@ -51,13 +51,13 @@ public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>>
 		result.append("  size=\"8,5\"\n");
 		result.append("node [shape = square];\n");
 		if(startState!=null)
-			result.append("S" + startState.getKey().toString() + ";\n"); 
+			result.append("S" + startState.getLabel() + ";\n"); 
 		result.append("node [shape = doublecircle];\n ");
 
 		boolean hasFinalState = false;
 		for ( S s : states.values() ) {
 			if(s.getType() == StateType.FINAL) { 
-				result.append("S" + s.getKey() + " ");
+				result.append("S" + s.getLabel() + " ");
 				hasFinalState = true;
 			}
 		}
@@ -68,7 +68,7 @@ public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>>
 		result.append("node [shape = circle];");
 		for (S state : states.values()) {
 			for ( E edge : state.getOut() ) {
-				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \""
+				result.append("S" + state.getLabel() + " -> S" + edge.getTo().getLabel() + " [ label = \""
 						+ edge.getLabel() + "\" ];\n");
 			}
 		}

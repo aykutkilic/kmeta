@@ -38,8 +38,8 @@ public class BasicATNSimulator {
 			predictionDFA.setLabel("S" + atnState.getLabel() + "PDFA");
 			atnState.setPredictionDFA(predictionDFA);
 
-			for (IATNEdge edge : atnState.getOut())
-				predictionDFA.createFinalState(edge);
+			//for (IATNEdge edge : atnState.getOut())
+			//	predictionDFA.createFinalState(edge);
 
 			ATNConfigSet configSet = computePredictionDFAStartState(atnState, RegularCallStack.newAnyStack());
 			PredictionDFAState startState = predictionDFA.createState(configSet);
@@ -189,11 +189,19 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			PredictionDFAState f = dfa.getFinalState(predictedEdge);
-			dfa.createEdge(d, f, longestMatchingEdge);
-			System.out.println(dfa.toString());
-			input.skip(longestMatch.length());
-			return f;
+			if(predictedEdge instanceof ATNEpsilonEdge) {
+				d.setFinal(predictedEdge);
+				return d;
+			} else {
+				PredictionDFAState f = dfa.getFinalState(predictedEdge);
+				if(f == null)
+					f = dfa.createFinalState(predictedEdge);
+				
+				dfa.createEdge(d, f, longestMatchingEdge);
+				System.out.println(dfa.toString());
+				input.skip(longestMatch.length());
+				return f;
+			}
 		} else {
 			PredictionDFAState newState = dfa.createState(newConfigSet);
 			dfa.createEdge(d, newState, longestMatchingEdge);
