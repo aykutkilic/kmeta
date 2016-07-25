@@ -169,7 +169,7 @@ public class BasicATNSimulator {
 
 		ATNConfigSet newConfigSet = moveAndGetClosures(d.getKey());
 		if (newConfigSet.isEmpty()) {
-			System.out.println("Error: " + input.toString() + " - " + d.toString());
+			//System.out.println("Error: " + input.toString() + " - " + d.toString());
 			dfa.createEdge(d, dfa.getErrorState(), longestMatchingEdge);
 			return dfa.getErrorState();
 		}
@@ -198,14 +198,12 @@ public class BasicATNSimulator {
 					f = dfa.createFinalState(predictedEdge);
 				
 				dfa.createEdge(d, f, longestMatchingEdge);
-				System.out.println(dfa.toString());
 				input.skip(longestMatch.length());
 				return f;
 			}
 		} else {
 			PredictionDFAState newState = dfa.createState(newConfigSet);
 			dfa.createEdge(d, newState, longestMatchingEdge);
-			System.out.println(dfa.toString());
 			input.skip(longestMatch.length());
 			return newState;
 		}
