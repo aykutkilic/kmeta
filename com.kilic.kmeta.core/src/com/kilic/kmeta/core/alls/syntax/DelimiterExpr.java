@@ -2,22 +2,27 @@ package com.kilic.kmeta.core.alls.syntax;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNState;
+import com.kilic.kmeta.core.meta.Multiplicity;
 
-public class SeparatorExpr implements ISyntaxExpr {
-	String separator;
+public class DelimiterExpr implements ISyntaxExpr {
+	String delimiter;
 	ISyntaxExpr expr;
+	Multiplicity multiplicity;
 
-	public SeparatorExpr(ISyntaxExpr expr, String separator) {
+	public DelimiterExpr(ISyntaxExpr expr, String delimiter, Multiplicity multiplicity) {
+		assert (multiplicity == Multiplicity.ANY || multiplicity == Multiplicity.ONEORMORE);
+
 		this.expr = expr;
-		this.separator = separator;
+		this.delimiter = delimiter;
+		this.multiplicity = multiplicity;
 	}
 
-	public String getSeparator() {
-		return separator;
+	public String getDelimiter() {
+		return delimiter;
 	}
 
-	public void setSeparator(String separator) {
-		this.separator = separator;
+	public void setDelimiter(String delimiter) {
+		this.delimiter = delimiter;
 	}
 
 	public ISyntaxExpr getExpr() {
@@ -40,10 +45,11 @@ public class SeparatorExpr implements ISyntaxExpr {
 		atn.createEpsilonEdge(sourceState, exprStartState);
 		atn.createEpsilonEdge(exprEndState, targetState);
 
-		atn.createEpsilonEdge(exprStartState, targetState);
+		if (multiplicity == Multiplicity.ANY)
+			atn.createEpsilonEdge(exprStartState, targetState);
 
 		expr.appendToATN(atn, exprStartState, exprEndState);
-		atn.createStringEdge(exprEndState, afterSepState, separator);
+		atn.createStringEdge(exprEndState, afterSepState, delimiter);
 		expr.appendToATN(atn, afterSepState, exprEndState);
 
 		return targetState;

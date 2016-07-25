@@ -20,7 +20,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		callers = new HashSet<>();
 		startState = createState();
 		finalState = createState();
-		
+
 		finalState.setType(StateType.FINAL);
 	}
 
@@ -44,16 +44,19 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 
 	public ATNCharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
 		return new ATNCharSetEdge(from, to, charSet);
-		/*TokenDFA dfa = TokenDFA.createFromCharSet(charSet);
-		dfa.setLabel(charSet.toString());
-		return createTokenEdge(from, to, dfa);*/
+		/*
+		 * TokenDFA dfa = TokenDFA.createFromCharSet(charSet);
+		 * dfa.setLabel(charSet.toString()); return createTokenEdge(from, to,
+		 * dfa);
+		 */
 	}
 
 	public ATNStringEdge createStringEdge(ATNState from, ATNState to, String string) {
 		return new ATNStringEdge(from, to, string);
-		/*TokenDFA dfa = TokenDFA.createFromString(string);
-		dfa.setLabel(string);
-		return createTokenEdge(from,to,dfa);*/
+		/*
+		 * TokenDFA dfa = TokenDFA.createFromString(string);
+		 * dfa.setLabel(string); return createTokenEdge(from,to,dfa);
+		 */
 	}
 
 	public ATNCallEdge createCallEdge(ATNState from, ATNState to, ATN atn) {
@@ -152,21 +155,23 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		return result;
 	}
 
-	public void reduceToTokenDFAEdge() {
+	public DFA reduceToTokenDFAEdge() {
 		assert (hasEquivalentNFA());
 
 		NFA nfa = getEquivalentNFA();
 		DFA dfa = nfa.getEquivalentDFA();
-		dfa.setLabel(getLabel()+"DFA");
-		
+		dfa.setLabel(getLabel() + "DFA");
+
 		for (ATNCallEdge edge : callers) {
 			ATNState from = edge.getFrom();
 			ATNState to = edge.getTo();
 			edge.disconnect();
-			
-			ATN atn = (ATN)from.getContainer();
+
+			ATN atn = (ATN) from.getContainer();
 			atn.createTokenEdge(from, to, dfa);
 		}
+
+		return dfa;
 	}
 
 	public String toGraphviz() {

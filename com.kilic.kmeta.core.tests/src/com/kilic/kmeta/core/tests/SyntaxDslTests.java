@@ -6,11 +6,12 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
+import com.kilic.kmeta.core.alls.dfa.DFA;
 import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
 import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
 import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
-import com.kilic.kmeta.core.alls.syntax.SeparatorExpr;
+import com.kilic.kmeta.core.alls.syntax.DelimiterExpr;
 import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -23,8 +24,9 @@ public class SyntaxDslTests {
 	ATN Rule = new ATN();
 	ATN E = new ATN();
 
-	ATN MulE = new ATN();
 	ATN AltE = new ATN();
+	ATN DelimE = new ATN();
+	ATN MulE = new ATN();
 
 	ATN PrimE = new ATN();
 
@@ -32,13 +34,12 @@ public class SyntaxDslTests {
 	ATN CharSetE = new ATN();
 	ATN ParenE = new ATN();
 	ATN StrL = new ATN();
-	ATN RuleRefL = new ATN();
 
 	ATN CharRangeL = new ATN();
 	ATN ID = new ATN();
-	
+
 	String grammar;
-	
+
 	@Before
 	public void init() {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
@@ -60,10 +61,6 @@ public class SyntaxDslTests {
 			)
 		).setLabel("StrL");
 		
-		Utils.createATNFromSyntax(RuleRefL, 
-			new ATNCallExpr(ID)
-		).setLabel("RuleRefL");
-	
 		Utils.createATNFromSyntax(CharRangeL, 
 			new SequenceExpr(
 				new CharSetExpr(CharSet.ANY),
@@ -82,12 +79,13 @@ public class SyntaxDslTests {
 		Utils.createATNFromSyntax(CharSetE, 
 			new SequenceExpr(
 				new StringExpr("["),
-				new SeparatorExpr(
+				new DelimiterExpr(
 					new AlternativeExpr(
 						new CharSetExpr(CharSet.ANY),
 						new ATNCallExpr(CharRangeL)
 					), 
-					","
+					",",
+					Multiplicity.ONEORMORE
 				),
 				new StringExpr("]")
 			)
@@ -107,7 +105,7 @@ public class SyntaxDslTests {
 				new ATNCallExpr(NotE),
 				new ATNCallExpr(CharSetE),
 				new ATNCallExpr(StrL),
-				new ATNCallExpr(RuleRefL)
+				new ATNCallExpr(ID)
 			)
 		).setLabel("PrimE");
 		
@@ -120,16 +118,28 @@ public class SyntaxDslTests {
 			)
 		).setLabel("MulE");
 		
+		Utils.createATNFromSyntax(DelimE,
+			new SequenceExpr(
+				new ATNCallExpr(MulE),
+				new MultiplicityExpr(Multiplicity.OPTIONAL,
+					new SequenceExpr(
+						new CharSetExpr(new CharSet().addSingleton('/')),
+						new ATNCallExpr(StrL)
+					)
+				)
+			)
+		).setLabel("DelimE");
+		
 		Utils.createATNFromSyntax(AltE, 
 			new SequenceExpr(
 				new MultiplicityExpr(Multiplicity.ONEORMORE,
-					new ATNCallExpr(MulE)
+					new ATNCallExpr(DelimE)
 				),
 				new MultiplicityExpr(Multiplicity.ANY, 
 					new SequenceExpr(
 						new StringExpr("|"), 
 						new MultiplicityExpr(Multiplicity.ONEORMORE,
-							new ATNCallExpr(MulE)
+							new ATNCallExpr(DelimE)
 						)
 					)
 				)
@@ -158,25 +168,27 @@ public class SyntaxDslTests {
 		grammar = "Grammar: Rule+;" +
 				  "Rule: ID ':' E ';';" +
 				  "E: AltE;" +
-				  "AltE: MulE+ ( '|' MulE+ )*;" +
+				  "AltE: DelimE+ ( '|' DelimE+ )*;" +
+				  "DelimE: MulE ('/' StrL)?;" +
 				  "MulE: PrimE [+,*]?;" +
-				  "PrimE: ParenE | NotE | CharSetE | StrL | RuleRefL;" +
-				  "ParenE: '(' E ')';"+
-				  "CharSetE: '[' (. | CharRangeL)+\',' ']';"+
-				  "RuleRefL: ID;"+
-				  "StrL: ['] ~[']+ [']"+
-				  "CharRangeL: . '-' .;"+
+				  "PrimE: ParenE | NotE | CharSetE | StrL | ID;" +
+				  "ParenE: '(' E ')';" +
+				  "NotE: '~' CharSetE;" +
+				  "CharSetE: '[' (. | CharRangeL)+\',' ']';" +
+				  "StrL: ['] ~[']+ [']" +
+				  "CharRangeL: . '-' .;" +
 				  "ID: LETTER+;";
 		// @formatter:on
 	}
 
 	@Test
 	public void atnTest() throws FileNotFoundException {
-		ID.reduceToTokenDFAEdge();
-		CharRangeL.reduceToTokenDFAEdge();
+		DFA idDfa = ID.reduceToTokenDFAEdge();
+		DFA strLDfa = StrL.reduceToTokenDFAEdge();
+		DFA charRangeLDfa = CharRangeL.reduceToTokenDFAEdge();
 
-		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, MulE, AltE, PrimE, NotE, CharSetE, ParenE,
-				StrL, RuleRefL);
+		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE,
+				CharSetE, idDfa, strLDfa, charRangeLDfa);
 	}
 
 }
