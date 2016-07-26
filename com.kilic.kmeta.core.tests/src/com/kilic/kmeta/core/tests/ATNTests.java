@@ -3,6 +3,7 @@ package com.kilic.kmeta.core.tests;
 import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -128,12 +129,14 @@ public class ATNTests {
 	}
 
 	@Test
-	public void atnTest() throws FileNotFoundException {
+	public void atnTest() throws IOException {
 		HexL.reduceToTokenDFAEdge();
 		DecL.reduceToTokenDFAEdge();
 
-		Utils.dumpTNsTofile(desktopPath + "Body.graphviz", Body, E, AddE, MulE, PrimE, ParenE);
-
+		String gvFilePath = desktopPath + "Body.graphviz";
+		Utils.dumpTNsTofile(gvFilePath, Body, E, AddE, MulE, PrimE, ParenE);
+		Utils.graphVizToSvg(gvFilePath);
+		
 		ALLSParser parser = new ALLSParser();
 		StringBuilder inputString = new StringBuilder();
 
