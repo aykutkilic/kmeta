@@ -1,6 +1,7 @@
 package com.kilic.kmeta.core.alls.analysis;
 
 import java.util.HashSet;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
@@ -12,6 +13,7 @@ import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
 import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
+import com.kilic.kmeta.core.util.CharSet;
 
 /**
  * Algorithm from:
@@ -121,7 +123,7 @@ public class BasicATNSimulator {
 				for (ATNCallEdge edge : atn.getAllCallers()) {
 					Set<ATNConfig> c = closure(
 							new ATNConfig(edge.getTo(), config.getAlternative(), config.getCallStack()), history);
-					result.addAll(c);
+					result.addAll(c)
 				}
 			} else {
 				// nonempty SLL or LL stack
@@ -156,23 +158,10 @@ public class BasicATNSimulator {
 	PredictionDFAState target(PredictionDFAState d) {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
-		String longestMatch = "";
-		IATNEdge longestMatchingEdge = null;
-		for (IATNEdge te : d.getKey().getNextTerminalEdges()) {
-			String match = te.match(input);
-
-			if (match != null && match.length() > longestMatch.length()) {
-				longestMatch = match;
-				longestMatchingEdge = te;
-			}
-		}
-
-		ATNConfigSet newConfigSet = moveAndGetClosures(d.getKey());
-		if (newConfigSet.isEmpty()) {
-			// System.out.println("Error: " + input.toString() + " - " +
-			// d.toString());
-			dfa.createEdge(d, dfa.getErrorState(), longestMatchingEdge);
-			return dfa.getErrorState();
+		for (Entry<CharSet, Set<IATNEdge>> dcs : d.getKey().getNextDistinctCharSets().entrySet()) {
+			ATNConfigSet newStateKey = unionClosures(d.getKey().moveByEdges(dcs.getValue()));
+			PredictionDFAState newState = dfa.createState(newStateKey);
+			dfa.createEdge(d, newState, dcs.getKey());
 		}
 
 		IATNEdge predictedEdge = null;
@@ -216,9 +205,12 @@ public class BasicATNSimulator {
 	}
 
 	private ATNConfigSet moveAndGetClosures(ATNConfigSet d) {
-		ATNConfigSet mv = d.move(input);
+		return unionClosures( d.move(input) );
+	}
+
+	private ATNConfigSet unionClosures(ATNConfigSet d) {
 		ATNConfigSet newConfigSet = new ATNConfigSet();
-		for (ATNConfig config : mv)
+		for (ATNConfig config : d)
 			newConfigSet.addAll(closure(config, null));
 		return newConfigSet;
 	}

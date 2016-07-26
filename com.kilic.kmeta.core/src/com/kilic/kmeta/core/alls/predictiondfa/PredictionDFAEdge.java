@@ -1,26 +1,27 @@
 package com.kilic.kmeta.core.alls.predictiondfa;
 
-import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.EdgeBase;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class PredictionDFAEdge extends EdgeBase<PredictionDFAState> implements IPredictionDFAEdge {
-	IATNEdge matchingATNEdge;
+	CharSet charSet;
 	String label;
 
-	PredictionDFAEdge(PredictionDFAState from, PredictionDFAState to, IATNEdge matchingEdge) {
-		this.matchingATNEdge = matchingEdge;
+	PredictionDFAEdge(PredictionDFAState from, PredictionDFAState to, CharSet charSet) {
+		this.charSet = charSet;
 		connect(from, to);
 		this.label = computeLabel();
 	}
 
 	String computeLabel() {
-		return matchingATNEdge.getLabel();
+		return charSet.toString();
 	}
 
 	@Override
 	public String match(IStream input) {
-		return matchingATNEdge.match(input);
+		char c = input.nextChar();
+		return charSet.containsSingleton(c) ? String.valueOf(c) : null;
 	}
 
 	@Override

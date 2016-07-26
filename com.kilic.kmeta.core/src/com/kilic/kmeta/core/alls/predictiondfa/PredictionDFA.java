@@ -7,6 +7,7 @@ import java.util.Map;
 import com.kilic.kmeta.core.alls.analysis.ATNConfigSet;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.automaton.AutomatonBase;
+import com.kilic.kmeta.core.util.CharSet;
 
 public class PredictionDFA extends AutomatonBase<ATNConfigSet, IPredictionDFAEdge, PredictionDFAState> {
 	Map<IATNEdge, PredictionDFAState> finalStates;
@@ -31,8 +32,8 @@ public class PredictionDFA extends AutomatonBase<ATNConfigSet, IPredictionDFAEdg
 		return newState;
 	}
 
-	public PredictionDFAEdge createEdge(PredictionDFAState from, PredictionDFAState to, IATNEdge matchingATNEdge) {
-		return new PredictionDFAEdge(from, to, matchingATNEdge);
+	public PredictionDFAEdge createEdge(PredictionDFAState from, PredictionDFAState to, CharSet matchingCharSet) {
+		return new PredictionDFAEdge(from, to, matchingCharSet);
 	}
 
 	public Collection<PredictionDFAState> getFinalStates() {

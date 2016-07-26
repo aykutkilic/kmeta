@@ -1,6 +1,7 @@
 package com.kilic.kmeta.core.tests;
 
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -184,13 +185,15 @@ public class SyntaxDslTests {
 	}
 
 	@Test
-	public void atnTest() throws FileNotFoundException {
+	public void atnTest() throws IOException {
 		DFA idDfa = ID.reduceToTokenDFAEdge();
 		DFA strLDfa = StrL.reduceToTokenDFAEdge();
 		DFA charRangeLDfa = CharRangeL.reduceToTokenDFAEdge();
 
-		Utils.dumpTNsTofile(desktopPath + "Grammar.graphviz", Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE,
-				CharSetE, strLDfa, charRangeLDfa, idDfa);
+		String gvFilePath = desktopPath + "Grammar.graphviz";
+		Utils.dumpTNsTofile(gvFilePath, Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE, CharSetE, strLDfa,
+				charRangeLDfa, idDfa);
+		Utils.graphVizToSvg(gvFilePath);
 
 		ALLSParser parser = new ALLSParser();
 		String grammarWithNoSpaces = grammar.replace(" ", "");

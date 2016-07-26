@@ -130,8 +130,8 @@ public class ATNTests {
 
 	@Test
 	public void atnTest() throws IOException {
-		HexL.reduceToTokenDFAEdge();
-		DecL.reduceToTokenDFAEdge();
+		//HexL.reduceToTokenDFAEdge();
+		//DecL.reduceToTokenDFAEdge();
 
 		String gvFilePath = desktopPath + "Body.graphviz";
 		Utils.dumpTNsTofile(gvFilePath, Body, E, AddE, MulE, PrimE, ParenE);
