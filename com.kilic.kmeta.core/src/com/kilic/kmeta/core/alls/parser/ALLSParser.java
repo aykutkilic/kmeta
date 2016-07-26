@@ -51,7 +51,7 @@ public class ALLSParser {
 					callStack.push(e.getTo());
 					// print("Callstack: " + callStack);
 					p = ace.getATN().getStartState();
-					print(ace.getATN().getLabel() + " {");
+					print(ace.getATN().getLabel() + ":");
 					indent++;
 				} else if (e instanceof ATNMutatorEdge) {
 					ATNMutatorEdge ame = (ATNMutatorEdge) e;
@@ -90,7 +90,6 @@ public class ALLSParser {
 				// print("Peek: " + callStack.peek());
 				p = callStack.pop();
 				indent--;
-				print("}");
 				// print("Returned to " + p);
 			} else if (p.isDecisionState()) {
 				// print("Making prediction " + p + " " +

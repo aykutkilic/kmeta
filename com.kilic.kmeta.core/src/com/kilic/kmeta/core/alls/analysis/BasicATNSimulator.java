@@ -38,8 +38,8 @@ public class BasicATNSimulator {
 			predictionDFA.setLabel("S" + atnState.getLabel() + "PDFA");
 			atnState.setPredictionDFA(predictionDFA);
 
-			//for (IATNEdge edge : atnState.getOut())
-			//	predictionDFA.createFinalState(edge);
+			// for (IATNEdge edge : atnState.getOut())
+			// predictionDFA.createFinalState(edge);
 
 			ATNConfigSet configSet = computePredictionDFAStartState(atnState, RegularCallStack.newAnyStack());
 			PredictionDFAState startState = predictionDFA.createState(configSet);
@@ -52,7 +52,7 @@ public class BasicATNSimulator {
 		input.seek(pos);
 		return result;
 	}
-	
+
 	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
 		PredictionDFAState d = d0;
 		while (true) {
@@ -160,8 +160,8 @@ public class BasicATNSimulator {
 		IATNEdge longestMatchingEdge = null;
 		for (IATNEdge te : d.getKey().getNextTerminalEdges()) {
 			String match = te.match(input);
-			
-			if (match!=null && match.length() > longestMatch.length()) {
+
+			if (match != null && match.length() > longestMatch.length()) {
 				longestMatch = match;
 				longestMatchingEdge = te;
 			}
@@ -169,7 +169,8 @@ public class BasicATNSimulator {
 
 		ATNConfigSet newConfigSet = moveAndGetClosures(d.getKey());
 		if (newConfigSet.isEmpty()) {
-			//System.out.println("Error: " + input.toString() + " - " + d.toString());
+			// System.out.println("Error: " + input.toString() + " - " +
+			// d.toString());
 			dfa.createEdge(d, dfa.getErrorState(), longestMatchingEdge);
 			return dfa.getErrorState();
 		}
@@ -189,23 +190,28 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			if(predictedEdge instanceof ATNEpsilonEdge) {
+			if (predictedEdge instanceof ATNEpsilonEdge && predictedEdge.getTo().isFinalState()) {
 				d.setFinal(predictedEdge);
 				return d;
 			} else {
 				PredictionDFAState f = dfa.getFinalState(predictedEdge);
-				if(f == null)
+				if (f == null)
 					f = dfa.createFinalState(predictedEdge);
-				
+
 				dfa.createEdge(d, f, longestMatchingEdge);
 				input.skip(longestMatch.length());
 				return f;
 			}
 		} else {
-			PredictionDFAState newState = dfa.createState(newConfigSet);
-			dfa.createEdge(d, newState, longestMatchingEdge);
-			input.skip(longestMatch.length());
-			return newState;
+			if (longestMatchingEdge == null) {
+				d.setFinal(predictedEdge);
+				return d;
+			} else {
+				PredictionDFAState newState = dfa.createState(newConfigSet);
+				dfa.createEdge(d, newState, longestMatchingEdge);
+				input.skip(longestMatch.length());
+				return newState;
+			}
 		}
 	}
 
