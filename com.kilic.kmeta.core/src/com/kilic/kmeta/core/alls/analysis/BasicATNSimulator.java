@@ -71,6 +71,7 @@ public class BasicATNSimulator {
 				return next.getDecisionEdge();
 
 			d = next;
+			input.skip(1);
 		}
 	}
 
@@ -123,7 +124,7 @@ public class BasicATNSimulator {
 				for (ATNCallEdge edge : atn.getAllCallers()) {
 					Set<ATNConfig> c = closure(
 							new ATNConfig(edge.getTo(), config.getAlternative(), config.getCallStack()), history);
-					result.addAll(c)
+					result.addAll(c);
 				}
 			} else {
 				// nonempty SLL or LL stack
@@ -158,15 +159,34 @@ public class BasicATNSimulator {
 	PredictionDFAState target(PredictionDFAState d) {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
+		ATNConfigSet matchingConfigSet = null;
+		// CharSet matchingCharSet = null;
+		PredictionDFAState matchingState = null;
 		for (Entry<CharSet, Set<IATNEdge>> dcs : d.getKey().getNextDistinctCharSets().entrySet()) {
 			ATNConfigSet newStateKey = unionClosures(d.getKey().moveByEdges(dcs.getValue()));
-			PredictionDFAState newState = dfa.createState(newStateKey);
-			dfa.createEdge(d, newState, dcs.getKey());
+			PredictionDFAState state = dfa.getState(newStateKey);
+			if (state == null)
+				state = dfa.createState(newStateKey);
+			dfa.createEdge(d, state, dcs.getKey());
+
+			if (dcs.getKey().containsSingleton(input.lookAheadChar(0))) {
+				// matchingCharSet = dcs.getKey();
+				matchingConfigSet = newStateKey;
+				matchingState = state;
+			}
+		}
+
+		System.out.println("input: " + input.lookAheadString(0,6));
+		System.out.println(dfa.toString());
+
+		if (matchingState == null) {
+			return dfa.getErrorState();
 		}
 
 		IATNEdge predictedEdge = null;
 		boolean predictionDone = true;
-		for (ATNConfig config : newConfigSet) {
+
+		for (ATNConfig config : matchingConfigSet) {
 			if (predictedEdge == null) {
 				predictedEdge = config.getAlternative();
 				continue;
@@ -179,33 +199,15 @@ public class BasicATNSimulator {
 		}
 
 		if (predictionDone) {
-			if (predictedEdge instanceof ATNEpsilonEdge && predictedEdge.getTo().isFinalState()) {
-				d.setFinal(predictedEdge);
-				return d;
-			} else {
-				PredictionDFAState f = dfa.getFinalState(predictedEdge);
-				if (f == null)
-					f = dfa.createFinalState(predictedEdge);
-
-				dfa.createEdge(d, f, longestMatchingEdge);
-				input.skip(longestMatch.length());
-				return f;
-			}
-		} else {
-			if (longestMatchingEdge == null) {
-				d.setFinal(predictedEdge);
-				return d;
-			} else {
-				PredictionDFAState newState = dfa.createState(newConfigSet);
-				dfa.createEdge(d, newState, longestMatchingEdge);
-				input.skip(longestMatch.length());
-				return newState;
-			}
+			matchingState.setFinal(predictedEdge);
+			input.skip(1);
 		}
+
+		return matchingState;
 	}
 
 	private ATNConfigSet moveAndGetClosures(ATNConfigSet d) {
-		return unionClosures( d.move(input) );
+		return unionClosures(d.move(input));
 	}
 
 	private ATNConfigSet unionClosures(ATNConfigSet d) {

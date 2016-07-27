@@ -10,8 +10,6 @@ import java.util.Set;
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNCharSetEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
-import com.kilic.kmeta.core.alls.atn.ATNStringEdge;
-import com.kilic.kmeta.core.alls.atn.ATNTokenEdge;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.util.CharSet;
@@ -89,8 +87,8 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			if (edgesToMove.contains(edge)) {
 				ATNConfig newConfig = new ATNConfig(edge.getTo(), c.alternative, c.callStack);
 				result.add(newConfig);
-			} else
-				result.add(c);
+			} /*else
+				result.add(c);*/
 		}
 
 		return result;
@@ -105,7 +103,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			if (!c.getState().hasNext())
 				continue;
 			IATNEdge edge = c.getState().nextEdge();
-			if (edge instanceof ATNCharSetEdge || edge instanceof ATNStringEdge || edge instanceof ATNTokenEdge)
+			if (edge instanceof ATNCharSetEdge)
 				result.add(edge);
 		}
 

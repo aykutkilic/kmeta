@@ -1,20 +1,18 @@
 package com.kilic.kmeta.core.tests;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.dfa.DFA;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
 import com.kilic.kmeta.core.alls.stream.StringStream;
 import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
 import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
-import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.alls.syntax.DelimiterExpr;
+import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
@@ -166,7 +164,7 @@ public class SyntaxDslTests {
 			new MultiplicityExpr(Multiplicity.ONEORMORE,
 				new ATNCallExpr(Rule)
 			)
-		).setLabel("Grammar");
+		).setLabel("Grammar"); 
 	
 		grammar = "Grammar: Rule+;" +
 				  "Rule: ID ':' E ';';" +
@@ -186,13 +184,13 @@ public class SyntaxDslTests {
 
 	@Test
 	public void atnTest() throws IOException {
-		DFA idDfa = ID.reduceToTokenDFAEdge();
-		DFA strLDfa = StrL.reduceToTokenDFAEdge();
-		DFA charRangeLDfa = CharRangeL.reduceToTokenDFAEdge();
+		// DFA idDfa = ID.reduceToTokenDFAEdge();
+		// DFA strLDfa = StrL.reduceToTokenDFAEdge();
+		// DFA charRangeLDfa = CharRangeL.reduceToTokenDFAEdge();
 
 		String gvFilePath = desktopPath + "Grammar.graphviz";
-		Utils.dumpTNsTofile(gvFilePath, Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE, CharSetE, strLDfa,
-				charRangeLDfa, idDfa);
+		Utils.dumpTNsTofile(gvFilePath, Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE, CharSetE, StrL,
+				CharRangeL, ID);
 		Utils.graphVizToSvg(gvFilePath);
 
 		ALLSParser parser = new ALLSParser();

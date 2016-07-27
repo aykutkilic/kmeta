@@ -23,7 +23,7 @@ public class StringExpr implements ISyntaxExpr {
 		if (targetState == null)
 			targetState = atn.createState();
 
-		atn.createStringEdge(sourceState, targetState, string);
+		atn.createEdgeFromString(sourceState, targetState, string);
 
 		return targetState;
 	}

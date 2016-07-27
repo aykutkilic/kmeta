@@ -1,7 +1,5 @@
 package com.kilic.kmeta.core.alls.parser;
 
-import java.util.concurrent.Callable;
-
 import com.kilic.kmeta.core.alls.analysis.BasicATNSimulator;
 import com.kilic.kmeta.core.alls.analysis.RegularCallStack;
 import com.kilic.kmeta.core.alls.atn.ATN;
@@ -11,10 +9,7 @@ import com.kilic.kmeta.core.alls.atn.ATNEpsilonEdge;
 import com.kilic.kmeta.core.alls.atn.ATNMutatorEdge;
 import com.kilic.kmeta.core.alls.atn.ATNPredicateEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
-import com.kilic.kmeta.core.alls.atn.ATNStringEdge;
-import com.kilic.kmeta.core.alls.atn.ATNTokenEdge;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
-import com.kilic.kmeta.core.alls.dfa.DFARunner;
 import com.kilic.kmeta.core.alls.stream.IStream;
 
 /**
@@ -66,7 +61,7 @@ public class ALLSParser {
 					print(String.valueOf(c));
 					//print("Matched charset <" + e.getLabel() + "> : " + c);
 					p = cse.getTo();
-				} else if (e instanceof ATNStringEdge) {
+				} /*else if (e instanceof ATNStringEdge) {
 					ATNStringEdge se = (ATNStringEdge) e;
 					String str = input.nextString(se.getString().length());
 					print(str);
@@ -79,7 +74,7 @@ public class ALLSParser {
 					print(match);
 					//print("Matched token <" + te.getLabel() + ">:" + match);
 					p = te.getTo();
-				}
+				}*/
 				// print("New p=" + p);
 			} else if (p.isFinalState()) {
 				if (callStack.isEmpty()) {

@@ -51,7 +51,7 @@ public class DelimiterExpr implements ISyntaxExpr {
 
 		expr.appendToATN(atn, exprStartState, exprEndState);
 		atn.createEpsilonEdge(exprEndState, preDelimState);
-		atn.createStringEdge(preDelimState, afterDelimState, delimiter);
+		atn.createEdgeFromString(preDelimState, afterDelimState, delimiter);
 		expr.appendToATN(atn, afterDelimState, exprEndState);
 
 		return targetState;

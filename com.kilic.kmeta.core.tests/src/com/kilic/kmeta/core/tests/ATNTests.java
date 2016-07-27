@@ -123,8 +123,8 @@ public class ATNTests {
 
 	@Test
 	public void dfaReductionTest() throws FileNotFoundException {
-		HexL.reduceToTokenDFAEdge();
-		DecL.reduceToTokenDFAEdge();
+//		HexL.reduceToTokenDFAEdge();
+//		DecL.reduceToTokenDFAEdge();
 		Utils.dumpTNToFile(PrimE, desktopPath + "Prim_after_reduction.graphviz");
 	}
 
@@ -134,7 +134,7 @@ public class ATNTests {
 		//DecL.reduceToTokenDFAEdge();
 
 		String gvFilePath = desktopPath + "Body.graphviz";
-		Utils.dumpTNsTofile(gvFilePath, Body, E, AddE, MulE, PrimE, ParenE);
+		Utils.dumpTNsTofile(gvFilePath, Body, E, AddE, MulE, PrimE, ParenE, HexL, DecL);
 		Utils.graphVizToSvg(gvFilePath);
 		
 		ALLSParser parser = new ALLSParser();
