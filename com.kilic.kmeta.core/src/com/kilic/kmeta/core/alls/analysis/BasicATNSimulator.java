@@ -45,10 +45,13 @@ public class BasicATNSimulator {
 			PredictionDFA predictionDFA = new PredictionDFA();
 			predictionDFA.setLabel("S" + atnState.getLabel() + "PDFA");
 			atnState.setPredictionDFA(predictionDFA);
+		}
 
+		PredictionDFA dfa = atnState.getPredictionDFA();
+		if (dfa.getStartState(cs) == null) {
 			ATNConfigSet configSet = computePredictionDFAStartState(atnState, cs);
-			PredictionDFAState startState = predictionDFA.createState(configSet);
-			predictionDFA.setStartState(startState);
+			PredictionDFAState startState = dfa.createState(configSet);
+			dfa.setStartState(cs, startState);
 
 			IATNEdge finalEdge = null;
 			for (ATNConfig config : configSet) {
@@ -63,9 +66,7 @@ public class BasicATNSimulator {
 				}
 			}
 		}
-
-		PredictionDFA dfa = atnState.getPredictionDFA();
-		IATNEdge result = sllPredict(atnState, (PredictionDFAState) dfa.getStartState(), cs, pos);
+		IATNEdge result = sllPredict(atnState, (PredictionDFAState) dfa.getStartState(cs), cs, pos);
 
 		input.seek(pos);
 		return result;
@@ -81,6 +82,7 @@ public class BasicATNSimulator {
 
 			if (next == null) {
 				next = target(d);
+				System.out.println(next.getKey());
 			} else {
 				System.out.println("Cache hit: " + next);
 			}
