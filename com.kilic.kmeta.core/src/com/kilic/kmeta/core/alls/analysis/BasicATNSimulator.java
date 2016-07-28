@@ -37,12 +37,16 @@ public class BasicATNSimulator {
 	public IATNEdge adaptivePredict(ATNState atnState, RegularCallStack g) {
 		int pos = input.getPosition();
 
+		RegularCallStack cs = RegularCallStack.newAnyStack();
+		if (((ATN) atnState.getContainer()).getAllCallers().size() > 1)
+			cs.push(g.peek());
+
 		if (atnState.getPredictionDFA() == null) {
 			PredictionDFA predictionDFA = new PredictionDFA();
 			predictionDFA.setLabel("S" + atnState.getLabel() + "PDFA");
 			atnState.setPredictionDFA(predictionDFA);
 
-			ATNConfigSet configSet = computePredictionDFAStartState(atnState, RegularCallStack.newAnyStack());
+			ATNConfigSet configSet = computePredictionDFAStartState(atnState, cs);
 			PredictionDFAState startState = predictionDFA.createState(configSet);
 			predictionDFA.setStartState(startState);
 
@@ -61,7 +65,7 @@ public class BasicATNSimulator {
 		}
 
 		PredictionDFA dfa = atnState.getPredictionDFA();
-		IATNEdge result = sllPredict(atnState, (PredictionDFAState) dfa.getStartState(), g, pos);
+		IATNEdge result = sllPredict(atnState, (PredictionDFAState) dfa.getStartState(), cs, pos);
 
 		input.seek(pos);
 		return result;
@@ -84,8 +88,11 @@ public class BasicATNSimulator {
 			if (next.getType() == StateType.ERROR)
 				return null; // error
 
-			if (next.isStackSensitive())
+			if (next.isStackSensitive()) {
+				System.out.println("Prediction for " + atnState + " / " + g.toString()
+						+ " is stack sensitive. Falling back to LL.");
 				return llPredict(atnState, g, offset);
+			}
 
 			if (next.getType() == StateType.FINAL) {
 				System.out.println(
@@ -210,7 +217,6 @@ public class BasicATNSimulator {
 	}
 
 	PredictionDFAState target(PredictionDFAState d) {
-		System.out.println("target next chars: " + input.lookAheadString(0, 6));
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
 		if (input.hasEnded()) {
@@ -229,7 +235,7 @@ public class BasicATNSimulator {
 			if (state == null) {
 				state = dfa.createState(newStateKey);
 				System.out.println(dfa.getLabel() + " new state " + state + " for " + dcs.getKey());
-				System.out.println(newStateKey);
+				// System.out.println(newStateKey);
 			}
 			dfa.createEdge(d, state, dcs.getKey());
 
