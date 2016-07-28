@@ -144,7 +144,7 @@ public class ATNTests {
 		// for (int i = 0; i < s; i++)
 		// inputString.append("1+2+3+4+5+6+7+8+9+0;");
 		//int s = 1;
-		inputString.append("1+2*3+(4+(5+6))*0x0007+8;");
+		//inputString.append("1+2*3+(4+(5+6))*0x0007+8;");
 		IStream input = new StringStream(inputString.toString());
 		//long start = System.nanoTime() / 1000000;
 		parser.parse(Body, input);

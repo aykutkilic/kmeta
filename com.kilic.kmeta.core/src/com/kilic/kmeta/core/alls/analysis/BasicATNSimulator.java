@@ -40,12 +40,22 @@ public class BasicATNSimulator {
 			predictionDFA.setLabel("S" + atnState.getLabel() + "PDFA");
 			atnState.setPredictionDFA(predictionDFA);
 
-			// for (IATNEdge edge : atnState.getOut())
-			// predictionDFA.createFinalState(edge);
-
 			ATNConfigSet configSet = computePredictionDFAStartState(atnState, RegularCallStack.newAnyStack());
 			PredictionDFAState startState = predictionDFA.createState(configSet);
 			predictionDFA.setStartState(startState);
+
+			IATNEdge finalEdge = null;
+			for (ATNConfig config : configSet) {
+				if (config.getState().isFinalState()) {
+					startState.setFinal(config.getAlternative());
+					if (finalEdge == null)
+						finalEdge = config.getAlternative();
+					else if (finalEdge != config.getAlternative()) {
+						// conflict
+						System.out.println("Conflict in start state!");
+					}
+				}
+			}
 		}
 
 		PredictionDFA dfa = atnState.getPredictionDFA();
@@ -159,6 +169,11 @@ public class BasicATNSimulator {
 	PredictionDFAState target(PredictionDFAState d) {
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
+		if (input.hasEnded()) {
+			if (d.getType() == StateType.FINAL)
+				return d;
+		}
+
 		ATNConfigSet matchingConfigSet = null;
 		// CharSet matchingCharSet = null;
 		PredictionDFAState matchingState = null;
@@ -175,9 +190,6 @@ public class BasicATNSimulator {
 				matchingState = state;
 			}
 		}
-
-		System.out.println("input: " + input.lookAheadString(0,6));
-		System.out.println(dfa.toString());
 
 		if (matchingState == null) {
 			return dfa.getErrorState();
@@ -198,10 +210,14 @@ public class BasicATNSimulator {
 			}
 		}
 
+		System.out.println("input: " + input.lookAheadString(0, 6));
+
 		if (predictionDone) {
 			matchingState.setFinal(predictedEdge);
 			input.skip(1);
 		}
+
+		System.out.println(dfa.toString());
 
 		return matchingState;
 	}

@@ -41,6 +41,16 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEd
 	
 	@Override
 	public String toString() {
-		return getLabel();
+		switch (type) {
+		case FINAL:
+			return "[[" + getLabel() + "]]";
+			
+		case ERROR:
+			return "[E " + getLabel() + " ]";
+
+		case REGULAR:
+		default:
+			return "[" + getLabel() + "]";
+		}
 	}
 }
