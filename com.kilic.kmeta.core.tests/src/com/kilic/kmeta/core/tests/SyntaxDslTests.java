@@ -46,9 +46,12 @@ public class SyntaxDslTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
 
 		// @formatter:off
-		Utils.createATNFromSyntax(ID, 
-			new MultiplicityExpr(Multiplicity.ONEORMORE, 
-				new CharSetExpr(CharSet.LETTER)
+		Utils.createATNFromSyntax(ID,
+			new SequenceExpr(
+				new StringExpr("$"),
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.LETTER)
+				)
 			)
 		).setLabel("ID");
 
@@ -166,19 +169,19 @@ public class SyntaxDslTests {
 			)
 		).setLabel("Grammar"); 
 	
-		grammar = "Grammar: Rule+;" +
-				  "Rule: ID ':' E ';';" +
-				  "E: AltE;" +
-				  "AltE: DelimE+ ( '|' DelimE+ )*;" +
-				  "DelimE: MulE ('/' StrL)?;" +
-				  "MulE: PrimE [?,+,*]?;" +
-				  "PrimE: ParenE | NotE | CharSetE | StrL | ID;" +
-				  "ParenE: '(' E ')';" +
-				  "NotE: '~' CharSetE;" +
-				  "CharSetE: '[' ([.] | CharRangeL)+/',' ']';" +
-				  "StrL: ['] ~[']+ ['];" +
-				  "CharRangeL: [.] '-' [.];" +
-				  "ID: LETTER+;";
+		grammar = "$Grammar: $Rule+;" +
+				  "$Rule: $ID ':' $E ';';" +
+				  "$E: $AltE;" +
+				  "$AltE: $DelimE+ ( '|' $DelimE+ )*;" +
+				  "$DelimE: $MulE ('/' $StrL)?;" +
+				  "$MulE: $PrimE [?,+,*]?;" +
+				  "$PrimE: $ParenE | $NotE | $CharSetE | $StrL | $ID;" +
+				  "$ParenE: '(' $E ')';" +
+				  "$NotE: '~' $CharSetE;" +
+				  "$CharSetE: '[' ([.] | $CharRangeL)+/',' ']';" +
+				  "$StrL: ['] ~[']+ ['];" +
+				  "$CharRangeL: [.] '-' [.];" +
+				  "$ID: [$] [A-Z,a-z]+;";
 		// @formatter:on
 	}
 
