@@ -1,6 +1,8 @@
 package com.kilic.kmeta.core.alls.analysis;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -68,23 +70,26 @@ public class BasicATNSimulator {
 	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
 		PredictionDFAState d = d0;
 		while (true) {
-			System.out.println(d0.getContainer().getLabel() + " sll cache next chars:" + input.lookAheadString(0, 5) );
+			System.out.println("Predicting using sll cache " + d0.getContainer().getLabel());
+			System.out.println("next input chars: " + input.lookAheadString(0, 6));
+
 			PredictionDFAState next = d.move(input);
-			if (next != null)
-				System.out.println(d0.getContainer().getLabel() + " sll cache move to " + next);
 
 			if (next == null) {
 				next = target(d);
-				System.out.println("new state added to " + d0.getContainer().getLabel() + " sll cache " + next);
+			} else {
+				System.out.println("Cache hit: " + next);
 			}
+
 			if (next.getType() == StateType.ERROR)
 				return null; // error
-			boolean isStackSensitive = false;
-			if (isStackSensitive)
+
+			if (next.isStackSensitive())
 				return llPredict(atnState, g, offset);
 
 			if (next.getType() == StateType.FINAL) {
-				System.out.println(d0.getContainer().getLabel() + " sll cache predicted " + next.getDecisionEdge());
+				System.out.println(
+						"Predicted " + next.getDecisionEdge() + " using sll cache " + d0.getContainer().getLabel());
 				return next.getDecisionEdge();
 			}
 
@@ -94,15 +99,45 @@ public class BasicATNSimulator {
 	}
 
 	IATNEdge llPredict(ATNState atnState, RegularCallStack g, int offset) {
-		ATNConfigSet acs = computePredictionDFAStartState(atnState, g);
+		ATNConfigSet currentConfigSet = computePredictionDFAStartState(atnState, g);
+
 		while (true) {
-			Set<ATNConfig> newConfigSet = moveAndGetClosures(acs);
+			ATNConfigSet nextConfigSet = moveAndGetClosures(currentConfigSet);
 
-			if (newConfigSet.isEmpty())
+			if (nextConfigSet.isEmpty()) {
+				System.out.println("SYNTAX ERROR: " + input.lookAheadString(0, 6));
 				return null;
+			}
 
-			Set<Set<Integer>> altSets = getConflictSetsPerLoc(newConfigSet);
-			// if ambiguity report return min(x)
+			IATNEdge predictedEdge = nextConfigSet.allMembersHaveSameAlternative();
+			if (predictedEdge != null) {
+				System.out.println("Predicted " + predictedEdge + " for state " + atnState + " using llPredict");
+				return predictedEdge;
+			}
+
+			Set<Set<IATNEdge>> altSets = getConflictSetsPerLoc(nextConfigSet);
+			Set<IATNEdge> conflictingAlts = null;
+			boolean conflict = true;
+			for (Set<IATNEdge> altSet : altSets) {
+				if (altSet.size() <= 1) {
+					conflict = false;
+					break;
+				}
+				if (conflictingAlts == null)
+					conflictingAlts = altSet;
+				else if (!conflictingAlts.equals(altSet)) {
+					conflict = false;
+					break;
+				}
+			}
+
+			if (conflict) {
+				System.out.println("CONFLICT: " + conflictingAlts);
+				return conflictingAlts.iterator().next();
+			}
+
+			input.skip(1);
+			currentConfigSet = nextConfigSet;
 		}
 	}
 
@@ -175,7 +210,7 @@ public class BasicATNSimulator {
 	}
 
 	PredictionDFAState target(PredictionDFAState d) {
-		System.out.println("target:nextchar = " + input.lookAheadChar(0));
+		System.out.println("target next chars: " + input.lookAheadString(0, 6));
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
 		if (input.hasEnded()) {
@@ -183,46 +218,61 @@ public class BasicATNSimulator {
 				return d;
 		}
 
-		ATNConfigSet matchingConfigSet = null;
-		// CharSet matchingCharSet = null;
 		PredictionDFAState matchingState = null;
-		for (Entry<CharSet, Set<IATNEdge>> dcs : d.getKey().getNextDistinctCharSets().entrySet()) {
+		Map<CharSet, Set<IATNEdge>> dcss = d.getKey().getNextDistinctCharSets();
+		for (Entry<CharSet, Set<IATNEdge>> dcs : dcss.entrySet()) {
+			if (!dcs.getKey().containsSingleton(input.lookAheadChar(0)))
+				continue;
 			ATNConfigSet newStateKey = unionClosures(d.getKey().moveByEdges(dcs.getValue()));
 			PredictionDFAState state = dfa.getState(newStateKey);
-			if (state == null)
+
+			if (state == null) {
 				state = dfa.createState(newStateKey);
+				System.out.println(dfa.getLabel() + " new state " + state + " for " + dcs.getKey());
+				System.out.println(newStateKey);
+			}
 			dfa.createEdge(d, state, dcs.getKey());
 
-			if (dcs.getKey().containsSingleton(input.lookAheadChar(0))) {
-				// matchingCharSet = dcs.getKey();
-				matchingConfigSet = newStateKey;
-				matchingState = state;
+			IATNEdge predictedEdge = newStateKey.allMembersHaveSameAlternative();
+			if (predictedEdge != null)
+				state.setFinal(predictedEdge);
+			else {
+				boolean conflict = containsASetWithMultipleElements(getConflictSetsPerLoc(newStateKey));
+				boolean hasViableAlt = containsASetWithSingleElement(getProdSetsPerLoc(newStateKey));
+
+				if (conflict && !hasViableAlt)
+					state.setStackSensitivity(true);
 			}
+
+			matchingState = state;
+			System.out.println(dfa.getLabel() + " matching state " + state);
 		}
 
 		if (matchingState == null) {
+			System.out.println("Syntax Error: expecting " + dcss.keySet() + " but got " + input.lookAheadChar(0));
+			System.out.println(dfa.toGraphviz());
 			return dfa.getErrorState();
 		}
 
-		IATNEdge predictedEdge = null;
-		boolean predictionDone = true;
+		return matchingState;
+	}
 
-		for (ATNConfig config : matchingConfigSet) {
-			if (predictedEdge == null) {
-				predictedEdge = config.getAlternative();
-				continue;
-			}
-
-			if (predictedEdge != config.getAlternative()) {
-				predictionDone = false;
-				break;
-			}
+	private boolean containsASetWithMultipleElements(Set<Set<IATNEdge>> setOfSets) {
+		for (Set<?> set : setOfSets) {
+			if (set.size() > 1)
+				return true;
 		}
 
-		if (predictionDone)
-			matchingState.setFinal(predictedEdge);
+		return false;
+	}
 
-		return matchingState;
+	private boolean containsASetWithSingleElement(Set<Set<IATNEdge>> setOfSets) {
+		for (Set<?> set : setOfSets) {
+			if (set.size() == 1)
+				return true;
+		}
+
+		return false;
 	}
 
 	private ATNConfigSet moveAndGetClosures(ATNConfigSet d) {
@@ -236,7 +286,38 @@ public class BasicATNSimulator {
 		return newConfigSet;
 	}
 
-	Set<Set<Integer>> getConflictSetsPerLoc(Set<ATNConfig> configSet) {
-		return null;
+	Set<Set<IATNEdge>> getConflictSetsPerLoc(ATNConfigSet configSet) {
+		Set<Set<IATNEdge>> result = new HashSet<>();
+
+		for (ATNState state : configSet.getAllStates()) {
+			Map<RegularCallStack, Set<IATNEdge>> altsByCallStack = new HashMap<>();
+
+			for (ATNConfig config : configSet.getConfigsByState(state)) {
+				Set<IATNEdge> altSet = altsByCallStack.get(config.getCallStack());
+				if (altSet == null) {
+					altSet = new HashSet<>();
+					altsByCallStack.put(config.getCallStack(), altSet);
+				}
+
+				altSet.add(config.getAlternative());
+			}
+
+			result.addAll(altsByCallStack.values());
+		}
+
+		return result;
+	}
+
+	Set<Set<IATNEdge>> getProdSetsPerLoc(ATNConfigSet configSet) {
+		Set<Set<IATNEdge>> result = new HashSet<>();
+
+		for (ATNState state : configSet.getAllStates()) {
+			Set<IATNEdge> alternativesByState = new HashSet<>();
+			for (ATNConfig config : configSet.getConfigsByState(state))
+				alternativesByState.add(config.getAlternative());
+
+			result.add(alternativesByState);
+		}
+		return result;
 	}
 }

@@ -17,7 +17,30 @@ import com.kilic.kmeta.core.util.CharSet;
 public class ATNConfigSet extends HashSet<ATNConfig> {
 	private static final long serialVersionUID = -4055740663032286654L;
 
+	private Map<ATNState, Set<ATNConfig>> configsByState;
+
 	public ATNConfigSet() {
+		configsByState = new HashMap<>();
+	}
+
+	@Override
+	public boolean add(ATNConfig config) {
+		Set<ATNConfig> stateSet = configsByState.get(config.state);
+		if (stateSet == null) {
+			stateSet = new HashSet<>();
+			configsByState.put(config.state, stateSet);
+		}
+
+		stateSet.add(config);
+		return super.add(config);
+	}
+
+	public Set<ATNState> getAllStates() {
+		return configsByState.keySet();
+	}
+
+	public Set<ATNConfig> getConfigsByState(ATNState state) {
+		return configsByState.get(state);
 	}
 
 	public ATNConfigSet move(IStream input) {
@@ -30,9 +53,8 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			if (input.hasEnded() && c.getState().isFinalState()) {
 				result.add(c);
 			} else {
-				for (IATNEdge next : c.getState().move(input)) {
+				for (IATNEdge next : c.getState().move(input))
 					result.add(new ATNConfig(next.getTo(), c.getAlternative(), c.getCallStack()));
-				}
 			}
 		}
 
@@ -87,11 +109,28 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			if (edgesToMove.contains(edge)) {
 				ATNConfig newConfig = new ATNConfig(edge.getTo(), c.alternative, c.callStack);
 				result.add(newConfig);
-			} /*else
-				result.add(c);*/
+			} /*
+				 * else result.add(c);
+				 */
 		}
 
 		return result;
+	}
+
+	public IATNEdge allMembersHaveSameAlternative() {
+		IATNEdge predictedEdge = null;
+		for (ATNConfig config : this) {
+			if (predictedEdge == null) {
+				predictedEdge = config.getAlternative();
+				continue;
+			}
+
+			if (predictedEdge != config.getAlternative()) {
+				return null;
+			}
+		}
+
+		return predictedEdge;
 	}
 
 	// we assume that the set contains the whole epsilon closure
@@ -122,6 +161,16 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 
 	@Override
 	public String toString() {
-		return super.toString();
+		StringBuilder result = new StringBuilder();
+		result.append("{");
+		Iterator<ATNConfig> i = iterator();
+
+		while (i.hasNext()) {
+			ATNConfig c = i.next();
+			result.append("  " + c.toString() + "\n");
+		}
+
+		result.append("}");
+		return result.toString();
 	}
 }
