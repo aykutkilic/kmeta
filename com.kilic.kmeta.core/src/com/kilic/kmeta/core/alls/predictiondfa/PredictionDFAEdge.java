@@ -20,7 +20,7 @@ public class PredictionDFAEdge extends EdgeBase<PredictionDFAState> implements I
 
 	@Override
 	public String match(IStream input) {
-		char c = input.nextChar();
+		char c = input.lookAheadChar(0);
 		return charSet.containsSingleton(c) ? String.valueOf(c) : null;
 	}
 

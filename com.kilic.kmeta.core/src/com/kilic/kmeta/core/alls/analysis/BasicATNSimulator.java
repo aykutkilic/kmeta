@@ -68,17 +68,25 @@ public class BasicATNSimulator {
 	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
 		PredictionDFAState d = d0;
 		while (true) {
+			System.out.println(d0.getContainer().getLabel() + " sll cache next chars:" + input.lookAheadString(0, 5) );
 			PredictionDFAState next = d.move(input);
-			if (next == null)
+			if (next != null)
+				System.out.println(d0.getContainer().getLabel() + " sll cache move to " + next);
+
+			if (next == null) {
 				next = target(d);
+				System.out.println("new state added to " + d0.getContainer().getLabel() + " sll cache " + next);
+			}
 			if (next.getType() == StateType.ERROR)
 				return null; // error
 			boolean isStackSensitive = false;
 			if (isStackSensitive)
 				return llPredict(atnState, g, offset);
 
-			if (next.getType() == StateType.FINAL)
+			if (next.getType() == StateType.FINAL) {
+				System.out.println(d0.getContainer().getLabel() + " sll cache predicted " + next.getDecisionEdge());
 				return next.getDecisionEdge();
+			}
 
 			d = next;
 			input.skip(1);
@@ -167,6 +175,7 @@ public class BasicATNSimulator {
 	}
 
 	PredictionDFAState target(PredictionDFAState d) {
+		System.out.println("target:nextchar = " + input.lookAheadChar(0));
 		PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
 		if (input.hasEnded()) {
@@ -210,14 +219,8 @@ public class BasicATNSimulator {
 			}
 		}
 
-		System.out.println("input: " + input.lookAheadString(0, 6));
-
-		if (predictionDone) {
+		if (predictionDone)
 			matchingState.setFinal(predictedEdge);
-			input.skip(1);
-		}
-
-		System.out.println(dfa.toString());
 
 		return matchingState;
 	}

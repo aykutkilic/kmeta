@@ -15,6 +15,7 @@ public class StringStream implements IStream {
 		if (pos >= string.length())
 			return 0;
 
+		System.out.println("next char = " + lookAheadChar(0));
 		return string.charAt(pos++);
 	}
 
@@ -24,6 +25,8 @@ public class StringStream implements IStream {
 			length = string.length() - pos;
 		String result = string.substring(pos, pos + length);
 		pos += length;
+
+		System.out.println("next str = " + result);
 
 		return result;
 	}
@@ -56,11 +59,13 @@ public class StringStream implements IStream {
 	public void seek(int pos) {
 		assert (pos <= string.length());
 		this.pos = pos;
+		System.out.println("seeked to " + pos);
 	}
 
 	@Override
 	public void skip(int count) {
 		assert (pos + count <= string.length());
 		this.pos += count;
+		System.out.println("skipped to " + pos);
 	}
 }
