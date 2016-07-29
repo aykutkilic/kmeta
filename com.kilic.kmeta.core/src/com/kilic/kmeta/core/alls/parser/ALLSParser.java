@@ -56,7 +56,7 @@ public class ALLSParser {
 					p = ape.getTo();
 				} else if (e instanceof ATNCharSetEdge) {
 					ATNCharSetEdge cse = (ATNCharSetEdge) e;
-					char c = input.nextChar();
+					/*char c =*/ input.nextChar();
 					//print(String.valueOf(c));
 					//print("Matched charset <" + e.getLabel() + "> : " + c);
 					p = cse.getTo();

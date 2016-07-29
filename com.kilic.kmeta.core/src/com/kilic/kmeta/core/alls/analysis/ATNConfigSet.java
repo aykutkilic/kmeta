@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNCharSetEdge;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.atn.IATNEdge;
@@ -77,7 +76,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			}
 		}
 
-		Map<CharSet, Set<IATNEdge>> result = new HashMap();
+		Map<CharSet, Set<IATNEdge>> result = new HashMap<CharSet, Set<IATNEdge>>();
 		Set<CharSet> dcss = CharSet.getDistinctCharSets(csToState.keySet());
 		for (CharSet dcs : dcss) {
 			for (Entry<CharSet, IATNEdge> cs2s : csToState.entrySet()) {

@@ -8,11 +8,11 @@ public class GSSTests {
 	@Test
 	public void test() {
 		GSS gss = new GSS();
-		
-		for(int i=1; i<=5; i++)
+
+		for (int i = 1; i <= 5; i++)
 			gss.merge(i);
-		
-		String v = gss.toGraphviz();
+
+		gss.toGraphviz();
 		gss.move(1, 11);
 		gss.move(2, 12);
 		gss.call(11, 21, 31);
@@ -22,12 +22,12 @@ public class GSSTests {
 		gss.call(5, 25, 32);
 		gss.call(31, 41, 50);
 		gss.call(32, 42, 50);
-		v = gss.toGraphviz();
+		gss.toGraphviz();
 		gss.returnFromCall(50);
 		gss.returnFromCall(41);
 		gss.move(42, 43);
 		gss.returnFromCall(43);
 		gss.returnFromCall(21);
-		v = gss.toGraphviz();
+		gss.toGraphviz();
 	}
 }

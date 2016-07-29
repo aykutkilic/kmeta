@@ -1,8 +1,7 @@
 package com.kilic.kmeta.core.alls.syntax;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFA;
-import com.kilic.kmeta.core.alls.predictiondfa.PredictionDFAState;
+import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.meta.MAttribute;
 import com.kilic.kmeta.core.meta.MFeature;
 import com.kilic.kmeta.core.meta.MReference;
@@ -41,5 +40,11 @@ public class FeatureRef implements ISyntaxExpr {
 			return this.feature == ((FeatureRef) other).feature;
 
 		return false;
+	}
+
+	@Override
+	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
