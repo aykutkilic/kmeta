@@ -27,10 +27,8 @@ public class ALLSParser {
 		ATNState oldp = p;
 
 		while (true) {
-			if (p == atn.getFinalState()) {
+			if (p == atn.getFinalState())
 				return;
-			}
-			// else pop stacks and update p
 
 			if (p.hasNext()) {
 				IATNEdge e = p.nextEdge();
@@ -60,20 +58,7 @@ public class ALLSParser {
 					//print(String.valueOf(c));
 					//print("Matched charset <" + e.getLabel() + "> : " + c);
 					p = cse.getTo();
-				} /*else if (e instanceof ATNStringEdge) {
-					ATNStringEdge se = (ATNStringEdge) e;
-					String str = input.nextString(se.getString().length());
-					print(str);
-					//print("Matched string <" + se.getLabel() + "> : " + str);
-					p = se.getTo();
-				} else if (e instanceof ATNTokenEdge) {
-					ATNTokenEdge te = (ATNTokenEdge) e;
-					DFARunner runner = new DFARunner(te.getTokenDFA());
-					String match = runner.match(input);
-					print(match);
-					//print("Matched token <" + te.getLabel() + ">:" + match);
-					p = te.getTo();
-				}*/
+				}
 				// print("New p=" + p);
 			} else if (p.isFinalState()) {
 				if (callStack.isEmpty()) {
@@ -94,6 +79,7 @@ public class ALLSParser {
 				// print("Predicted " + predictedEdge);
 			} else {
 				// error.
+				System.out.println("ATN ERROR!");
 				return;
 			}
 
