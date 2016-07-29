@@ -49,10 +49,10 @@ public class ATNTests {
 
 		Utils.createATNFromSyntax(HexL, 
 			new SequenceExpr(
-				new StringExpr("0x"),
 				new MultiplicityExpr(Multiplicity.ONEORMORE, 
 					new CharSetExpr(CharSet.HEX)
-				)
+				),
+				new StringExpr("h")
 			)
 		).setLabel("HexL");
 
@@ -77,7 +77,7 @@ public class ATNTests {
 				new ATNCallExpr(PrimE),
 				new MultiplicityExpr(Multiplicity.ANY, 
 					new SequenceExpr(
-						new StringExpr("*"), 
+						new CharSetExpr(new CharSet().addSingleton('*').addSingleton('/')), 
 						new ATNCallExpr(PrimE)
 					)
 				)
@@ -89,7 +89,7 @@ public class ATNTests {
 				new ATNCallExpr(MulE),
 				new MultiplicityExpr(Multiplicity.ANY, 
 					new SequenceExpr(
-						new StringExpr("+"), 
+							new CharSetExpr(new CharSet().addSingleton('+').addSingleton('-')), 
 						new ATNCallExpr(MulE)
 					)
 				)
@@ -140,17 +140,17 @@ public class ATNTests {
 		ALLSParser parser = new ALLSParser();
 		StringBuilder inputString = new StringBuilder();
 
-		for (int s = 50; s < 25000; s += 500) {
+		for (int s = 50; s < 20000; s += 500) {
 			inputString = new StringBuilder();
 			for (int i = 0; i < s; i++)
 				// inputString.append("1+2+3+4+5+6+7+8+9+0;");
 				// int s = 1;
-				inputString.append("1+2*((3+(4+(5+6))))*0x0007+0x000000008;");
+				inputString.append("1+2*((3+(4+(5+6))))*7h+FADECAFEh+11;");
 			IStream input = new StringStream(inputString.toString());
 			long start = System.nanoTime() / 1000000;
 			parser.parse(Body, input);
 			long end = System.nanoTime() / 1000000;
-			System.out.println("s:" + s + " t:" + (end - start));
+			System.out.println("s:" + s + " t:" + (end - start) + " size: " + inputString.length());
 		}
 
 	}

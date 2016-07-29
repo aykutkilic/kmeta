@@ -28,7 +28,6 @@ public class ALLSParser {
 
 		while (true) {
 			if (p == atn.getFinalState()) {
-				//print("Parsing completed");
 				return;
 			}
 			// else pop stacks and update p

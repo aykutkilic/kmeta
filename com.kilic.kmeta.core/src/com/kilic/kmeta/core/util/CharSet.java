@@ -173,8 +173,7 @@ public class CharSet {
 						result.add(dcsMinusCs);
 
 					result.add(intersection);
-
-					cs = cs.getSubtraction(dcs);
+					result.add(cs.getSubtraction(dcs));
 				}
 			}
 		}
