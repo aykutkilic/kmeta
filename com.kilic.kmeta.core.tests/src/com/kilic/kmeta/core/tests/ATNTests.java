@@ -123,34 +123,35 @@ public class ATNTests {
 
 	@Test
 	public void dfaReductionTest() throws FileNotFoundException {
-//		HexL.reduceToTokenDFAEdge();
-//		DecL.reduceToTokenDFAEdge();
+		// HexL.reduceToTokenDFAEdge();
+		// DecL.reduceToTokenDFAEdge();
 		Utils.dumpTNToFile(PrimE, desktopPath + "Prim_after_reduction.graphviz");
 	}
 
 	@Test
 	public void atnTest() throws IOException {
-		//HexL.reduceToTokenDFAEdge();
-		//DecL.reduceToTokenDFAEdge();
+		// HexL.reduceToTokenDFAEdge();
+		// DecL.reduceToTokenDFAEdge();
 
 		String gvFilePath = desktopPath + "Body.graphviz";
 		Utils.dumpTNsTofile(gvFilePath, Body, E, AddE, MulE, PrimE, ParenE, HexL, DecL);
 		Utils.graphVizToSvg(gvFilePath);
-		
+
 		ALLSParser parser = new ALLSParser();
 		StringBuilder inputString = new StringBuilder();
 
-		// for (int s = 50; s < 2500; s+=50) {
-		// for (int i = 0; i < s; i++)
-		// inputString.append("1+2+3+4+5+6+7+8+9+0;");
-		//int s = 1;
-		inputString.append("1+2*3+(4+(5+6))*0x0007+0x000000008;");
-		IStream input = new StringStream(inputString.toString());
-		//long start = System.nanoTime() / 1000000;
-		parser.parse(Body, input);
-		//long end = System.nanoTime() / 1000000;
-		//System.out.println("s:" + s + " t:" + (end - start));
-		// }
+		for (int s = 50; s < 25000; s += 500) {
+			inputString = new StringBuilder();
+			for (int i = 0; i < s; i++)
+				// inputString.append("1+2+3+4+5+6+7+8+9+0;");
+				// int s = 1;
+				inputString.append("1+2*((3+(4+(5+6))))*0x0007+0x000000008;");
+			IStream input = new StringStream(inputString.toString());
+			long start = System.nanoTime() / 1000000;
+			parser.parse(Body, input);
+			long end = System.nanoTime() / 1000000;
+			System.out.println("s:" + s + " t:" + (end - start));
+		}
 
 	}
 }

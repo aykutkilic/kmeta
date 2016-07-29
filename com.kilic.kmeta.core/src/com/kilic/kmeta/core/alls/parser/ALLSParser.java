@@ -28,7 +28,7 @@ public class ALLSParser {
 
 		while (true) {
 			if (p == atn.getFinalState()) {
-				print("Parsing completed");
+				//print("Parsing completed");
 				return;
 			}
 			// else pop stacks and update p
@@ -46,7 +46,7 @@ public class ALLSParser {
 					callStack.push(e.getTo());
 					// print("Callstack: " + callStack);
 					p = ace.getATN().getStartState();
-					print(ace.getATN().getLabel() + ":");
+					//print(ace.getATN().getLabel() + ":");
 					indent++;
 				} else if (e instanceof ATNMutatorEdge) {
 					ATNMutatorEdge ame = (ATNMutatorEdge) e;
@@ -58,7 +58,7 @@ public class ALLSParser {
 				} else if (e instanceof ATNCharSetEdge) {
 					ATNCharSetEdge cse = (ATNCharSetEdge) e;
 					char c = input.nextChar();
-					print(String.valueOf(c));
+					//print(String.valueOf(c));
 					//print("Matched charset <" + e.getLabel() + "> : " + c);
 					p = cse.getTo();
 				} /*else if (e instanceof ATNStringEdge) {

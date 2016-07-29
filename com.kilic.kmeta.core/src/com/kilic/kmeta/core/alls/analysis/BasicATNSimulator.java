@@ -75,30 +75,30 @@ public class BasicATNSimulator {
 	IATNEdge sllPredict(ATNState atnState, PredictionDFAState d0, RegularCallStack g, int offset) {
 		PredictionDFAState d = d0;
 		while (true) {
-			System.out.println("Predicting using sll cache " + d0.getContainer().getLabel());
-			System.out.println("next input chars: " + input.lookAheadString(0, 6));
+			//System.out.println("Predicting using sll cache " + d0.getContainer().getLabel());
+			//System.out.println("next input chars: " + input.lookAheadString(0, 6));
 
 			PredictionDFAState next = d.move(input);
 
 			if (next == null) {
 				next = target(d);
-				System.out.println(next.getKey());
+				//System.out.println(next.getKey());
 			} else {
-				System.out.println("Cache hit: " + next);
+				//System.out.println("Cache hit: " + next);
 			}
 
 			if (next.getType() == StateType.ERROR)
 				return null; // error
 
 			if (next.isStackSensitive()) {
-				System.out.println("Prediction for " + atnState + " / " + g.toString()
-						+ " is stack sensitive. Falling back to LL.");
+				//System.out.println("Prediction for " + atnState + " / " + g.toString()
+				//		+ " is stack sensitive. Falling back to LL.");
 				return llPredict(atnState, g, offset);
 			}
 
 			if (next.getType() == StateType.FINAL) {
-				System.out.println(
-						"Predicted " + next.getDecisionEdge() + " using sll cache " + d0.getContainer().getLabel());
+				//System.out.println(
+				//		"Predicted " + next.getDecisionEdge() + " using sll cache " + d0.getContainer().getLabel());
 				return next.getDecisionEdge();
 			}
 
@@ -120,7 +120,7 @@ public class BasicATNSimulator {
 
 			IATNEdge predictedEdge = nextConfigSet.allMembersHaveSameAlternative();
 			if (predictedEdge != null) {
-				System.out.println("Predicted " + predictedEdge + " for state " + atnState + " using llPredict");
+				//System.out.println("Predicted " + predictedEdge + " for state " + atnState + " using llPredict");
 				return predictedEdge;
 			}
 
@@ -236,7 +236,7 @@ public class BasicATNSimulator {
 
 			if (state == null) {
 				state = dfa.createState(newStateKey);
-				System.out.println(dfa.getLabel() + " new state " + state + " for " + dcs.getKey());
+				//System.out.println(dfa.getLabel() + " new state " + state + " for " + dcs.getKey());
 				// System.out.println(newStateKey);
 			}
 			dfa.createEdge(d, state, dcs.getKey());
@@ -253,12 +253,12 @@ public class BasicATNSimulator {
 			}
 
 			matchingState = state;
-			System.out.println(dfa.getLabel() + " matching state " + state);
+			//System.out.println(dfa.getLabel() + " matching state " + state);
 		}
 
 		if (matchingState == null) {
-			System.out.println("Syntax Error: expecting " + dcss.keySet() + " but got " + input.lookAheadChar(0));
-			System.out.println(dfa.toGraphviz());
+			//System.out.println("Syntax Error: expecting " + dcss.keySet() + " but got " + input.lookAheadChar(0));
+			//System.out.println(dfa.toGraphviz());
 			return dfa.getErrorState();
 		}
 
