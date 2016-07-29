@@ -1,11 +1,8 @@
 package com.kilic.kmeta.core.alls.atn;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.kilic.kmeta.core.alls.nfa.NFA;
-import com.kilic.kmeta.core.alls.nfa.NFAState;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.util.CharSet;
@@ -77,65 +74,6 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 
 	public Set<ATNCallEdge> getAllCallers() {
 		return callers;
-	}
-
-	// returns true if the ATN only contains token and epsilon edges..
-	public boolean hasEquivalentNFA() {
-		for (ATNState state : this.states.values()) {
-			for (IATNEdge edge : state.getOut()) {
-				// this can be improved to look for looping/recursive calls etc.
-				if (edge instanceof ATNCallEdge)
-					return false;
-			}
-		}
-
-		return true;
-	}
-
-	public NFA getEquivalentNFA() {
-		assert (hasEquivalentNFA());
-
-		NFA result = new NFA();
-		result.setLabel(getLabel() + "NFA");
-
-		HashMap<ATNState, NFAState> nfaStates = new HashMap<>();
-
-		for (ATNState state : states.values()) {
-			NFAState nfaFromState = null;
-			if (nfaStates.containsKey(state)) {
-				nfaFromState = nfaStates.get(state);
-			} else {
-				nfaFromState = result.createState();
-				nfaFromState.setType(state.getType());
-				nfaStates.put(state, nfaFromState);
-			}
-
-			for (IATNEdge edge : state.getOut()) {
-				ATNState toState = edge.getTo();
-
-				NFAState nfaToState = null;
-				if (nfaStates.containsKey(toState)) {
-					nfaToState = nfaStates.get(toState);
-				} else {
-					nfaToState = result.createState();
-					nfaToState.setType(toState.getType());
-					nfaStates.put(toState, nfaToState);
-				}
-
-				if (edge instanceof ATNEpsilonEdge) {
-					result.createEpsilonEdge(nfaFromState, nfaToState);
-				} else if (edge instanceof ATNCharSetEdge) {
-					result.createCharSetEdge(nfaFromState, nfaToState, ((ATNCharSetEdge) edge).getCharSet());
-				}
-			}
-		}
-
-		ATNState atnStartState = getStartState();
-		NFAState nfaStartState = nfaStates.get(atnStartState);
-
-		result.setStartState(nfaStartState);
-
-		return result;
 	}
 
 	public String toGraphviz() {

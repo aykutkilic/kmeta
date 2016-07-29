@@ -187,10 +187,6 @@ public class SyntaxDslTests {
 
 	@Test
 	public void atnTest() throws IOException {
-		// DFA idDfa = ID.reduceToTokenDFAEdge();
-		// DFA strLDfa = StrL.reduceToTokenDFAEdge();
-		// DFA charRangeLDfa = CharRangeL.reduceToTokenDFAEdge();
-
 		String gvFilePath = desktopPath + "Grammar.graphviz";
 		Utils.dumpTNsTofile(gvFilePath, Grammar, Rule, E, AltE, DelimE, MulE, PrimE, ParenE, NotE, CharSetE, StrL,
 				CharRangeL, ID);

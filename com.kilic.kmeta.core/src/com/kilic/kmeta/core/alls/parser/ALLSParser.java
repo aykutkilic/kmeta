@@ -79,7 +79,7 @@ public class ALLSParser {
 				// print("Predicted " + predictedEdge);
 			} else {
 				// error.
-				System.out.println("ATN ERROR!");
+				System.out.println("ATN ERROR! " + p);
 				return;
 			}
 

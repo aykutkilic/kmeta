@@ -1,16 +1,11 @@
 package com.kilic.kmeta.core.tests;
 
-import static org.junit.Assert.assertTrue;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.dfa.DFA;
-import com.kilic.kmeta.core.alls.nfa.NFA;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.stream.StringStream;
@@ -110,22 +105,6 @@ public class ATNTests {
 		).setLabel("Body");
 		
 		// @formatter:on
-	}
-
-	@Test
-	public void atnToDFATest() throws FileNotFoundException {
-		assertTrue(HexL.hasEquivalentNFA());
-		NFA HexLNFA = HexL.getEquivalentNFA();
-		Utils.dumpTNToFile(HexLNFA, desktopPath + "HexLNFA.graphviz");
-		DFA HexLDFA = HexLNFA.getEquivalentDFA();
-		Utils.dumpTNToFile(HexLDFA, desktopPath + "HexLDFA.graphviz");
-	}
-
-	@Test
-	public void dfaReductionTest() throws FileNotFoundException {
-		// HexL.reduceToTokenDFAEdge();
-		// DecL.reduceToTokenDFAEdge();
-		Utils.dumpTNToFile(PrimE, desktopPath + "Prim_after_reduction.graphviz");
 	}
 
 	@Test
