@@ -17,6 +17,7 @@ import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.util.CharSet;
+import com.kilic.kmeta.core.util.ParseTreeDumper;
 
 public class ATNTests {
 	String desktopPath;
@@ -109,13 +110,19 @@ public class ATNTests {
 
 	@Test
 	public void atnTest() throws IOException {
-		// HexL.reduceToTokenDFAEdge();
-		// DecL.reduceToTokenDFAEdge();
-
 		String gvFilePath = desktopPath + "Body.graphviz";
 		Utils.dumpTNsTofile(gvFilePath, Body, E, AddE, MulE, PrimE, ParenE, HexL, DecL);
 		Utils.graphVizToSvg(gvFilePath);
 
+		ALLSParser parser = new ALLSParser();
+		parser.setListener(new ParseTreeDumper());
+
+		IStream input = new StringStream("1+2*((3+(4+(5+6))))*7h+FADECAFEh+11;");
+		parser.parse(Body, input);
+	}
+
+	@Test
+	public void atnPerformanceTest() throws IOException {
 		ALLSParser parser = new ALLSParser();
 		StringBuilder inputString = new StringBuilder();
 

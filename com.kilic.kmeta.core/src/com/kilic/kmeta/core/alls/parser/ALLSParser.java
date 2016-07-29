@@ -19,80 +19,79 @@ import com.kilic.kmeta.core.alls.stream.IStream;
  * Analysis
  */
 public class ALLSParser {
-	int indent = 0;
-
+	IParserListener listener;
+	
+	public IParserListener getListener() {
+		return listener;
+	}
+	
+	public void setListener(IParserListener listener) {
+		this.listener = listener;
+	}
+	
+	
 	public void parse(ATN atn, IStream input) {
 		ATNState p = atn.getStartState();
 		RegularCallStack callStack = new RegularCallStack();
 		ATNState oldp = p;
 
+		if(listener!=null)
+			listener.onCall(atn);
+		
 		while (true) {
-			if (p == atn.getFinalState())
+			if (p == atn.getFinalState()) {
+				if(listener!=null)
+					listener.onFinished();
 				return;
+			}
 
 			if (p.hasNext()) {
 				IATNEdge e = p.nextEdge();
-
-				// print("Applying " + p.toString() + " edge " +
-				// e.toString());
 
 				if (e instanceof ATNEpsilonEdge) {
 					p = e.getTo();
 				} else if (e instanceof ATNCallEdge) {
 					ATNCallEdge ace = (ATNCallEdge) e;
 					callStack.push(e.getTo());
-					// print("Callstack: " + callStack);
 					p = ace.getATN().getStartState();
-					//print(ace.getATN().getLabel() + ":");
-					indent++;
+					if(listener!=null)
+						listener.onCall(ace.getATN());
 				} else if (e instanceof ATNMutatorEdge) {
 					ATNMutatorEdge ame = (ATNMutatorEdge) e;
 					p = ame.getTo();
 				} else if (e instanceof ATNPredicateEdge) {
 					ATNPredicateEdge ape = (ATNPredicateEdge) e;
-					// error if !ape.evaluatePredicate();
 					p = ape.getTo();
 				} else if (e instanceof ATNCharSetEdge) {
 					ATNCharSetEdge cse = (ATNCharSetEdge) e;
-					/*char c =*/ input.nextChar();
-					//print(String.valueOf(c));
-					//print("Matched charset <" + e.getLabel() + "> : " + c);
+					char c = input.nextChar();
+					if(listener!=null)
+						listener.onChar(c);
 					p = cse.getTo();
 				}
-				// print("New p=" + p);
 			} else if (p.isFinalState()) {
 				if (callStack.isEmpty()) {
-					// print("ERROR empty callstack");
+					System.out.println("ERROR! empty callstack");
+					assert(false);
 					return;
 				}
-				// print("Callstack: " + callStack);
-				// print("Peek: " + callStack.peek());
+				
+				if(listener!=null)
+					listener.onReturn((ATN) p.getContainer());
+				
 				p = callStack.pop();
-				indent--;
-				// print("Returned to " + p);
 			} else if (p.isDecisionState()) {
-				// print("Making prediction " + p + " " +
-				// input.lookAheadString(0, 5));
 				BasicATNSimulator slas = new BasicATNSimulator(input);
 				IATNEdge predictedEdge = slas.adaptivePredict(p, callStack);
 				p = predictedEdge.getTo();
-				// print("Predicted " + predictedEdge);
 			} else {
-				// error.
 				System.out.println("ATN ERROR! " + p);
+				assert(false);
 				return;
 			}
 
 			assert (p != null && p != oldp);
 			oldp = p;
 		}
-	}
-
-	void print(String input) {
-		StringBuilder output = new StringBuilder();
-		for (int i = 0; i < indent; i++)
-			output.append("  ");
-		output.append(input);
-		System.out.println(output.toString());
 	}
 }

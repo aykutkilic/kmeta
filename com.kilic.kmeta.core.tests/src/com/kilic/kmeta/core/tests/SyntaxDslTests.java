@@ -17,6 +17,7 @@ import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
 import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.util.CharSet;
+import com.kilic.kmeta.core.util.ParseTreeDumper;
 
 public class SyntaxDslTests {
 	String desktopPath;
@@ -193,6 +194,15 @@ public class SyntaxDslTests {
 		Utils.graphVizToSvg(gvFilePath);
 
 		ALLSParser parser = new ALLSParser();
+		parser.setListener(new ParseTreeDumper());
+
+		String grammarWithNoSpaces = grammar.replace(" ", "");
+		parser.parse(Grammar, new StringStream(grammarWithNoSpaces));
+	}
+
+	@Test
+	public void syntaxDslPerformanceMeasurementTest() throws IOException {
+		ALLSParser parser = new ALLSParser();
 		String grammarWithNoSpaces = grammar.replace(" ", "");
 
 		for (int s = 1; s <= 10001; s += 500) {
@@ -207,6 +217,5 @@ public class SyntaxDslTests {
 			double avg = 1000.0 * (double) dt / (double) (s * input.length());
 			System.out.println("s:" + s + " t:" + dt + " len:" + input.length() + " avg:" + avg + "ms/c");
 		}
-
 	}
 }
