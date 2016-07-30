@@ -71,10 +71,10 @@ public class ATNTests {
 		Utils.createATNFromSyntax(MulE, 
 			new SequenceExpr(
 				new ATNCallExpr(PrimE),
-				new MultiplicityExpr(Multiplicity.ANY, 
+				new MultiplicityExpr(Multiplicity.OPTIONAL, 
 					new SequenceExpr(
 						new CharSetExpr(new CharSet().addSingleton('*').addSingleton('/')), 
-						new ATNCallExpr(PrimE)
+						new ATNCallExpr(MulE)
 					)
 				)
 			)
@@ -83,10 +83,10 @@ public class ATNTests {
 		Utils.createATNFromSyntax(AddE, 
 			new SequenceExpr(
 				new ATNCallExpr(MulE),
-				new MultiplicityExpr(Multiplicity.ANY, 
+				new MultiplicityExpr(Multiplicity.OPTIONAL, 
 					new SequenceExpr(
 							new CharSetExpr(new CharSet().addSingleton('+').addSingleton('-')), 
-						new ATNCallExpr(MulE)
+						new ATNCallExpr(AddE)
 					)
 				)
 			)
@@ -106,6 +106,17 @@ public class ATNTests {
 		).setLabel("Body");
 		
 		// @formatter:on
+		
+		/**
+		 * Body: (E [;])*;
+		 * E: AddE;
+		 * AddE: MulE  ( left=current op=[+,-] right=AddE )?;
+		 * MulE: PrimE ( left=current op=[*,/] right=MulE )?;
+		 * PrimE: DecL | HexL | ParenE;
+		 * ParenE: [(] e=E [)];
+		 * HexL: [0-9a-fA-F]+ [h];
+		 * DecL: [0-9]+;
+		 */
 	}
 
 	@Test
@@ -117,7 +128,7 @@ public class ATNTests {
 		ALLSParser parser = new ALLSParser();
 		parser.setListener(new ParseTreeDumper());
 
-		IStream input = new StringStream("1+2*((3+(4+(5+6))))*7h+FADECAFEh+11;");
+		IStream input = new StringStream("1+2*((3+(4+(5+6))))*7h+FADECAFEh+9+10+11;");
 		parser.parse(Body, input);
 	}
 

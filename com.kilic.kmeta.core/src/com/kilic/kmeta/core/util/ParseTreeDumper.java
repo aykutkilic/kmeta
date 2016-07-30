@@ -18,6 +18,7 @@ public class ParseTreeDumper implements IParserListener {
 	public void onReturn(ATN atn) {
 		dumpLastMatch();
 		indent--;
+		print("</" + atn.getLabel() + ">");
 	}
 
 	@Override
