@@ -1,12 +1,20 @@
 package com.kilic.kmeta.core.alls.atn;
 
+import com.kilic.kmeta.core.alls.parser.IMutator;
 import com.kilic.kmeta.core.alls.stream.IStream;
 
 public class ATNMutatorEdge extends ATNEdgeBase {
-	ATNMutatorEdge(ATNState from, ATNState to) {
+	IMutator mutator;
+
+	ATNMutatorEdge(ATNState from, ATNState to, IMutator mutator) {
+		this.mutator = mutator;
 		connect(from, to);
 	}
 
+	public IMutator getMutator() {
+		return mutator;
+	}
+	
 	@Override
 	public String getLabel() {
 		return "mut";

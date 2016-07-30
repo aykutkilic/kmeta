@@ -3,6 +3,7 @@ package com.kilic.kmeta.core.alls.atn;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.kilic.kmeta.core.alls.parser.IMutator;
 import com.kilic.kmeta.core.alls.tn.IState.StateType;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.util.CharSet;
@@ -64,8 +65,8 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		return new ATNPredicateEdge(from, to);
 	}
 
-	public ATNMutatorEdge createMutatorEdge(ATNState from, ATNState to) {
-		return new ATNMutatorEdge(from, to);
+	public ATNMutatorEdge createMutatorEdge(ATNState from, ATNState to, IMutator mutator) {
+		return new ATNMutatorEdge(from, to, mutator);
 	}
 
 	public void addCaller(ATNCallEdge edge) {

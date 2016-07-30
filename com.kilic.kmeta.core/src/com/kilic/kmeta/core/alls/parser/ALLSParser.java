@@ -30,6 +30,8 @@ public class ALLSParser {
 	}
 
 	public void parse(ATN atn, IStream input) {
+		ParserContext context = new ParserContext();
+
 		ATNState p = atn.getStartState();
 		RegularCallStack callStack = new RegularCallStack();
 		ATNState oldp = p;
@@ -59,6 +61,7 @@ public class ALLSParser {
 						listener.onCall(ace.getATN());
 				} else if (e instanceof ATNMutatorEdge) {
 					ATNMutatorEdge ame = (ATNMutatorEdge) e;
+					ame.getMutator().run(context);
 					p = ame.getTo();
 				} else if (e instanceof ATNPredicateEdge) {
 					ATNPredicateEdge ape = (ATNPredicateEdge) e;

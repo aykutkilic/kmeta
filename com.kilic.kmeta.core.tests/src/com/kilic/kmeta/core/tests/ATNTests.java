@@ -105,18 +105,19 @@ public class ATNTests {
 			)
 		).setLabel("Body");
 		
-		// @formatter:on
-		
+
 		/**
-		 * Body: (E [;])*;
+		 * Body: {Body} (exprs+=E [;])*;
 		 * E: AddE;
-		 * AddE: MulE  ( left=current op=[+,-] right=AddE )?;
-		 * MulE: PrimE ( left=current op=[*,/] right=MulE )?;
+		 * AddE: MulE  ( {AddE} left=current op=[+,-] right=AddE )?;
+		 * MulE: PrimE ( {MulE} left=current op=[*,/] right=MulE )?;
 		 * PrimE: DecL | HexL | ParenE;
-		 * ParenE: [(] e=E [)];
-		 * HexL: [0-9a-fA-F]+ [h];
-		 * DecL: [0-9]+;
+		 * ParenE: [(] {ParenE} expr=E [)];
+		 * HexL: [0-9a-fA-F]+ [h] {HexL};
+		 * DecL: [0-9]+ {DecL};
 		 */
+		
+		// @formatter:on
 	}
 
 	@Test
