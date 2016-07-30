@@ -17,7 +17,7 @@ public class ATNMutatorEdge extends ATNEdgeBase {
 	
 	@Override
 	public String getLabel() {
-		return "mut";
+		return mutator.getLabel();
 	}
 
 	@Override
