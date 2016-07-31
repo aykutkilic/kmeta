@@ -8,14 +8,15 @@ import org.junit.Test;
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
 import com.kilic.kmeta.core.alls.stream.StringStream;
-import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
-import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
-import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
-import com.kilic.kmeta.core.alls.syntax.DelimiterExpr;
-import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
-import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
-import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.syntax.ATNCallExpr;
+import com.kilic.kmeta.core.syntax.AlternativeExpr;
+import com.kilic.kmeta.core.syntax.CharSetExpr;
+import com.kilic.kmeta.core.syntax.DelimiterExpr;
+import com.kilic.kmeta.core.syntax.MultiplicityExpr;
+import com.kilic.kmeta.core.syntax.POJOParserContext;
+import com.kilic.kmeta.core.syntax.SequenceExpr;
+import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
 import com.kilic.kmeta.core.util.ParseTreeDumper;
 
@@ -194,10 +195,10 @@ public class SyntaxDslTests {
 		Utils.graphVizToSvg(gvFilePath);
 
 		ALLSParser parser = new ALLSParser();
-		parser.setListener(new ParseTreeDumper());
 
 		String grammarWithNoSpaces = grammar.replace(" ", "");
-		parser.parse(Grammar, new StringStream(grammarWithNoSpaces));
+		POJOParserContext pojoContext = new POJOParserContext();
+		parser.parse(Grammar, new StringStream(grammarWithNoSpaces), pojoContext);
 	}
 
 	@Test
@@ -211,7 +212,7 @@ public class SyntaxDslTests {
 				input.append(grammarWithNoSpaces);
 			}
 			long start = System.nanoTime() / 1000000;
-			parser.parse(Grammar, new StringStream(input.toString()));
+			parser.parse(Grammar, new StringStream(input.toString()), new POJOParserContext());
 			long end = System.nanoTime() / 1000000;
 			long dt = end - start;
 			double avg = 1000.0 * (double) dt / (double) (s * input.length());

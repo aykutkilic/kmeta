@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.alls.syntax;
+package com.kilic.kmeta.core.syntax;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNState;

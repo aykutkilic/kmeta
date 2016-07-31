@@ -1,7 +1,10 @@
 package com.kilic.kmeta.core.tests;
 
+import com.kilic.kmeta.core.tests.expr.Body;
+import com.kilic.kmeta.core.tests.expr.Expr;
 import java.io.IOException;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -9,15 +12,21 @@ import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.stream.StringStream;
-import com.kilic.kmeta.core.alls.syntax.ATNCallExpr;
-import com.kilic.kmeta.core.alls.syntax.AlternativeExpr;
-import com.kilic.kmeta.core.alls.syntax.CharSetExpr;
-import com.kilic.kmeta.core.alls.syntax.MultiplicityExpr;
-import com.kilic.kmeta.core.alls.syntax.SequenceExpr;
-import com.kilic.kmeta.core.alls.syntax.StringExpr;
 import com.kilic.kmeta.core.meta.Multiplicity;
+import com.kilic.kmeta.core.syntax.ATNCallExpr;
+import com.kilic.kmeta.core.syntax.AlternativeExpr;
+import com.kilic.kmeta.core.syntax.AppendCurrentRetValToListMutator;
+import com.kilic.kmeta.core.syntax.AssignCurrentRetValToField;
+import com.kilic.kmeta.core.syntax.AssignMatchStringToFieldMutator;
+import com.kilic.kmeta.core.syntax.CharSetExpr;
+import com.kilic.kmeta.core.syntax.CreateObjectMutator;
+import com.kilic.kmeta.core.syntax.MultiplicityExpr;
+import com.kilic.kmeta.core.syntax.MutatorExpr;
+import com.kilic.kmeta.core.syntax.POJOParserContext;
+import com.kilic.kmeta.core.syntax.ResetMatchStringMutator;
+import com.kilic.kmeta.core.syntax.SequenceExpr;
+import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
-import com.kilic.kmeta.core.util.ParseTreeDumper;
 
 public class ATNTests {
 	String desktopPath;
@@ -37,25 +46,33 @@ public class ATNTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
 
 		// @formatter:off
-		Utils.createATNFromSyntax(DecL, 
-			new MultiplicityExpr(Multiplicity.ONEORMORE, 
-				new CharSetExpr(CharSet.DEC)
+		Utils.createATNFromSyntax(DecL,
+			new SequenceExpr(
+				new MutatorExpr(new CreateObjectMutator("DecL")),
+				new MultiplicityExpr(Multiplicity.ONEORMORE, 
+					new CharSetExpr(CharSet.DEC)
+				),
+				new MutatorExpr(new AssignMatchStringToFieldMutator("val"))
 			)
 		).setLabel("DecL");
 
 		Utils.createATNFromSyntax(HexL, 
 			new SequenceExpr(
+				new MutatorExpr(new CreateObjectMutator("HexL")),
 				new MultiplicityExpr(Multiplicity.ONEORMORE, 
 					new CharSetExpr(CharSet.HEX)
 				),
-				new StringExpr("h")
+				new StringExpr("h"),
+				new MutatorExpr(new AssignMatchStringToFieldMutator("val"))
 			)
 		).setLabel("HexL");
 
 		Utils.createATNFromSyntax(ParenE,
 			new SequenceExpr(
-				new StringExpr("("), 
-				new ATNCallExpr(E), 
+				new MutatorExpr(new CreateObjectMutator("ParenE")),
+				new StringExpr("("),
+				new ATNCallExpr(E),
+				new MutatorExpr(new AssignCurrentRetValToField("expr")),
 				new StringExpr(")")
 			)
 		).setLabel("ParenE");
@@ -63,7 +80,7 @@ public class ATNTests {
 		Utils.createATNFromSyntax(PrimE,
 			new AlternativeExpr(
 				new ATNCallExpr(DecL), 
-				new ATNCallExpr(HexL), 
+				new ATNCallExpr(HexL),
 				new ATNCallExpr(ParenE)
 			)
 		).setLabel("PrimE");
@@ -73,8 +90,13 @@ public class ATNTests {
 				new ATNCallExpr(PrimE),
 				new MultiplicityExpr(Multiplicity.OPTIONAL, 
 					new SequenceExpr(
-						new CharSetExpr(new CharSet().addSingleton('*').addSingleton('/')), 
-						new ATNCallExpr(MulE)
+						new MutatorExpr(new CreateObjectMutator("MulE")),
+						new MutatorExpr(new AssignCurrentRetValToField("left")),
+						new MutatorExpr(new ResetMatchStringMutator()),
+						new CharSetExpr(new CharSet().addSingleton('*').addSingleton('/')),
+						new MutatorExpr(new AssignMatchStringToFieldMutator("op")),
+						new ATNCallExpr(MulE),
+						new MutatorExpr(new AssignCurrentRetValToField("right"))
 					)
 				)
 			)
@@ -85,8 +107,13 @@ public class ATNTests {
 				new ATNCallExpr(MulE),
 				new MultiplicityExpr(Multiplicity.OPTIONAL, 
 					new SequenceExpr(
-							new CharSetExpr(new CharSet().addSingleton('+').addSingleton('-')), 
-						new ATNCallExpr(AddE)
+						new MutatorExpr(new CreateObjectMutator("AddE")),
+						new MutatorExpr(new AssignCurrentRetValToField("left")),
+						new MutatorExpr(new ResetMatchStringMutator()),
+						new CharSetExpr(new CharSet().addSingleton('+').addSingleton('-')),
+						new MutatorExpr(new AssignMatchStringToFieldMutator("op")),
+						new ATNCallExpr(AddE),
+						new MutatorExpr(new AssignCurrentRetValToField("right"))
 					)
 				)
 			)
@@ -97,14 +124,17 @@ public class ATNTests {
 		).setLabel("E");
 
 		Utils.createATNFromSyntax(Body,
-			new MultiplicityExpr(Multiplicity.ANY, 
-				new SequenceExpr(
-					new ATNCallExpr(E), 
-					new StringExpr(";")
+			new SequenceExpr(
+				new MutatorExpr(new CreateObjectMutator("Body")),
+				new MultiplicityExpr(Multiplicity.ANY, 
+					new SequenceExpr(
+						new ATNCallExpr(E),
+						new MutatorExpr(new AppendCurrentRetValToListMutator("exprs")),
+						new StringExpr(";")
+					)
 				)
 			)
 		).setLabel("Body");
-		
 
 		/**
 		 * Body: {Body} (exprs+=E [;])*;
@@ -127,10 +157,19 @@ public class ATNTests {
 		Utils.graphVizToSvg(gvFilePath);
 
 		ALLSParser parser = new ALLSParser();
-		parser.setListener(new ParseTreeDumper());
 
-		IStream input = new StringStream("1+2*((3+(4+(5+6))))*7h+FADECAFEh+9+10+11;");
-		parser.parse(Body, input);
+		IStream input = new StringStream("(1+2)*7h;1;1-1;FFh;10h*4;1+2*((3+(4+(5+6))))*7h+CAFEh-11;");
+		POJOParserContext ctx = new POJOParserContext();
+		ctx.addJavaPackage("com.kilic.kmeta.core.tests.expr");
+		parser.parse(Body, input, ctx);
+
+		Body body = (Body) ctx.getLocalObject();
+		Assert.assertEquals((1+2)*0x7, body.exprs.get(0).eval());
+		Assert.assertEquals(1, body.exprs.get(1).eval());
+		Assert.assertEquals(1-1, body.exprs.get(2).eval());
+		Assert.assertEquals(0xFF, body.exprs.get(3).eval());
+		Assert.assertEquals(0x10*4, body.exprs.get(4).eval());
+		Assert.assertEquals(1+2*((3+(4+(5+6))))*0x7+0xCAFE-11, body.exprs.get(5).eval());
 	}
 
 	@Test
@@ -146,10 +185,9 @@ public class ATNTests {
 				inputString.append("1+2*((3+(4+(5+6))))*7h+FADECAFEh+11;");
 			IStream input = new StringStream(inputString.toString());
 			long start = System.nanoTime() / 1000000;
-			parser.parse(Body, input);
+			parser.parse(Body, input, new POJOParserContext());
 			long end = System.nanoTime() / 1000000;
 			System.out.println("s:" + s + " t:" + (end - start) + " size: " + inputString.length());
 		}
-
 	}
 }

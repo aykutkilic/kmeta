@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.meta;
 import java.util.HashSet;
 import java.util.Set;
 
-import com.kilic.kmeta.core.alls.syntax.ISyntaxExpr;
+import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 public class MClass {
 	String name;

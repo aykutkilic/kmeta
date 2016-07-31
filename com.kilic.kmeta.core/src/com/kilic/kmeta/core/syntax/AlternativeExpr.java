@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.alls.syntax;
+package com.kilic.kmeta.core.syntax;
 
 import java.util.ArrayList;
 import java.util.List;

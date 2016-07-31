@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.syntax.ISyntaxExpr;
 import com.kilic.kmeta.core.alls.tn.ITransitionNetwork;
 import com.kilic.kmeta.core.alls.tn.TNUtils;
 import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
+import com.kilic.kmeta.core.syntax.ISyntaxExpr;
 
 public class Utils {
 	public static ATN createATNFromSyntax(ATN atn, ISyntaxExpr e) {

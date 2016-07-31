@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.alls.syntax;
+package com.kilic.kmeta.core.syntax;
 
 public class NotExpr {
 	ISyntaxExpr expr;

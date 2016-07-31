@@ -1,9 +1,10 @@
 package com.kilic.kmeta.core.util;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.parser.IParserListener;
+import com.kilic.kmeta.core.alls.parser.IMutator;
+import com.kilic.kmeta.core.alls.parser.IParserContext;
 
-public class ParseTreeDumper implements IParserListener {
+public class ParseTreeDumper implements IParserContext {
 	int indent;
 	StringBuilder lastMatch = new StringBuilder();
 
@@ -24,6 +25,11 @@ public class ParseTreeDumper implements IParserListener {
 	@Override
 	public void onChar(char c) {
 		lastMatch.append(c);
+	}
+
+	@Override
+	public void onMutator(IMutator mutator) {
+		print("Mutate(" + mutator.getLabel() + ")");
 	}
 
 	@Override

@@ -22,6 +22,6 @@ public class ATNMutatorEdge extends ATNEdgeBase {
 
 	@Override
 	public String match(IStream input) {
-		return null;
+		return "";
 	}
 }

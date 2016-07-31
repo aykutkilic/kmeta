@@ -19,32 +19,21 @@ import com.kilic.kmeta.core.alls.stream.IStream;
  * Analysis
  */
 public class ALLSParser {
-	IParserListener listener;
+	public void parse(ATN atn, IStream input, IParserContext context) {
+		assert (context != null);
 
-	public IParserListener getListener() {
-		return listener;
-	}
-
-	public void setListener(IParserListener listener) {
-		this.listener = listener;
-	}
-
-	public void parse(ATN atn, IStream input) {
-		ParserContext context = new ParserContext();
+		RegularCallStack callStack = new RegularCallStack();
 
 		ATNState p = atn.getStartState();
-		RegularCallStack callStack = new RegularCallStack();
 		ATNState oldp = p;
 
-		if (listener != null)
-			listener.onCall(atn);
+		context.onCall(atn);
 
 		while (true) {
 			boolean tolerateSameState = false;
 
 			if (p == atn.getFinalState()) {
-				if (listener != null)
-					listener.onFinished();
+				context.onFinished();
 				return;
 			}
 
@@ -57,11 +46,10 @@ public class ALLSParser {
 					ATNCallEdge ace = (ATNCallEdge) e;
 					callStack.push(e.getTo());
 					p = ace.getATN().getStartState();
-					if (listener != null)
-						listener.onCall(ace.getATN());
+					context.onCall(ace.getATN());
 				} else if (e instanceof ATNMutatorEdge) {
 					ATNMutatorEdge ame = (ATNMutatorEdge) e;
-					ame.getMutator().run(context);
+					context.onMutator(ame.getMutator());
 					p = ame.getTo();
 				} else if (e instanceof ATNPredicateEdge) {
 					ATNPredicateEdge ape = (ATNPredicateEdge) e;
@@ -69,8 +57,7 @@ public class ALLSParser {
 				} else if (e instanceof ATNCharSetEdge) {
 					ATNCharSetEdge cse = (ATNCharSetEdge) e;
 					char c = input.nextChar();
-					if (listener != null)
-						listener.onChar(c);
+					context.onChar(c);
 					p = cse.getTo();
 				}
 			} else if (p.isFinalState()) {
@@ -80,8 +67,7 @@ public class ALLSParser {
 					return;
 				}
 
-				if (listener != null)
-					listener.onReturn((ATN) p.getContainer());
+				context.onReturn((ATN) p.getContainer());
 
 				p = callStack.pop();
 				if (p == oldp)

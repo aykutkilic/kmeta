@@ -108,9 +108,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			if (edgesToMove.contains(edge)) {
 				ATNConfig newConfig = new ATNConfig(edge.getTo(), c.alternative, c.callStack);
 				result.add(newConfig);
-			} /*
-				 * else result.add(c);
-				 */
+			}
 		}
 
 		return result;
