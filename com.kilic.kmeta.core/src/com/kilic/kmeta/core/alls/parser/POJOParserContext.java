@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.syntax;
+package com.kilic.kmeta.core.alls.parser;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.Stack;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
-import com.kilic.kmeta.core.alls.parser.IMutator;
-import com.kilic.kmeta.core.alls.parser.IParserContext;
 
 public class POJOParserContext implements IParserContext {
 	List<String> javaPackages;

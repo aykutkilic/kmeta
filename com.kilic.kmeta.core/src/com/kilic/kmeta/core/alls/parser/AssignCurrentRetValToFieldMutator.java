@@ -1,16 +1,13 @@
-package com.kilic.kmeta.core.syntax;
+package com.kilic.kmeta.core.alls.parser;
 
 import java.lang.reflect.Field;
 
-import com.kilic.kmeta.core.alls.parser.IMutator;
-import com.kilic.kmeta.core.alls.parser.IParserContext;
-
-public class AssignCurrentRetValToField implements IMutator {
+public class AssignCurrentRetValToFieldMutator implements IMutator {
 	String fieldName;
 	Class<?> clazz;
 	Field field;
 
-	public AssignCurrentRetValToField(String fieldName) {
+	public AssignCurrentRetValToFieldMutator(String fieldName) {
 		this.fieldName = fieldName;
 	}
 

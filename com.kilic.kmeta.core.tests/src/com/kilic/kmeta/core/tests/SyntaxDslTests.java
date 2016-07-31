@@ -7,6 +7,12 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
+import com.kilic.kmeta.core.alls.parser.AppendCurrentRetValToListMutator;
+import com.kilic.kmeta.core.alls.parser.AssignCurrentRetValToFieldMutator;
+import com.kilic.kmeta.core.alls.parser.AssignMatchStringToFieldMutator;
+import com.kilic.kmeta.core.alls.parser.CreateObjectMutator;
+import com.kilic.kmeta.core.alls.parser.POJOParserContext;
+import com.kilic.kmeta.core.alls.parser.ResetMatchStringMutator;
 import com.kilic.kmeta.core.alls.stream.StringStream;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.ATNCallExpr;
@@ -14,11 +20,10 @@ import com.kilic.kmeta.core.syntax.AlternativeExpr;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
 import com.kilic.kmeta.core.syntax.DelimiterExpr;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
-import com.kilic.kmeta.core.syntax.POJOParserContext;
+import com.kilic.kmeta.core.syntax.MutatorExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
-import com.kilic.kmeta.core.util.ParseTreeDumper;
 
 public class SyntaxDslTests {
 	String desktopPath;
@@ -28,6 +33,7 @@ public class SyntaxDslTests {
 	ATN E = new ATN();
 
 	ATN AltE = new ATN();
+	ATN SeqE = new ATN();
 	ATN DelimE = new ATN();
 	ATN MulE = new ATN();
 
@@ -84,6 +90,7 @@ public class SyntaxDslTests {
 		
 		Utils.createATNFromSyntax(CharSetE, 
 			new SequenceExpr(
+				new MutatorExpr(new CreateObjectMutator("CharSetE")),
 				new StringExpr("["),
 				new DelimiterExpr(
 					new AlternativeExpr(
@@ -99,7 +106,9 @@ public class SyntaxDslTests {
 			
 		Utils.createATNFromSyntax(ParenE,
 			new SequenceExpr(
-				new StringExpr("("), 
+				new MutatorExpr(new CreateObjectMutator("ParenE")),
+				new StringExpr("("),
+				new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
 				new ATNCallExpr(E),
 				new StringExpr(")")
 			)
@@ -119,7 +128,13 @@ public class SyntaxDslTests {
 			new SequenceExpr(
 				new ATNCallExpr(PrimE),
 				new MultiplicityExpr(Multiplicity.OPTIONAL,
-					new CharSetExpr(new CharSet().addSingleton('?').addSingleton('+').addSingleton('*'))
+					new SequenceExpr(
+						new MutatorExpr(new CreateObjectMutator("MulE")),
+						new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
+						new MutatorExpr(new ResetMatchStringMutator()),
+						new CharSetExpr(new CharSet().addSingleton('?').addSingleton('+').addSingleton('*')),
+						new MutatorExpr(new AssignMatchStringToFieldMutator("delimiter"))
+					)
 				)
 			)
 		).setLabel("MulE");
@@ -129,24 +144,40 @@ public class SyntaxDslTests {
 				new ATNCallExpr(MulE),
 				new MultiplicityExpr(Multiplicity.OPTIONAL,
 					new SequenceExpr(
+						new MutatorExpr(new CreateObjectMutator("DelimE")),
+						new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
 						new CharSetExpr(new CharSet().addSingleton('/')),
-						new ATNCallExpr(StrL)
+						new MutatorExpr(new ResetMatchStringMutator()),
+						new ATNCallExpr(StrL),
+						new MutatorExpr(new AssignMatchStringToFieldMutator("delimiter"))
 					)
 				)
 			)
 		).setLabel("DelimE");
+
+		Utils.createATNFromSyntax(SeqE,
+			new SequenceExpr(
+				new ATNCallExpr(DelimE),
+				new MultiplicityExpr(Multiplicity.ANY,
+					new SequenceExpr(
+						new MutatorExpr(new CreateObjectMutator("SeqE")),
+						new ATNCallExpr(DelimE),
+						new MutatorExpr(new AppendCurrentRetValToListMutator("elems"))
+					)
+				)
+			)
+		).setLabel("SeqE");
 		
 		Utils.createATNFromSyntax(AltE, 
 			new SequenceExpr(
-				new MultiplicityExpr(Multiplicity.ONEORMORE,
-					new ATNCallExpr(DelimE)
-				),
+				new ATNCallExpr(SeqE),
 				new MultiplicityExpr(Multiplicity.ANY, 
 					new SequenceExpr(
+						new MutatorExpr(new CreateObjectMutator("AltE")),
+						new MutatorExpr(new AppendCurrentRetValToListMutator("alts")),
 						new StringExpr("|"), 
-						new MultiplicityExpr(Multiplicity.ONEORMORE,
-							new ATNCallExpr(DelimE)
-						)
+						new ATNCallExpr(SeqE),
+						new MutatorExpr(new AppendCurrentRetValToListMutator("alts"))
 					)
 				)
 			)
@@ -158,16 +189,23 @@ public class SyntaxDslTests {
 		
 		Utils.createATNFromSyntax(Rule,
 			new SequenceExpr(
+				new MutatorExpr(new CreateObjectMutator("Rule")),
 				new ATNCallExpr(ID),
+				new MutatorExpr(new AssignMatchStringToFieldMutator("name")),
 				new StringExpr(":"),
 				new ATNCallExpr(E),
+				new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
 				new StringExpr(";")
 			)
 		).setLabel("Rule");
 		
 		Utils.createATNFromSyntax(Grammar,
 			new MultiplicityExpr(Multiplicity.ONEORMORE,
-				new ATNCallExpr(Rule)
+				new SequenceExpr(
+					new MutatorExpr(new CreateObjectMutator("Grammar")),
+					new ATNCallExpr(Rule),
+					new MutatorExpr(new AppendCurrentRetValToListMutator("rules"))
+				)
 			)
 		).setLabel("Grammar"); 
 	

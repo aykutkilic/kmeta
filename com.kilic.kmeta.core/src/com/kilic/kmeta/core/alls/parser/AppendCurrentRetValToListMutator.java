@@ -1,8 +1,8 @@
-package com.kilic.kmeta.core.syntax;
+package com.kilic.kmeta.core.alls.parser;
 
 import java.util.List;
 
-public class AppendCurrentRetValToListMutator extends AssignCurrentRetValToField {
+public class AppendCurrentRetValToListMutator extends AssignCurrentRetValToFieldMutator {
 	public AppendCurrentRetValToListMutator(String fieldName) {
 		super(fieldName);
 	}

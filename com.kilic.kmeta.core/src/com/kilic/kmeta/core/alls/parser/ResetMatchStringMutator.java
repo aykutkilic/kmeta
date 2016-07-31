@@ -1,7 +1,4 @@
-package com.kilic.kmeta.core.syntax;
-
-import com.kilic.kmeta.core.alls.parser.IMutator;
-import com.kilic.kmeta.core.alls.parser.IParserContext;
+package com.kilic.kmeta.core.alls.parser;
 
 public class ResetMatchStringMutator implements IMutator {
 	@Override

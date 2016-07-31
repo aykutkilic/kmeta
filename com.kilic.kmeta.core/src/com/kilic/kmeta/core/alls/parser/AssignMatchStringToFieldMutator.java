@@ -1,9 +1,6 @@
-package com.kilic.kmeta.core.syntax;
+package com.kilic.kmeta.core.alls.parser;
 
 import java.lang.reflect.Field;
-
-import com.kilic.kmeta.core.alls.parser.IMutator;
-import com.kilic.kmeta.core.alls.parser.IParserContext;
 
 public class AssignMatchStringToFieldMutator implements IMutator {
 	String fieldName;
@@ -38,10 +35,14 @@ public class AssignMatchStringToFieldMutator implements IMutator {
 				}
 			}
 
-			field.set(obj, pojoCtx.getMatchString());
+			setValue(obj, pojoCtx.getMatchString());
 			pojoCtx.resetMatchString();
 		} catch (Exception e) {
 			System.out.println("ERROR: can not set field " + fieldName + " of obj : " + clazz.getSimpleName());
 		}
+	}
+	
+	protected void setValue(Object obj, Object newValue) throws Exception {
+		field.set(obj, newValue);
 	}
 }

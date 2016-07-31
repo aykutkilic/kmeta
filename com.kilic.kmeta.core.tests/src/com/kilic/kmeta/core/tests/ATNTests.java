@@ -10,20 +10,20 @@ import org.junit.Test;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.parser.ALLSParser;
+import com.kilic.kmeta.core.alls.parser.AppendCurrentRetValToListMutator;
+import com.kilic.kmeta.core.alls.parser.AssignCurrentRetValToFieldMutator;
+import com.kilic.kmeta.core.alls.parser.AssignMatchStringToFieldMutator;
+import com.kilic.kmeta.core.alls.parser.CreateObjectMutator;
+import com.kilic.kmeta.core.alls.parser.POJOParserContext;
+import com.kilic.kmeta.core.alls.parser.ResetMatchStringMutator;
 import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.stream.StringStream;
 import com.kilic.kmeta.core.meta.Multiplicity;
 import com.kilic.kmeta.core.syntax.ATNCallExpr;
 import com.kilic.kmeta.core.syntax.AlternativeExpr;
-import com.kilic.kmeta.core.syntax.AppendCurrentRetValToListMutator;
-import com.kilic.kmeta.core.syntax.AssignCurrentRetValToField;
-import com.kilic.kmeta.core.syntax.AssignMatchStringToFieldMutator;
 import com.kilic.kmeta.core.syntax.CharSetExpr;
-import com.kilic.kmeta.core.syntax.CreateObjectMutator;
 import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.MutatorExpr;
-import com.kilic.kmeta.core.syntax.POJOParserContext;
-import com.kilic.kmeta.core.syntax.ResetMatchStringMutator;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
 import com.kilic.kmeta.core.util.CharSet;
@@ -72,7 +72,7 @@ public class ATNTests {
 				new MutatorExpr(new CreateObjectMutator("ParenE")),
 				new StringExpr("("),
 				new ATNCallExpr(E),
-				new MutatorExpr(new AssignCurrentRetValToField("expr")),
+				new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
 				new StringExpr(")")
 			)
 		).setLabel("ParenE");
@@ -91,12 +91,12 @@ public class ATNTests {
 				new MultiplicityExpr(Multiplicity.OPTIONAL, 
 					new SequenceExpr(
 						new MutatorExpr(new CreateObjectMutator("MulE")),
-						new MutatorExpr(new AssignCurrentRetValToField("left")),
+						new MutatorExpr(new AssignCurrentRetValToFieldMutator("left")),
 						new MutatorExpr(new ResetMatchStringMutator()),
 						new CharSetExpr(new CharSet().addSingleton('*').addSingleton('/')),
 						new MutatorExpr(new AssignMatchStringToFieldMutator("op")),
 						new ATNCallExpr(MulE),
-						new MutatorExpr(new AssignCurrentRetValToField("right"))
+						new MutatorExpr(new AssignCurrentRetValToFieldMutator("right"))
 					)
 				)
 			)
@@ -108,12 +108,12 @@ public class ATNTests {
 				new MultiplicityExpr(Multiplicity.OPTIONAL, 
 					new SequenceExpr(
 						new MutatorExpr(new CreateObjectMutator("AddE")),
-						new MutatorExpr(new AssignCurrentRetValToField("left")),
+						new MutatorExpr(new AssignCurrentRetValToFieldMutator("left")),
 						new MutatorExpr(new ResetMatchStringMutator()),
 						new CharSetExpr(new CharSet().addSingleton('+').addSingleton('-')),
 						new MutatorExpr(new AssignMatchStringToFieldMutator("op")),
 						new ATNCallExpr(AddE),
-						new MutatorExpr(new AssignCurrentRetValToField("right"))
+						new MutatorExpr(new AssignCurrentRetValToFieldMutator("right"))
 					)
 				)
 			)
@@ -164,12 +164,12 @@ public class ATNTests {
 		parser.parse(Body, input, ctx);
 
 		Body body = (Body) ctx.getLocalObject();
-		Assert.assertEquals((1+2)*0x7, body.exprs.get(0).eval());
+		Assert.assertEquals((1 + 2) * 0x7, body.exprs.get(0).eval());
 		Assert.assertEquals(1, body.exprs.get(1).eval());
-		Assert.assertEquals(1-1, body.exprs.get(2).eval());
+		Assert.assertEquals(1 - 1, body.exprs.get(2).eval());
 		Assert.assertEquals(0xFF, body.exprs.get(3).eval());
-		Assert.assertEquals(0x10*4, body.exprs.get(4).eval());
-		Assert.assertEquals(1+2*((3+(4+(5+6))))*0x7+0xCAFE-11, body.exprs.get(5).eval());
+		Assert.assertEquals(0x10 * 4, body.exprs.get(4).eval());
+		Assert.assertEquals(1 + 2 * ((3 + (4 + (5 + 6)))) * 0x7 + 0xCAFE - 11, body.exprs.get(5).eval());
 	}
 
 	@Test
@@ -185,7 +185,9 @@ public class ATNTests {
 				inputString.append("1+2*((3+(4+(5+6))))*7h+FADECAFEh+11;");
 			IStream input = new StringStream(inputString.toString());
 			long start = System.nanoTime() / 1000000;
-			parser.parse(Body, input, new POJOParserContext());
+			POJOParserContext ctx = new POJOParserContext();
+			ctx.addJavaPackage("com.kilic.kmeta.core.tests.expr");
+			parser.parse(Body, input, ctx);
 			long end = System.nanoTime() / 1000000;
 			System.out.println("s:" + s + " t:" + (end - start) + " size: " + inputString.length());
 		}
