@@ -54,6 +54,25 @@ public class SyntaxDslTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
 
 		// @formatter:off
+		/**
+		    Grammar: {Grammar} rules+=Rule+;
+			Rule: name=ID ':' expr=E ';';
+			E: AltE;
+			AltE:   SeqE   | {AltE} alts+=SeqE/'|'+
+			SeqE:   DelimE | {SeqE} elems+=DelimE+;
+			DelimE: MulE   | {DelimE} expr=MulE '/' delimiter=StrL;
+			MulE:   PrimE  | {MulE} expr=PrimE mul=toMultiplicity([?,+,*]);
+			
+			PrimE:  ParenE | NotE | CharSetE | StrL | ID;
+			
+			ParenE: {ParenE} '(' expr=E ')';
+			NotE: {NotE} '~' csExpr=CharSetE;
+			CharSetE: '[' ([.] | CharRangeL)+/',' ']';
+			StrL: ['] return=~[']+ ['];
+			CharRangeL: {CharRangeL} from=[.] '-' to=[.];
+			ID: return=[A-Z,a-z]+;
+		 */
+		
 		Utils.createATNFromSyntax(ID,
 			new SequenceExpr(
 				new StringExpr("$"),
@@ -94,7 +113,10 @@ public class SyntaxDslTests {
 				new StringExpr("["),
 				new DelimiterExpr(
 					new AlternativeExpr(
-						new CharSetExpr(CharSet.ANY),
+						new SequenceExpr(
+							new MutatorExpr(new ResetMatchStringMutator()),
+							new CharSetExpr(CharSet.ANY),
+						),
 						new ATNCallExpr(CharRangeL)
 					), 
 					",",
@@ -108,8 +130,8 @@ public class SyntaxDslTests {
 			new SequenceExpr(
 				new MutatorExpr(new CreateObjectMutator("ParenE")),
 				new StringExpr("("),
-				new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
 				new ATNCallExpr(E),
+				new MutatorExpr(new AssignCurrentRetValToFieldMutator("expr")),
 				new StringExpr(")")
 			)
 		).setLabel("ParenE");
