@@ -54,23 +54,37 @@ public class SyntaxDslTests {
 		desktopPath = System.getProperty("user.home") + "\\Desktop\\dot\\";
 
 		// @formatter:off
-		/**
-		    Grammar: {Grammar} rules+=Rule+;
-			Rule: name=ID ':' expr=E ';';
-			E: AltE;
-			AltE:   SeqE   | {AltE} alts+=SeqE/'|'+
-			SeqE:   DelimE | {SeqE} elems+=DelimE+;
-			DelimE: MulE   | {DelimE} expr=MulE '/' delimiter=StrL;
-			MulE:   PrimE  | {MulE} expr=PrimE mul=toMultiplicity([?,+,*]);
+		/** Grammar: (Rule|Enum)+;
+			Rule: ID ':' Expr';';
+			Enum: 'enum' ID ':' EnumL ( '|' EnumL )* ';';
+			EnumL: ID '=' SeqE;
+			Expr: AltE;
+			AltE: SeqE | SeqE ('|' SeqE)+;
+			SeqE: DelimE | DelimE ('_'? DelimE)+;
+			DelimE: MulE | MulE ( '/' PrimE );
+			MulE: PrimE | PrimE MulType;
+			PrimE: NewInstE | FnCallE | AsgE |
+			       ParenE | NotE | CharSetE | StrL | RuleRefL;
 			
-			PrimE:  ParenE | NotE | CharSetE | StrL | ID;
+			NewInstE: '{' FQN ( '(' (Expr (',' Expr)*)? ')')? '}';
+			FnCallE: FQN '(' ( PrimE (',' PrimE)? )* ')';
+			AsgE: ID AsgType DelimE;
 			
-			ParenE: {ParenE} '(' expr=E ')';
-			NotE: {NotE} '~' csExpr=CharSetE;
-			CharSetE: '[' ([.] | CharRangeL)+/',' ']';
-			StrL: ['] return=~[']+ ['];
-			CharRangeL: {CharRangeL} from=[.] '-' to=[.];
-			ID: return=[A-Z,a-z]+;
+			ParenE: '(' Expr ')';
+			NotE: '~' CharSetE;
+			CharSetE: '[' (.|CharRangeL) (',' (.|CharRangeL))* ']';
+			CharRangeL: . '-' .;
+			StrL: '\'' ~'\''* '\'';
+			RuleRefL: ID;
+			
+			AsgType: '=' | '+=' | '?=';
+			MulType: '?' | '*' | '+';
+			SpcType: '_';
+			
+			FQN : ID ('.' ID)*;
+			
+			ID	: [A-Za-z]+;
+			WS	: [ \t\r\n]+;
 		 */
 		
 		Utils.createATNFromSyntax(ID,
