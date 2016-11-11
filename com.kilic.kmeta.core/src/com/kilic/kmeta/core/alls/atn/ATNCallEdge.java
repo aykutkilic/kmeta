@@ -3,9 +3,9 @@ package com.kilic.kmeta.core.alls.atn;
 import com.kilic.kmeta.core.alls.stream.IStream;
 
 public class ATNCallEdge extends ATNEdgeBase {
-	ATN atn;
+	private final ATN atn;
 
-	ATNCallEdge(ATNState from, ATNState to, ATN atn) {
+	ATNCallEdge(final ATNState from, final ATNState to, final ATN atn) {
 		this.atn = atn;
 		atn.addCaller(this);
 		connect(from, to);
@@ -24,7 +24,7 @@ public class ATNCallEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public String match(IStream input) {
+	public String match(final IStream input) {
 		return null;
 	}
 }

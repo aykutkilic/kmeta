@@ -7,8 +7,8 @@ public class ResetMatchStringMutator implements IMutator {
 	}
 
 	@Override
-	public void run(IParserContext context) {
-		POJOParserContext pojoCtx = (POJOParserContext) context;
+	public void run(final IParserContext context) {
+		final POJOParserContext pojoCtx = (POJOParserContext) context;
 		pojoCtx.resetMatchString();
 	}
 }

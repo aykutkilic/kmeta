@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.alls.parser;
 import java.util.List;
 
 public class AppendCurrentRetValToListMutator extends AssignCurrentRetValToFieldMutator {
-	public AppendCurrentRetValToListMutator(String fieldName) {
+	public AppendCurrentRetValToListMutator(final String fieldName) {
 		super(fieldName);
 	}
 
@@ -14,11 +14,11 @@ public class AppendCurrentRetValToListMutator extends AssignCurrentRetValToField
 
 	@SuppressWarnings("unchecked")
 	@Override
-	protected void setValue(Object obj, Object newValue) throws Exception {
-		Object listObj = field.get(obj);
+	protected void setValue(final Object obj, final Object newValue) throws Exception {
+		final Object listObj = field.get(obj);
 		if (listObj instanceof List<?>) {
 			@SuppressWarnings("rawtypes")
-			List list = (List) listObj;
+			final List list = (List) listObj;
 			list.add(newValue);
 		} else {
 			System.out.println("ERROR: field " + fieldName + " of obj : " + clazz.getSimpleName() + "is not a list");

@@ -4,14 +4,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements IState<K,E> {
-	protected K key;
-	protected ITransitionNetwork<K, S> container;
-	protected StateType type;
-
-	protected Set<E> in, out;
-	protected String label = "";
+	protected final K key;
+	protected final ITransitionNetwork<K, S> container;
+	protected final Set<E> in, out;
 	
-	protected StateBase(ITransitionNetwork<K, S> container, K key) {
+	protected String label = "";
+	protected StateType type;
+	
+	protected StateBase(final ITransitionNetwork<K, S> container, final K key) {
 		in = new HashSet<>();
 		out = new HashSet<>();
 
@@ -29,7 +29,7 @@ public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements 
 		return label;
 	}
 	
-	public void setLabel(String label) {
+	public void setLabel(final String label) {
 		this.label = label;
 	}
 	
@@ -49,7 +49,7 @@ public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements 
 	}
 
 	@Override
-	public void setType(StateType newType) {
+	public void setType(final StateType newType) {
 		this.type = newType;
 	}
 	
@@ -61,16 +61,16 @@ public class StateBase<K, E extends IEdge<?>, S extends IState<K,?>> implements 
 		return key;
 	}
 
-	public void addIn(E edge) {
+	public void addIn(final E edge) {
 		in.add(edge);
 	}
 
-	public void addOut(E edge) {
+	public void addOut(final E edge) {
 		out.add(edge);
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (this == other)
 			return true;
 

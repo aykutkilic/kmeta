@@ -6,7 +6,7 @@ import com.kilic.kmeta.core.alls.stream.IStream;
  * 	Used for semantic and syntactic predicates.
  */
 public class ATNPredicateEdge extends ATNEdgeBase {
-	ATNPredicateEdge(ATNState from, ATNState to) {
+	ATNPredicateEdge(final ATNState from, final ATNState to) {
 		connect(from, to);
 	}
 
@@ -16,7 +16,7 @@ public class ATNPredicateEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public String match(IStream input) {
+	public String match(final IStream input) {
 		return null;
 	}
 }

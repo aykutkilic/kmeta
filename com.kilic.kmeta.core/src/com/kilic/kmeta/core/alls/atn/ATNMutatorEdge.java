@@ -4,9 +4,9 @@ import com.kilic.kmeta.core.alls.parser.IMutator;
 import com.kilic.kmeta.core.alls.stream.IStream;
 
 public class ATNMutatorEdge extends ATNEdgeBase {
-	IMutator mutator;
+	private final IMutator mutator;
 
-	ATNMutatorEdge(ATNState from, ATNState to, IMutator mutator) {
+	ATNMutatorEdge(final ATNState from, final ATNState to, final IMutator mutator) {
 		this.mutator = mutator;
 		connect(from, to);
 	}
@@ -21,7 +21,7 @@ public class ATNMutatorEdge extends ATNEdgeBase {
 	}
 
 	@Override
-	public String match(IStream input) {
+	public String match(final IStream input) {
 		return "";
 	}
 }

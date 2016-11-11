@@ -9,13 +9,13 @@ import java.util.Stack;
 import com.kilic.kmeta.core.alls.atn.ATN;
 
 public class POJOParserContext implements IParserContext {
-	List<String> javaPackages;
-	Map<String, Class<?>> classFromShortName;
-	Stack<Object> callStack;
+	final private List<String> javaPackages;
+	final private Map<String, Class<?>> classFromShortName;
+	final private Stack<Object> callStack;
 
-	Object returnedObject;
-	StringBuilder lastMatch = new StringBuilder();
-	IMutator assignNext = null;
+	private Object returnedObject;
+	private StringBuilder lastMatch = new StringBuilder();
+	private IMutator assignNext = null;
 
 	public POJOParserContext() {
 		javaPackages = new ArrayList<>();
@@ -27,7 +27,7 @@ public class POJOParserContext implements IParserContext {
 		return returnedObject;
 	}
 
-	public void setReturnedObject(Object value) {
+	public void setReturnedObject(final Object value) {
 		returnedObject = value;
 	}
 
@@ -35,16 +35,16 @@ public class POJOParserContext implements IParserContext {
 		return callStack.peek();
 	}
 
-	public void setLocalObject(Object newObject) {
+	public void setLocalObject(final Object newObject) {
 		callStack.pop();
 		callStack.push(newObject);
 	}
 
-	public void addJavaPackage(String name) {
+	public void addJavaPackage(final String name) {
 		javaPackages.add(name);
 	}
 
-	public Class<?> getClass(String name) {
+	public Class<?> getClass(final String name) {
 		if (classFromShortName.containsKey(name))
 			return classFromShortName.get(name);
 
@@ -69,20 +69,20 @@ public class POJOParserContext implements IParserContext {
 	}
 
 	@Override
-	public void onCall(ATN atn) {
+	public void onCall(final ATN atn) {
 		callStack.push(null);
 		resetMatchString();
 	}
 
 	@Override
-	public void onReturn(ATN atn) {
-		Object currentVal = callStack.pop();
+	public void onReturn(final ATN atn) {
+		final Object currentVal = callStack.pop();
 		if (currentVal != null)
 			returnedObject = currentVal;
 	}
 
 	@Override
-	public void onChar(char c) {
+	public void onChar(final char c) {
 		lastMatch.append(c);
 	}
 

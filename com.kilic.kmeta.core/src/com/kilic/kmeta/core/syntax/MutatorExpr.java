@@ -5,14 +5,14 @@ import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.alls.parser.IMutator;
 
 public class MutatorExpr implements ISyntaxExpr {
-	IMutator mutator;
+	final IMutator mutator;
 
-	public MutatorExpr(IMutator mutator) {
+	public MutatorExpr(final IMutator mutator) {
 		this.mutator = mutator;
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public ATNState appendToATN(final ATN atn, final ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
 			targetState = atn.createState();
 		atn.createMutatorEdge(sourceState, targetState, mutator);

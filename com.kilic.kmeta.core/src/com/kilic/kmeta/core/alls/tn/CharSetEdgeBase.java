@@ -4,9 +4,9 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.util.CharSet;
 
 public abstract class CharSetEdgeBase<S extends IState<?, ?>> extends EdgeBase<S> {
-	CharSet charSet;
+	private final CharSet charSet;
 
-	protected CharSetEdgeBase(S from, S to, CharSet charSet) {
+	protected CharSetEdgeBase(final S from, final S to, final CharSet charSet) {
 		this.charSet = charSet;
 		connect(from, to);
 	}
@@ -21,7 +21,7 @@ public abstract class CharSetEdgeBase<S extends IState<?, ?>> extends EdgeBase<S
 	}
 
 	@Override
-	public String match(IStream input) {
+	public String match(final IStream input) {
 		char c;
 		return charSet.containsSingleton(c = input.lookAheadChar(0)) ? String.valueOf(c) : null;
 	}
@@ -32,7 +32,7 @@ public abstract class CharSetEdgeBase<S extends IState<?, ?>> extends EdgeBase<S
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (this == other)
 			return true;
 

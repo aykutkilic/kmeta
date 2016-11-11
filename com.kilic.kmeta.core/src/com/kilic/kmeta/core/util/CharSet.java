@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CharSet {
-	List<CharRange> ranges = new ArrayList<>();
+	private List<CharRange> ranges = new ArrayList<>();
 
 	public static CharSet LETTER = new CharSet().addRange(new CharRange('a', 'z')).addRange(new CharRange('A', 'Z'));
 	public static CharSet DEC = new CharSet().addRange(new CharRange('0', '9'));
@@ -20,14 +20,14 @@ public class CharSet {
 	public CharSet() {
 	}
 
-	public CharSet addRange(CharRange range) {
+	public CharSet addRange(final CharRange range) {
 		ranges.add(range);
 		simplifyRanges();
 		return this;
 	}
 
-	public CharSet addSingleton(char... singletons) {
-		for (char singleton : singletons)
+	public CharSet addSingleton(final char... singletons) {
+		for (final char singleton : singletons)
 			ranges.add(new CharRange(singleton));
 
 		simplifyRanges();
@@ -35,7 +35,7 @@ public class CharSet {
 	}
 
 	public boolean isEmpty() {
-		for (CharRange r : ranges)
+		for (final CharRange r : ranges)
 			if (!r.isEmpty())
 				return false;
 
@@ -64,8 +64,8 @@ public class CharSet {
 	private boolean unifyNext() {
 		for (int i = 0; i < ranges.size(); i++) {
 			for (int j = i + 1; j < ranges.size(); j++) {
-				CharRange r1 = ranges.get(i);
-				CharRange r2 = ranges.get(j);
+				final CharRange r1 = ranges.get(i);
+				final CharRange r2 = ranges.get(j);
 
 				if (r1.isUnifiable(r2)) {
 					unify(r1, r2);
@@ -77,28 +77,28 @@ public class CharSet {
 		return false;
 	}
 
-	private void unify(CharRange r1, CharRange r2) {
+	private void unify(final CharRange r1, final CharRange r2) {
 		ranges.remove(r1);
 		ranges.remove(r2);
-		CharRange unification = r1.getUnification(r2);
+		final CharRange unification = r1.getUnification(r2);
 		assert (unification != null);
 		ranges.add(unification);
 	}
 
-	public CharSet getUnion(CharSet b) {
-		CharSet result = new CharSet();
+	public CharSet getUnion(final CharSet b) {
+		final CharSet result = new CharSet();
 		result.ranges.addAll(this.ranges);
 		result.ranges.addAll(b.ranges);
 		result.simplifyRanges();
 		return result;
 	}
 
-	public CharSet getInstersection(CharSet b) {
-		CharSet result = new CharSet();
+	public CharSet getInstersection(final CharSet b) {
+		final CharSet result = new CharSet();
 
-		for (CharRange ra : ranges) {
-			for (CharRange rb : b.ranges) {
-				CharRange i = ra.getIntersection(rb);
+		for (final CharRange ra : ranges) {
+			for (final CharRange rb : b.ranges) {
+				final CharRange i = ra.getIntersection(rb);
 				if (!i.isEmpty())
 					result.addRange(i);
 			}
@@ -107,30 +107,30 @@ public class CharSet {
 		return result;
 	}
 
-	public CharSet getSubtraction(CharSet b) {
-		CharSet result = new CharSet();
+	public CharSet getSubtraction(final CharSet b) {
+		final CharSet result = new CharSet();
 
-		for (CharRange ra : ranges) {
+		for (final CharRange ra : ranges) {
 			List<CharRange> remainder = new ArrayList<>();
 			remainder.add(ra);
-			for (CharRange rb : b.ranges) {
-				List<CharRange> newRemainder = new ArrayList<>();
-				for (CharRange r : remainder)
+			for (final CharRange rb : b.ranges) {
+				final List<CharRange> newRemainder = new ArrayList<>();
+				for (final CharRange r : remainder)
 					newRemainder.addAll(r.getSubtraction(rb));
 				remainder = newRemainder;
 			}
 
-			for (CharRange r : remainder)
+			for (final CharRange r : remainder)
 				result.addRange(r);
 		}
 
 		return result;
 	}
 
-	public boolean intersects(CharSet b) {
-		for (CharRange ra : ranges) {
-			for (CharRange rb : b.ranges) {
-				CharRange i = ra.getIntersection(rb);
+	public boolean intersects(final CharSet b) {
+		for (final CharRange ra : ranges) {
+			for (final CharRange rb : b.ranges) {
+				final CharRange i = ra.getIntersection(rb);
 				if (!i.isEmpty())
 					return true;
 			}
@@ -139,8 +139,8 @@ public class CharSet {
 		return false;
 	}
 
-	public boolean containsSingleton(char singleton) {
-		for (CharRange r : ranges) {
+	public boolean containsSingleton(final char singleton) {
+		for (final CharRange r : ranges) {
 			if (r.containsSingleton(singleton))
 				return true;
 		}
@@ -148,27 +148,27 @@ public class CharSet {
 		return false;
 	}
 
-	public static Set<CharSet> getDistinctCharSets(Set<CharSet> charSets) {
-		Set<CharSet> result = new HashSet<>();
+	public static Set<CharSet> getDistinctCharSets(final Set<CharSet> charSets) {
+		final Set<CharSet> result = new HashSet<>();
 
-		for (CharSet cs : charSets) {
+		for (final CharSet cs : charSets) {
 			if (result.isEmpty()) {
 				result.add(cs);
 				continue;
 			}
 
-			for (CharSet dcs : new HashSet<>(result)) {
+			for (final CharSet dcs : new HashSet<>(result)) {
 				if (dcs.equals(cs))
 					continue;
 
-				CharSet intersection = dcs.getInstersection(cs);
+				final CharSet intersection = dcs.getInstersection(cs);
 
 				if (intersection.isEmpty()) {
 					result.add(cs);
 				} else {
 					result.remove(dcs);
 
-					CharSet dcsMinusCs = dcs.getSubtraction(cs);
+					final CharSet dcsMinusCs = dcs.getSubtraction(cs);
 					if (!dcsMinusCs.isEmpty())
 						result.add(dcsMinusCs);
 
@@ -187,7 +187,7 @@ public class CharSet {
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (other instanceof CharSet)
 			return this.ranges.equals(((CharSet) other).ranges);
 		return false;
@@ -195,9 +195,9 @@ public class CharSet {
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 		result.append('[');
-		for (CharRange r : ranges)
+		for (final CharRange r : ranges)
 			result.append(r.toString());
 		result.append(']');
 		return result.toString();

@@ -2,10 +2,10 @@ package com.kilic.kmeta.core.alls.tn;
 
 public interface ITransitionNetwork <K, S extends IState<K,?>> extends ILabeled {
 	String getLabel();
-	void setLabel(String label);
+	void setLabel(final String label);
 	
-	boolean hasState(K key);
-	S getState(K key);
+	boolean hasState(final K key);
+	S getState(final K key);
 	S getStartState();
 	
 	String toGraphviz();

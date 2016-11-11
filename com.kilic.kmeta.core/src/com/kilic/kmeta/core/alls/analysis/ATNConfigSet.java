@@ -1,5 +1,6 @@
 package com.kilic.kmeta.core.alls.analysis;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -16,14 +17,14 @@ import com.kilic.kmeta.core.util.CharSet;
 public class ATNConfigSet extends HashSet<ATNConfig> {
 	private static final long serialVersionUID = -4055740663032286654L;
 
-	private Map<ATNState, Set<ATNConfig>> configsByState;
+	private final Map<ATNState, Set<ATNConfig>> configsByState;
 
 	public ATNConfigSet() {
 		configsByState = new HashMap<>();
 	}
 
 	@Override
-	public boolean add(ATNConfig config) {
+	public boolean add(final ATNConfig config) {
 		Set<ATNConfig> stateSet = configsByState.get(config.state);
 		if (stateSet == null) {
 			stateSet = new HashSet<>();
@@ -34,15 +35,15 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 		return super.add(config);
 	}
 
-	public Set<ATNState> getAllStates() {
+	public Collection<ATNState> getAllStates() {
 		return configsByState.keySet();
 	}
 
-	public Set<ATNConfig> getConfigsByState(ATNState state) {
+	public Collection<ATNConfig> getConfigsByState(ATNState state) {
 		return configsByState.get(state);
 	}
 
-	public ATNConfigSet move(IStream input) {
+	public ATNConfigSet move(final IStream input) {
 		ATNConfigSet result = new ATNConfigSet();
 
 		Iterator<ATNConfig> i = iterator();
@@ -95,7 +96,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 		return result;
 	}
 
-	public ATNConfigSet moveByEdges(Set<IATNEdge> edgesToMove) {
+	public ATNConfigSet moveByEdges(final Set<IATNEdge> edgesToMove) {
 		ATNConfigSet result = new ATNConfigSet();
 
 		Iterator<ATNConfig> i = iterator();

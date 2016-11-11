@@ -3,11 +3,11 @@ package com.kilic.kmeta.core.alls.parser;
 import java.lang.reflect.Field;
 
 public class AssignMatchStringToFieldMutator implements IMutator {
-	String fieldName;
+	final String fieldName;
 	Class<?> clazz;
 	Field field;
 
-	public AssignMatchStringToFieldMutator(String fieldName) {
+	public AssignMatchStringToFieldMutator(final String fieldName) {
 		this.fieldName = fieldName;
 	}
 
@@ -17,10 +17,10 @@ public class AssignMatchStringToFieldMutator implements IMutator {
 	}
 
 	@Override
-	public void run(IParserContext context) {
-		POJOParserContext pojoCtx = (POJOParserContext) context;
+	public void run(final IParserContext context) {
+		final POJOParserContext pojoCtx = (POJOParserContext) context;
 		try {
-			Object obj = pojoCtx.getLocalObject();
+			final Object obj = pojoCtx.getLocalObject();
 			if (obj == null) {
 				System.out.println("No local object");
 				return;
@@ -42,7 +42,7 @@ public class AssignMatchStringToFieldMutator implements IMutator {
 		}
 	}
 	
-	protected void setValue(Object obj, Object newValue) throws Exception {
+	protected void setValue(final Object obj, final Object newValue) throws Exception {
 		field.set(obj, newValue);
 	}
 }

@@ -1,13 +1,13 @@
 package com.kilic.kmeta.core.meta;
 
 public class MAttribute extends MFeature {
-	MType type;
+	private MType type;
 
 	public MType getType() {
 		return type;
 	}
 
-	public void setType(MType type) {
+	public void setType(final MType type) {
 		this.type = type;
 	}
 }

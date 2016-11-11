@@ -4,7 +4,7 @@ import com.kilic.kmeta.core.alls.tn.CharSetEdgeBase;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATNCharSetEdge extends CharSetEdgeBase<ATNState> implements IATNEdge {
-	ATNCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
+	ATNCharSetEdge(final ATNState from, final ATNState to, final CharSet charSet) {
 		super(from, to, charSet);
 	}
 }

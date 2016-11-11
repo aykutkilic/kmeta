@@ -1,11 +1,10 @@
 package com.kilic.kmeta.core.alls.stream;
 
 public class StringStream implements IStream {
-	String string;
+	private final String string;
+	private int pos;
 
-	int pos;
-
-	public StringStream(String string) {
+	public StringStream(final String string) {
 		this.string = string;
 		this.pos = 0;
 	}
@@ -22,21 +21,21 @@ public class StringStream implements IStream {
 	public String nextString(int length) {
 		if (pos + length > string.length())
 			length = string.length() - pos;
-		String result = string.substring(pos, pos + length);
+		final String result = string.substring(pos, pos + length);
 		pos += length;
 
 		return result;
 	}
 
 	@Override
-	public char lookAheadChar(int count) {
+	public char lookAheadChar(final int count) {
 		if (pos + count < string.length())
 			return string.charAt(pos + count);
 		return 0;
 	}
 
 	@Override
-	public String lookAheadString(int count, int length) {
+	public String lookAheadString(final int count, int length) {
 		if (pos + count + length > string.length())
 			length = string.length() - pos;
 		return string.substring(pos + count, pos + count + length);
@@ -53,13 +52,13 @@ public class StringStream implements IStream {
 	}
 
 	@Override
-	public void seek(int pos) {
+	public void seek(final int pos) {
 		assert (pos <= string.length());
 		this.pos = pos;
 	}
 
 	@Override
-	public void skip(int count) {
+	public void skip(final int count) {
 		assert (pos + count <= string.length());
 		this.pos += count;
 	}

@@ -4,7 +4,7 @@ import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 
 public class StringExpr implements ISyntaxExpr {
-	String string;
+	private String string;
 
 	public StringExpr(String string) {
 		this.string = string;
@@ -19,7 +19,7 @@ public class StringExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public ATNState appendToATN(final ATN atn, final ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
 			targetState = atn.createState();
 

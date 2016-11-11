@@ -6,20 +6,21 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.StateBase;
 
 public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEdge, PredictionDFAState> {
-	public static int count = 0;
-	IATNEdge decisionEdge;
-	int index;
-	boolean isStackSensitive;
+	static int count = 0;
+	
+	private IATNEdge decisionEdge;
+	private int index;
+	private boolean isStackSensitive;
 
-	protected PredictionDFAState(PredictionDFA container, ATNConfigSet configSet) {
+	protected PredictionDFAState(final PredictionDFA container, final ATNConfigSet configSet) {
 		super(container, configSet);
 		type = StateType.REGULAR;
 		index = count++;
 		isStackSensitive = false;
 	}
 
-	public PredictionDFAState move(IStream input) {
-		for (IPredictionDFAEdge edge : out) {
+	public PredictionDFAState move(final IStream input) {
+		for (final IPredictionDFAEdge edge : out) {
 			if (edge.match(input) != null)
 				return edge.getTo();
 		}
@@ -35,11 +36,11 @@ public class PredictionDFAState extends StateBase<ATNConfigSet, IPredictionDFAEd
 		return isStackSensitive;
 	}
 
-	public void setStackSensitivity(boolean isStackSensitive) {
+	public void setStackSensitivity(final boolean isStackSensitive) {
 		this.isStackSensitive = isStackSensitive;
 	}
 
-	public void setFinal(IATNEdge decisionEdge) {
+	public void setFinal(final IATNEdge decisionEdge) {
 		this.setType(StateType.FINAL);
 		this.decisionEdge = decisionEdge;
 	}

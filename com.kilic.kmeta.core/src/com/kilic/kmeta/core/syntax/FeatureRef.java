@@ -7,9 +7,9 @@ import com.kilic.kmeta.core.meta.MFeature;
 import com.kilic.kmeta.core.meta.MReference;
 
 public class FeatureRef implements ISyntaxExpr {
-	MFeature feature;
+	private MFeature feature;
 
-	public FeatureRef(MFeature feature) {
+	public FeatureRef(final MFeature feature) {
 		this.feature = feature;
 	}
 
@@ -17,7 +17,7 @@ public class FeatureRef implements ISyntaxExpr {
 		return feature;
 	}
 
-	public void setAttribute(MFeature feature) {
+	public void setAttribute(final MFeature feature) {
 		this.feature = feature;
 	}
 
@@ -35,7 +35,7 @@ public class FeatureRef implements ISyntaxExpr {
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (other instanceof FeatureRef)
 			return this.feature == ((FeatureRef) other).feature;
 
@@ -43,7 +43,7 @@ public class FeatureRef implements ISyntaxExpr {
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public ATNState appendToATN(final ATN atn, final ATNState sourceState, final ATNState targetState) {
 		// TODO Auto-generated method stub
 		return null;
 	}

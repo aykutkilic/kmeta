@@ -1,9 +1,9 @@
 package com.kilic.kmeta.core.alls.parser;
 
 public class CreateObjectMutator implements IMutator {
-	String className;
+	final String className;
 
-	public CreateObjectMutator(String className) {
+	public CreateObjectMutator(final String className) {
 		this.className = className;
 	}
 
@@ -13,15 +13,15 @@ public class CreateObjectMutator implements IMutator {
 	}
 
 	@Override
-	public void run(IParserContext context) {
-		POJOParserContext pojoCtx = (POJOParserContext) context;
-		Class<?> clazz = pojoCtx.getClass(className);
+	public void run(final IParserContext context) {
+		final POJOParserContext pojoCtx = (POJOParserContext) context;
+		final Class<?> clazz = pojoCtx.getClass(className);
 		if (clazz == null) {
 			System.out.print("ERROR - can not find class " + className);
 			return;
 		}
 		try {
-			Object newObject = clazz.newInstance();
+			final Object newObject = clazz.newInstance();
 			pojoCtx.setLocalObject(newObject);
 		} catch (InstantiationException | IllegalAccessException e) {
 			System.out.print("ERROR - can not instantiate class " + className);

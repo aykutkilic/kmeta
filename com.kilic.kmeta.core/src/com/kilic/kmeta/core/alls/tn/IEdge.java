@@ -4,12 +4,12 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 
 public interface IEdge<S extends IState<?,?>> extends ILabeled {
 	S getFrom();
-	void setFrom(S state);
+	void setFrom(final S state);
 	S getTo();
-	void setTo(S state);
+	void setTo(final S state);
 
-	void connect(S from, S to);
+	void connect(final S from, final S to);
 	void disconnect();
 	
-	String match(IStream input);
+	String match(final IStream input);
 }

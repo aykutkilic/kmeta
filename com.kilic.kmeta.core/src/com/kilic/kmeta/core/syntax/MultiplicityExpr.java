@@ -5,10 +5,10 @@ import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.meta.Multiplicity;
 
 public class MultiplicityExpr implements ISyntaxExpr {
-	ISyntaxExpr expr;
-	Multiplicity multiplicity;
+	private ISyntaxExpr expr;
+	private Multiplicity multiplicity;
 
-	public MultiplicityExpr(Multiplicity multiplicity, ISyntaxExpr expr) {
+	public MultiplicityExpr(final Multiplicity multiplicity, final ISyntaxExpr expr) {
 		this.multiplicity = multiplicity;
 		this.expr = expr;
 	}
@@ -30,7 +30,7 @@ public class MultiplicityExpr implements ISyntaxExpr {
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public ATNState appendToATN(final ATN atn, final ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
 			targetState = atn.createState();
 

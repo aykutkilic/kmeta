@@ -17,7 +17,7 @@ public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>>
 		return startState;
 	}
 
-	public void setStartState(S newStartState) {
+	public void setStartState(final S newStartState) {
 		startState = newStartState;
 	}
 	
@@ -44,7 +44,7 @@ public abstract class AutomatonBase<K,E extends IEdge<S>, S extends IState<K,E>>
 	}
 
 	public String toGraphviz() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 
 		result.append("digraph finite_state_machine {\n");
 		result.append("  rankdir=S;\n");

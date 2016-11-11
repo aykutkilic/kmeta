@@ -9,9 +9,9 @@ import com.kilic.kmeta.core.alls.tn.TransitionNetworkBase;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
-	ATNState startState;
-	ATNState finalState;
-	Set<ATNCallEdge> callers;
+	private final ATNState startState;
+	private final ATNState finalState;
+	private final Set<ATNCallEdge> callers;
 
 	public ATN() {
 		callers = new HashSet<>();
@@ -30,20 +30,20 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	}
 
 	public ATNState createState() {
-		ATNState newState = new ATNState(this);
+		final ATNState newState = new ATNState(this);
 		states.put(newState.getKey(), newState);
 		return newState;
 	}
 
-	public ATNEpsilonEdge createEpsilonEdge(ATNState from, ATNState to) {
+	public ATNEpsilonEdge createEpsilonEdge(final ATNState from, final ATNState to) {
 		return new ATNEpsilonEdge(from, to);
 	}
 
-	public ATNCharSetEdge createCharSetEdge(ATNState from, ATNState to, CharSet charSet) {
+	public ATNCharSetEdge createCharSetEdge(final ATNState from, final ATNState to, final CharSet charSet) {
 		return new ATNCharSetEdge(from, to, charSet);
 	}
 
-	public void createEdgeFromString(ATNState from, ATNState to, String string) {
+	public void createEdgeFromString(final ATNState from, final ATNState to, final String string) {
 		assert (string.length() > 0);
 
 		ATNState currentState = from;
@@ -53,23 +53,23 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 			currentState = nextState;
 		}
 
-		char lastChar = string.charAt(string.length() - 1);
+		final char lastChar = string.charAt(string.length() - 1);
 		createCharSetEdge(currentState, to, new CharSet().addSingleton(lastChar));
 	}
 
-	public ATNCallEdge createCallEdge(ATNState from, ATNState to, ATN atn) {
+	public ATNCallEdge createCallEdge(final ATNState from, final ATNState to, final ATN atn) {
 		return new ATNCallEdge(from, to, atn);
 	}
 
-	public ATNPredicateEdge createPredicateEdge(ATNState from, ATNState to) {
+	public ATNPredicateEdge createPredicateEdge(final ATNState from, final ATNState to) {
 		return new ATNPredicateEdge(from, to);
 	}
 
-	public ATNMutatorEdge createMutatorEdge(ATNState from, ATNState to, IMutator mutator) {
+	public ATNMutatorEdge createMutatorEdge(final ATNState from, final ATNState to, final IMutator mutator) {
 		return new ATNMutatorEdge(from, to, mutator);
 	}
 
-	public void addCaller(ATNCallEdge edge) {
+	public void addCaller(final ATNCallEdge edge) {
 		callers.add(edge);
 	}
 
@@ -78,7 +78,7 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 	}
 
 	public String toGraphviz() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 
 		result.append("digraph finite_state_machine {\n");
 		result.append("  rankdir=S;\n");
@@ -89,8 +89,8 @@ public class ATN extends TransitionNetworkBase<Integer, IATNEdge, ATNState> {
 		result.append("S" + finalState.getKey() + ";\n");
 		result.append("node [shape = circle];");
 
-		for (ATNState state : states.values()) {
-			for (IATNEdge edge : state.getOut()) {
+		for (final ATNState state : states.values()) {
+			for (final IATNEdge edge : state.getOut()) {
 				result.append("S" + state.getKey() + " -> S" + edge.getTo().getKey() + " [ label = \"" + edge.getLabel()
 						+ "\" ];\n");
 			}

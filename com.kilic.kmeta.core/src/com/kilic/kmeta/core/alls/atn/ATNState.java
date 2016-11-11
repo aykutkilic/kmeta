@@ -8,9 +8,9 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.IntegerKeyedState;
 
 public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
-	PredictionDFA predictionDFA;
+	private PredictionDFA predictionDFA;
 
-	ATNState(ATN atn) {
+	ATNState(final ATN atn) {
 		super(atn);
 	}
 
@@ -18,7 +18,7 @@ public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
 		return predictionDFA;
 	}
 
-	public void setPredictionDFA(PredictionDFA predictionDFA) {
+	public void setPredictionDFA(final PredictionDFA predictionDFA) {
 		this.predictionDFA = predictionDFA;
 	}
 
@@ -44,7 +44,7 @@ public class ATNState extends IntegerKeyedState<IATNEdge, ATNState> {
 		return nextEdge().getTo();
 	}
 
-	public Set<IATNEdge> move(IStream input) {
+	public Set<IATNEdge> move(final IStream input) {
 		Set<IATNEdge> result = new HashSet<>();
 
 		for (IATNEdge edge : out) {

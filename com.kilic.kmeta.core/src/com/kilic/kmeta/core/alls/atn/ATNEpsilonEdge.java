@@ -4,12 +4,12 @@ import com.kilic.kmeta.core.alls.stream.IStream;
 import com.kilic.kmeta.core.alls.tn.EpsilonEdgeBase;
 
 public class ATNEpsilonEdge extends EpsilonEdgeBase<ATNState> implements IATNEdge {
-	protected ATNEpsilonEdge(ATNState from, ATNState to) {
+	protected ATNEpsilonEdge(final ATNState from, final ATNState to) {
 		super(from, to);
 	}
 
 	@Override
-	public String match(IStream input) {
+	public String match(final IStream input) {
 		if (input.hasEnded() && this.getTo().isFinalState())
 			return "";
 

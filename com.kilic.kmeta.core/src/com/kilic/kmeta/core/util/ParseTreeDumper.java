@@ -5,30 +5,30 @@ import com.kilic.kmeta.core.alls.parser.IMutator;
 import com.kilic.kmeta.core.alls.parser.IParserContext;
 
 public class ParseTreeDumper implements IParserContext {
-	int indent;
-	StringBuilder lastMatch = new StringBuilder();
+	private int indent;
+	private StringBuilder lastMatch = new StringBuilder();
 
 	@Override
-	public void onCall(ATN atn) {
+	public void onCall(final ATN atn) {
 		dumpLastMatch();
 		print("<" + atn.getLabel() + ">");
 		indent++;
 	}
 
 	@Override
-	public void onReturn(ATN atn) {
+	public void onReturn(final ATN atn) {
 		dumpLastMatch();
 		indent--;
 		print("</" + atn.getLabel() + ">");
 	}
 
 	@Override
-	public void onChar(char c) {
+	public void onChar(final char c) {
 		lastMatch.append(c);
 	}
 
 	@Override
-	public void onMutator(IMutator mutator) {
+	public void onMutator(final IMutator mutator) {
 		print("Mutate(" + mutator.getLabel() + ")");
 	}
 
@@ -44,8 +44,8 @@ public class ParseTreeDumper implements IParserContext {
 		}
 	}
 
-	private void print(String string) {
-		StringBuilder line = new StringBuilder();
+	private void print(final String string) {
+		final StringBuilder line = new StringBuilder();
 		for (int i = 0; i < indent; i++)
 			line.append(" ");
 

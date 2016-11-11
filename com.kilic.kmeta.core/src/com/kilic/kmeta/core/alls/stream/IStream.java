@@ -4,12 +4,12 @@ public interface IStream {
 	int getPosition();
 	boolean hasEnded();
 	
-	void seek(int position);
-	void skip(int count);
+	void seek(final int position);
+	void skip(final int count);
 
 	char nextChar();
-	String nextString(int length);
+	String nextString(final int length);
 
-	char lookAheadChar(int count);
-	String lookAheadString(int count, int length);
+	char lookAheadChar(final int count);
+	String lookAheadString(final int count, final int length);
 }

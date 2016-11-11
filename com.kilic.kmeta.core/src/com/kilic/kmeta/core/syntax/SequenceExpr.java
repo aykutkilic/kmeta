@@ -1,29 +1,30 @@
 package com.kilic.kmeta.core.syntax;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import com.kilic.kmeta.core.alls.atn.ATN;
 import com.kilic.kmeta.core.alls.atn.ATNState;
 
 public class SequenceExpr implements ISyntaxExpr {
-	List<ISyntaxExpr> seq = new ArrayList<>();
+	private List<ISyntaxExpr> seq = new ArrayList<>();
 
-	public SequenceExpr(ISyntaxExpr... exprs) {
+	public SequenceExpr(final ISyntaxExpr... exprs) {
 		for (ISyntaxExpr e : exprs)
 			seq.add(e);
 	}
 
-	public void appendSeq(ISyntaxExpr elem) {
+	public void appendSeq(final ISyntaxExpr elem) {
 		seq.add(elem);
 	}
 
-	public ISyntaxExpr[] getSequence() {
-		return (ISyntaxExpr[]) seq.toArray();
+	public Collection<ISyntaxExpr> getSequence() {
+		return seq;
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public ATNState appendToATN(final ATN atn, final ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
 			targetState = atn.createState();
 

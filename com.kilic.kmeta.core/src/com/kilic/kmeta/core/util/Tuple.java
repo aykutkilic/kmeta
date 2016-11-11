@@ -1,8 +1,8 @@
 package com.kilic.kmeta.core.util;
 
 public class Tuple<A, B> {
-	final A a;
-	final B b;
+	private final A a;
+	private final B b;
 
 	public Tuple(final A a, final B b) {
 		this.a = a;
@@ -18,7 +18,7 @@ public class Tuple<A, B> {
 	}
 
 	@Override
-	public boolean equals(Object other) {
+	public boolean equals(final Object other) {
 		if (other instanceof Tuple<?, ?>) {
 			Tuple<?, ?> t = (Tuple<?, ?>) other;
 			return a.equals(t.a) && b.equals(t.b);

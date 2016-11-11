@@ -1,19 +1,19 @@
 package com.kilic.kmeta.core.meta;
 
 public class MReference extends MFeature {
-	boolean isContainment;
-	MClass targetClass;
-	MReference opposite;
+	private boolean isContainment;
+	private MClass targetClass;
+	private MReference opposite;
 
-	public void setContainment(boolean isContainment) {
+	public void setContainment(final boolean isContainment) {
 		this.isContainment = isContainment;
 	}
 
-	public void setTargetClass(MClass type) {
+	public void setTargetClass(final MClass type) {
 		this.targetClass = type;
 	}
 
-	public void setOpposite(MReference opposite) {
+	public void setOpposite(final MReference opposite) {
 		this.opposite = opposite;
 
 		if (opposite.getOpposite() != this) {

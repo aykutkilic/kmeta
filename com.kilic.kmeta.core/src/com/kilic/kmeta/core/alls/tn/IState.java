@@ -15,5 +15,5 @@ public interface IState <K, E extends IEdge<?>> extends ILabeled {
 	Set<E> getOut();
 	
 	StateType getType();
-	void setType(StateType newType);
+	void setType(final StateType newType);
 }

@@ -2,18 +2,18 @@ package com.kilic.kmeta.core.meta;
 
 public abstract class MFeature {
 	protected String name;
-	MClass containerClass;
-	Multiplicity mult = Multiplicity.ONE;
+	private MClass containerClass;
+	private Multiplicity mult = Multiplicity.ONE;
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
+	public void setName(final String name) {
 		this.name = name;
 	}
 
-	public void setMult(Multiplicity mult) {
+	public void setMult(final Multiplicity mult) {
 		this.mult = mult;
 	}
 
@@ -21,7 +21,7 @@ public abstract class MFeature {
 		return mult;
 	}
 
-	public void setContainerClass(MClass containerClass) {
+	public void setContainerClass(final MClass containerClass) {
 		this.containerClass = containerClass;
 		this.containerClass.addFeature(this);
 	}

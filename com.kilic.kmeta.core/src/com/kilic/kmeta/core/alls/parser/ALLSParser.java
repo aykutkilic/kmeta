@@ -19,10 +19,10 @@ import com.kilic.kmeta.core.alls.stream.IStream;
  * Analysis
  */
 public class ALLSParser {
-	public void parse(ATN atn, IStream input, IParserContext context) {
+	public void parse(final ATN atn, final IStream input, final IParserContext context) {
 		assert (context != null);
 
-		RegularCallStack callStack = new RegularCallStack();
+		final RegularCallStack callStack = new RegularCallStack();
 
 		ATNState p = atn.getStartState();
 		ATNState oldp = p;
@@ -38,25 +38,25 @@ public class ALLSParser {
 			}
 
 			if (p.hasNext()) {
-				IATNEdge e = p.nextEdge();
+				final IATNEdge e = p.nextEdge();
 
 				if (e instanceof ATNEpsilonEdge) {
 					p = e.getTo();
 				} else if (e instanceof ATNCallEdge) {
-					ATNCallEdge ace = (ATNCallEdge) e;
+					final ATNCallEdge ace = (ATNCallEdge) e;
 					callStack.push(e.getTo());
 					p = ace.getATN().getStartState();
 					context.onCall(ace.getATN());
 				} else if (e instanceof ATNMutatorEdge) {
-					ATNMutatorEdge ame = (ATNMutatorEdge) e;
+					final ATNMutatorEdge ame = (ATNMutatorEdge) e;
 					context.onMutator(ame.getMutator());
 					p = ame.getTo();
 				} else if (e instanceof ATNPredicateEdge) {
-					ATNPredicateEdge ape = (ATNPredicateEdge) e;
+					final ATNPredicateEdge ape = (ATNPredicateEdge) e;
 					p = ape.getTo();
 				} else if (e instanceof ATNCharSetEdge) {
-					ATNCharSetEdge cse = (ATNCharSetEdge) e;
-					char c = input.nextChar();
+					final ATNCharSetEdge cse = (ATNCharSetEdge) e;
+					final char c = input.nextChar();
 					context.onChar(c);
 					p = cse.getTo();
 				}
@@ -74,8 +74,8 @@ public class ALLSParser {
 					tolerateSameState = true;
 
 			} else if (p.isDecisionState()) {
-				BasicATNSimulator slas = new BasicATNSimulator(input);
-				IATNEdge predictedEdge = slas.adaptivePredict(p, callStack);
+				final BasicATNSimulator slas = new BasicATNSimulator(input);
+				final IATNEdge predictedEdge = slas.adaptivePredict(p, callStack);
 				p = predictedEdge.getTo();
 			} else {
 				System.out.println("ATN ERROR! " + p);

@@ -3,7 +3,7 @@ package com.kilic.kmeta.core.alls.tn;
 import java.util.Set;
 
 public abstract class EdgeBase <S extends IState<?,?>> implements IEdge<S> {
-	S from, to;
+	private S from, to;
 	
 	@Override
 	public S getFrom() {
@@ -11,7 +11,7 @@ public abstract class EdgeBase <S extends IState<?,?>> implements IEdge<S> {
 	}
 	
 	@Override
-	public void setFrom(S state) {
+	public void setFrom(final S state) {
 		from = state;
 	}
 	
@@ -21,13 +21,13 @@ public abstract class EdgeBase <S extends IState<?,?>> implements IEdge<S> {
 	}
 	
 	@Override
-	public void setTo(S state) {
+	public void setTo(final S state) {
 		to = state;
 	}
 	
 	@SuppressWarnings("unchecked")
 	@Override
-	public void connect(S from, S to) {
+	public void connect(final S from, final S to) {
 		this.from = from;
 		this.to = to;
 		((Set<IEdge<S>>) this.from.getOut()).add(this);

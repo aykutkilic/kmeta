@@ -5,11 +5,11 @@ import com.kilic.kmeta.core.alls.atn.ATNState;
 import com.kilic.kmeta.core.meta.Multiplicity;
 
 public class DelimiterExpr implements ISyntaxExpr {
-	String delimiter;
-	ISyntaxExpr expr;
-	Multiplicity multiplicity;
+	private String delimiter;
+	private ISyntaxExpr expr;
+	private Multiplicity multiplicity;
 
-	public DelimiterExpr(ISyntaxExpr expr, String delimiter, Multiplicity multiplicity) {
+	public DelimiterExpr(final ISyntaxExpr expr, final String delimiter, final Multiplicity multiplicity) {
 		assert (multiplicity == Multiplicity.ANY || multiplicity == Multiplicity.ONEORMORE);
 
 		this.expr = expr;
@@ -21,7 +21,7 @@ public class DelimiterExpr implements ISyntaxExpr {
 		return delimiter;
 	}
 
-	public void setDelimiter(String delimiter) {
+	public void setDelimiter(final String delimiter) {
 		this.delimiter = delimiter;
 	}
 
@@ -29,19 +29,19 @@ public class DelimiterExpr implements ISyntaxExpr {
 		return expr;
 	}
 
-	public void setExpr(ISyntaxExpr expr) {
+	public void setExpr(final ISyntaxExpr expr) {
 		this.expr = expr;
 	}
 
 	@Override
-	public ATNState appendToATN(ATN atn, ATNState sourceState, ATNState targetState) {
+	public ATNState appendToATN(final ATN atn, final ATNState sourceState, ATNState targetState) {
 		if (targetState == null)
 			targetState = atn.createState();
 
-		ATNState exprStartState = atn.createState();
-		ATNState exprEndState = atn.createState();
-		ATNState preDelimState = atn.createState();
-		ATNState afterDelimState = atn.createState();
+		final ATNState exprStartState = atn.createState();
+		final ATNState exprEndState = atn.createState();
+		final ATNState preDelimState = atn.createState();
+		final ATNState afterDelimState = atn.createState();
 
 		atn.createEpsilonEdge(sourceState, exprStartState);
 		atn.createEpsilonEdge(exprEndState, targetState);

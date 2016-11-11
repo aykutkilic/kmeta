@@ -1,7 +1,5 @@
 package com.kilic.kmeta.core.tests;
 
-import com.kilic.kmeta.core.tests.expr.Body;
-import com.kilic.kmeta.core.tests.expr.Expr;
 import java.io.IOException;
 
 import org.junit.Assert;
@@ -26,10 +24,11 @@ import com.kilic.kmeta.core.syntax.MultiplicityExpr;
 import com.kilic.kmeta.core.syntax.MutatorExpr;
 import com.kilic.kmeta.core.syntax.SequenceExpr;
 import com.kilic.kmeta.core.syntax.StringExpr;
+import com.kilic.kmeta.core.tests.expr.Body;
 import com.kilic.kmeta.core.util.CharSet;
 
 public class ATNTests {
-	String desktopPath;
+	private String desktopPath;
 
 	ATN DecL = new ATN();
 	ATN HexL = new ATN();
