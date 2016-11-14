@@ -55,7 +55,7 @@ public class ATNConfig {
 
 	@Override
 	public String toString() {
-		StringBuilder result = new StringBuilder();
+		final StringBuilder result = new StringBuilder();
 
 		result.append("[ ");
 		result.append(getState());

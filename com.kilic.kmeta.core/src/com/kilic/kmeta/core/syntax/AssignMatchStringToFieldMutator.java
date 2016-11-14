@@ -1,19 +1,22 @@
-package com.kilic.kmeta.core.alls.parser;
+package com.kilic.kmeta.core.syntax;
 
 import java.lang.reflect.Field;
 
-public class AssignCurrentRetValToFieldMutator implements IMutator {
+import com.kilic.kmeta.core.alls.parser.IMutator;
+import com.kilic.kmeta.core.alls.parser.IParserContext;
+
+public class AssignMatchStringToFieldMutator implements IMutator {
 	final String fieldName;
 	Class<?> clazz;
 	Field field;
 
-	public AssignCurrentRetValToFieldMutator(final String fieldName) {
+	public AssignMatchStringToFieldMutator(final String fieldName) {
 		this.fieldName = fieldName;
 	}
 
 	@Override
 	public String getLabel() {
-		return '=' + fieldName;
+		return "->" + fieldName;
 	}
 
 	@Override
@@ -22,21 +25,26 @@ public class AssignCurrentRetValToFieldMutator implements IMutator {
 		try {
 			final Object obj = pojoCtx.getLocalObject();
 			if (obj == null) {
-				System.out.println("No local object to add to list for field " + fieldName);
+				System.out.println("No local object");
 				return;
 			}
 
 			if (field == null) {
 				clazz = obj.getClass();
 				field = clazz.getField(fieldName);
+				if (!field.getType().isAssignableFrom(String.class)) {
+					System.out.println("ERROR: can not set field " + fieldName + ". It is not assignable from string");
+					return;
+				}
 			}
 
-			setValue(obj, pojoCtx.getReturnedObject());
+			setValue(obj, pojoCtx.getMatchString());
+			pojoCtx.resetMatchString();
 		} catch (Exception e) {
 			System.out.println("ERROR: can not set field " + fieldName + " of obj : " + clazz.getSimpleName());
 		}
 	}
-
+	
 	protected void setValue(final Object obj, final Object newValue) throws Exception {
 		field.set(obj, newValue);
 	}

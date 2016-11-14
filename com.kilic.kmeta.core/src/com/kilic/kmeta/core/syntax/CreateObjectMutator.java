@@ -1,4 +1,7 @@
-package com.kilic.kmeta.core.alls.parser;
+package com.kilic.kmeta.core.syntax;
+
+import com.kilic.kmeta.core.alls.parser.IMutator;
+import com.kilic.kmeta.core.alls.parser.IParserContext;
 
 public class CreateObjectMutator implements IMutator {
 	final String className;

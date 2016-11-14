@@ -44,7 +44,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 	}
 
 	public ATNConfigSet move(final IStream input) {
-		ATNConfigSet result = new ATNConfigSet();
+		final ATNConfigSet result = new ATNConfigSet();
 
 		Iterator<ATNConfig> i = iterator();
 		while (i.hasNext()) {
@@ -62,12 +62,12 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 	}
 
 	public Map<CharSet, Set<IATNEdge>> getNextDistinctCharSets() {
-		Map<CharSet, IATNEdge> csToState = new HashMap<>();
+		final Map<CharSet, IATNEdge> csToState = new HashMap<>();
 
-		Iterator<ATNConfig> i = iterator();
+		final Iterator<ATNConfig> i = iterator();
 		while (i.hasNext()) {
-			ATNConfig c = i.next();
-			ATNState state = c.getState();
+			final ATNConfig c = i.next();
+			final ATNState state = c.getState();
 			if (!state.hasNext())
 				continue;
 			IATNEdge edge = state.nextEdge();
@@ -77,13 +77,13 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 			}
 		}
 
-		Map<CharSet, Set<IATNEdge>> result = new HashMap<CharSet, Set<IATNEdge>>();
-		Set<CharSet> dcss = CharSet.getDistinctCharSets(csToState.keySet());
-		for (CharSet dcs : dcss) {
-			for (Entry<CharSet, IATNEdge> cs2s : csToState.entrySet()) {
+		final Map<CharSet, Set<IATNEdge>> result = new HashMap<CharSet, Set<IATNEdge>>();
+		final Set<CharSet> dcss = CharSet.getDistinctCharSets(csToState.keySet());
+		for (final CharSet dcs : dcss) {
+			for (final Entry<CharSet, IATNEdge> cs2s : csToState.entrySet()) {
 				if (cs2s.getKey().intersects(dcs)) {
 					if (!result.containsKey(dcs)) {
-						Set<IATNEdge> as = new HashSet<>();
+						final Set<IATNEdge> as = new HashSet<>();
 						as.add(cs2s.getValue());
 						result.put(dcs, as);
 					} else {
@@ -97,17 +97,17 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 	}
 
 	public ATNConfigSet moveByEdges(final Set<IATNEdge> edgesToMove) {
-		ATNConfigSet result = new ATNConfigSet();
+		final ATNConfigSet result = new ATNConfigSet();
 
-		Iterator<ATNConfig> i = iterator();
+		final Iterator<ATNConfig> i = iterator();
 		while (i.hasNext()) {
-			ATNConfig c = i.next();
-			ATNState state = c.getState();
+			final ATNConfig c = i.next();
+			final ATNState state = c.getState();
 			if (!state.hasNext())
 				continue;
-			IATNEdge edge = state.nextEdge();
+			final IATNEdge edge = state.nextEdge();
 			if (edgesToMove.contains(edge)) {
-				ATNConfig newConfig = new ATNConfig(edge.getTo(), c.alternative, c.callStack);
+				final ATNConfig newConfig = new ATNConfig(edge.getTo(), c.alternative, c.callStack);
 				result.add(newConfig);
 			}
 		}
@@ -117,7 +117,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 
 	public IATNEdge allMembersHaveSameAlternative() {
 		IATNEdge predictedEdge = null;
-		for (ATNConfig config : this) {
+		for (final ATNConfig config : this) {
 			if (predictedEdge == null) {
 				predictedEdge = config.getAlternative();
 				continue;
@@ -133,13 +133,13 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 
 	// we assume that the set contains the whole epsilon closure
 	public Set<IATNEdge> getNextTerminalEdges() {
-		Set<IATNEdge> result = new HashSet<>();
-		Iterator<ATNConfig> i = iterator();
+		final Set<IATNEdge> result = new HashSet<>();
+		final Iterator<ATNConfig> i = iterator();
 		while (i.hasNext()) {
-			ATNConfig c = i.next();
+			final ATNConfig c = i.next();
 			if (!c.getState().hasNext())
 				continue;
-			IATNEdge edge = c.getState().nextEdge();
+			final IATNEdge edge = c.getState().nextEdge();
 			if (edge instanceof ATNCharSetEdge)
 				result.add(edge);
 		}
@@ -153,7 +153,7 @@ public class ATNConfigSet extends HashSet<ATNConfig> {
 	}
 
 	@Override
-	public boolean equals(Object obj) {
+	public boolean equals(final Object obj) {
 		return super.equals(obj);
 	}
 

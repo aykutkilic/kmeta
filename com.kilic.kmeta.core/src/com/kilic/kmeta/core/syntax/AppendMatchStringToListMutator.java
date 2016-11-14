@@ -1,4 +1,4 @@
-package com.kilic.kmeta.core.alls.parser;
+package com.kilic.kmeta.core.syntax;
 
 import java.util.List;
 

@@ -138,7 +138,7 @@ public class BasicATNSimulator {
 		}
 	}
 
-	ATNConfigSet computePredictionDFAStartState(final ATNState atnState, final RegularCallStack g) {
+	private ATNConfigSet computePredictionDFAStartState(final ATNState atnState, final RegularCallStack g) {
 		final ATNConfigSet d0 = new ATNConfigSet();
 
 		for (final IATNEdge edge : atnState.getOut()) {
@@ -206,7 +206,7 @@ public class BasicATNSimulator {
 		return result;
 	}
 
-	PredictionDFAState target(final PredictionDFAState d) {
+	private PredictionDFAState target(final PredictionDFAState d) {
 		final PredictionDFA dfa = (PredictionDFA) d.getContainer();
 
 		if (input.hasEnded()) {
@@ -281,7 +281,7 @@ public class BasicATNSimulator {
 		return newConfigSet;
 	}
 
-	Set<Set<IATNEdge>> getConflictSetsPerLoc(ATNConfigSet configSet) {
+	private Set<Set<IATNEdge>> getConflictSetsPerLoc(ATNConfigSet configSet) {
 		Set<Set<IATNEdge>> result = new HashSet<>();
 
 		for (ATNState state : configSet.getAllStates()) {
@@ -303,7 +303,7 @@ public class BasicATNSimulator {
 		return result;
 	}
 
-	Set<Set<IATNEdge>> getProdSetsPerLoc(ATNConfigSet configSet) {
+	private Set<Set<IATNEdge>> getProdSetsPerLoc(ATNConfigSet configSet) {
 		Set<Set<IATNEdge>> result = new HashSet<>();
 
 		for (ATNState state : configSet.getAllStates()) {

@@ -9,6 +9,7 @@ import com.kilic.kmeta.core.alls.atn.ATNState;
 
 public class RegularCallStack {
 	public static final int ANY_STACK = -1;
+
 	private Stack<Integer> callStack;
 	private Map<Integer, ATNState> states;
 
@@ -49,7 +50,7 @@ public class RegularCallStack {
 	public ATNState pop() {
 		int stateIndex = callStack.pop();
 
-		ATNState result = states.get(stateIndex);
+		final ATNState result = states.get(stateIndex);
 		// states.remove(stateIndex);
 
 		return result;
@@ -74,7 +75,7 @@ public class RegularCallStack {
 		if (!(other instanceof RegularCallStack))
 			return false;
 
-		RegularCallStack o = (RegularCallStack) other;
+		final RegularCallStack o = (RegularCallStack) other;
 
 		return callStack.equals(o.callStack);
 	}
