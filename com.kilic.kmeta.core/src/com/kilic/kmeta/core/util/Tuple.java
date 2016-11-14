@@ -1,6 +1,8 @@
 package com.kilic.kmeta.core.util;
 
 public class Tuple<A, B> {
+	private static final int PRIME = 31;
+
 	private final A a;
 	private final B b;
 
@@ -18,9 +20,20 @@ public class Tuple<A, B> {
 	}
 
 	@Override
-	public boolean equals(final Object other) {
-		if (other instanceof Tuple<?, ?>) {
-			Tuple<?, ?> t = (Tuple<?, ?>) other;
+	public int hashCode() {
+		return a.hashCode() * PRIME + b.hashCode();
+	}
+
+	@Override
+	public boolean equals(final Object that) {
+		if (this == that)
+			return true;
+
+		if (that == null)
+			return false;
+
+		if (that instanceof Tuple<?, ?>) {
+			final Tuple<?, ?> t = (Tuple<?, ?>) that;
 			return a.equals(t.a) && b.equals(t.b);
 		}
 
